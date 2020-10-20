@@ -1,8 +1,8 @@
 const connection = require('../config/db.config');
-const TableVideos = "videos";
+const TableName = "category";
 
 exports.getAllRecord = function(callback){
-    connection.query("SELECT * FROM " + TableVideos + " WHERE 1=1", function(error, rows, fields){
+    connection.query("SELECT * FROM " + TableName + " WHERE 1=1", function(error, rows, fields){
         if(error){
             // console.log(error);
             callback(error, null);
@@ -14,9 +14,8 @@ exports.getAllRecord = function(callback){
     });
 };
 
-exports.getVideosHome = function(callback){
-    var que = "SELECT a.*,b.name FROM " + TableVideos + " as a Inner Join users as b ON a.userId = b.id";
-        que += " WHERE 1=1 ORDER BY a.startDate DESC LIMIT 10";
+exports.getCategory = async(id_cat, callback) => {
+    var que = "SELECT * FROM " + TableName + " WHERE 1=1 AND id = " + id_cat;
     
     connection.query(que, function(error, rows, fields){
         if(error){

@@ -1,5 +1,6 @@
 'use strict';
 const user = require('./app/controller/user.ctrl');
+const videos = require('./app/controller/videos.ctrl');
 const { authJwt } = require("./app/middlewares");
 
 module.exports = function(app) {
@@ -19,6 +20,7 @@ module.exports = function(app) {
     
     // Function for Mobile
     app.post('/user/login', user.loginUser);
+    app.get('/user/videos', videos.getVideos);
 
     // Function for Web
     app.post('/merchant/login', user.loginMerchant);
