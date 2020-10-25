@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 
-verifyToken = (req, res, next) => {
+function verifyToken (req, res, next) {
     // console.log(req.headers);
     let token = req.headers["x-access-token"];
 
@@ -13,9 +13,10 @@ verifyToken = (req, res, next) => {
 
     jwt.verify(token, config.secret, (err, decoded) => {
         if (err) {
-            return res.status(401).send({
+            res.status(401).send({
                 message: err// "Unauthorized!"
             });
+            return err;
         }
 
         req.userId = decoded.id;
@@ -26,30 +27,48 @@ verifyToken = (req, res, next) => {
 };
 
 isUser = (req,res,next) => {
-    if(!req.roleName.includes("User")){
-        return res.status(401).send({
-            message: "Unauthorized Token"// "Unauthorized!"
-        });
+    var err = verifyToken(req,res,next);
+    if(err != null){
+        if(!req.roleName.includes("User")){
+            return res.status(401).send({
+                message: "Unauthorized Token"// "Unauthorized!"
+            });
+        }
+        next();
     }
-    next();
+    else {
+        return false;
+    }
 };
 
 isMerchant = (req,res,next) => {
-    if(!req.roleName.includes("Merchant")){
-        return res.status(401).send({
-            message: "Unauthorized Token"// "Unauthorized!"
-        });
+    var err = verifyToken(req,res,next);
+    if(err != null){
+        if(!req.roleName.includes("Merchant")){
+            return res.status(401).send({
+                message: "Unauthorized Token"// "Unauthorized!"
+            });
+        }
+        next();
     }
-    next();
+    else {
+        return false;
+    }
 };
 
 isAdmin = (req,res,next) => {
-    if(!req.roleName.includes("Admin")){
-        return res.status(401).send({
-            message: "Unauthorized Token"// "Unauthorized!"
-        });
+    var err = verifyToken(req,res,next);
+    if(err != null){
+        if(!req.roleName.includes("Admin")){
+            return res.status(401).send({
+                message: "Unauthorized Token"// "Unauthorized!"
+            });
+        }
+        next();
     }
-    next();
+    else {
+        return false;
+    }
 };
 
 // isAdmin = (req, res, next) => {
@@ -115,7 +134,6 @@ isAdmin = (req,res,next) => {
 // };
 
 const authJwt = {
-    verifyToken: verifyToken,
     isUser : isUser,
     isAdmin: isAdmin,
     isMerchant: isMerchant,

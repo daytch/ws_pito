@@ -3,17 +3,17 @@ const TableUsers = "users";
 const TableUsersRole = "users_roles";
 const TableRoles = "roles";
 
-exports.getAllRecord = function(callback){
-    dbmysql.query("SELECT * FROM " + TableUsers + " WHERE 1=1", function(error, rows, fields){
-        if(error){
-            // console.log(error);
-            callback(error, null);
-        }
-        else {
-            // console.log(rows);
-            callback(null, rows);
-        }
-    });
+const util = require("util");
+const query = util.promisify(dbmysql.query).bind(dbmysql);
+
+exports.getAllRecord = async(param) => {
+    var que = "SELECT * FROM " + TableUsers + " WHERE 1=1 ";
+    if(param.username != ""){
+        que += "AND username = '" + param.username + "' ";
+    }
+
+    var rows = await query(que);
+    return rows;
 };
 
 exports.loginUser = function(username, password, role, res, callback){
@@ -41,6 +41,20 @@ exports.registerUser = function(param, callback){
         que += "VALUES ('" + param.username + "','" + param.email + "','" + param.password + "',";
         que += "'" + param.name + "')";
     
+    dbmysql.query(que, function(error,rows,fields){
+        if(error){
+            callback(error, null);
+        }
+        else {
+            callback(null, rows);
+        }
+    });
+}
+
+exports.registerUsersRole = function(param, callback){
+    var que = "INSERT INTO " + TableUsersRole + " (userId, roleId) ";
+        que += "VALUES ('" + param.userId + "','" + param.roleId + "')";
+
     dbmysql.query(que, function(error,rows,fields){
         if(error){
             callback(error, null);
