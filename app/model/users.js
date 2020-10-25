@@ -1,10 +1,10 @@
-const connection = require('../config/db.config');
+const { dbmysql } = require('../middlewares');
 const TableUsers = "users";
 const TableUsersRole = "users_roles";
 const TableRoles = "roles";
 
 exports.getAllRecord = function(callback){
-    connection.query("SELECT * FROM " + TableUsers + " WHERE 1=1", function(error, rows, fields){
+    dbmysql.query("SELECT * FROM " + TableUsers + " WHERE 1=1", function(error, rows, fields){
         if(error){
             // console.log(error);
             callback(error, null);
@@ -26,7 +26,7 @@ exports.loginUser = function(username, password, role, res, callback){
         que += " AND c.name = '" + role + "'";
     }
 
-    connection.query(que, function(error, rows, fields){
+    dbmysql.query(que, function(error, rows, fields){
         if(error){
             callback(error, null, res);
         }
@@ -35,3 +35,18 @@ exports.loginUser = function(username, password, role, res, callback){
         }
     });
 };
+
+exports.registerUser = function(param, callback){
+    var que = "INSERT INTO " + TableUsers + " (username,email,password,name) ";
+        que += "VALUES ('" + param.username + "','" + param.email + "','" + param.password + "',";
+        que += "'" + param.name + "')";
+    
+    dbmysql.query(que, function(error,rows,fields){
+        if(error){
+            callback(error, null);
+        }
+        else {
+            callback(null, rows);
+        }
+    });
+}

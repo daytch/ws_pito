@@ -21,6 +21,26 @@ exports.loginAdmin = async(param, res) => {
     await users.loginUser(req.username, req.password, "Admin", res, processLogin);
 };
 
+exports.registerUser = async(param, res) => {
+    var req = param.body;
+    await users.registerUser(req, function(err, rtn){
+        if(rtn != null){
+            if(rtn.affectedRows > 0){
+                // Sukses
+            }
+            else {
+                // Gagal
+            }
+        }
+        else {
+            console.log("registerUser-error");
+            console.log(err);
+        }
+
+        return;
+    });
+};
+
 function processLogin(err,rtn,res){
     var dt = {};
     var status = 0;

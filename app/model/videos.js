@@ -1,8 +1,8 @@
-const connection = require('../config/db.config');
+const { dbmysql } = require('../middlewares');
 const TableVideos = "videos";
 
 exports.getAllRecord = function(callback){
-    connection.query("SELECT * FROM " + TableVideos + " WHERE 1=1", function(error, rows, fields){
+    dbmysql.query("SELECT * FROM " + TableVideos + " WHERE 1=1", function(error, rows, fields){
         if(error){
             // console.log(error);
             callback(error, null);
@@ -18,7 +18,7 @@ exports.getVideosHome = function(callback){
     var que = "SELECT a.*,b.name FROM " + TableVideos + " as a Inner Join users as b ON a.userId = b.id";
         que += " WHERE 1=1 ORDER BY a.startDate DESC LIMIT 10";
     
-    connection.query(que, function(error, rows, fields){
+        dbmysql.query(que, function(error, rows, fields){
         if(error){
             callback(error, null);
         }

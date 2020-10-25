@@ -20,6 +20,7 @@ module.exports = function(app) {
     
     // Function for Mobile
     app.post('/user/login', user.loginUser);
+    app.post('/user/register', user.registerUser);
     app.get('/user/videos', videos.getVideos);
 
     // Function for Web

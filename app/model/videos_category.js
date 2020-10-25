@@ -1,11 +1,11 @@
-const connection = require('../config/db.config');
+const { dbmysql } = require('../middlewares');
 const util = require("util");
 
 const TableName = "videos_category";
-const query = util.promisify(connection.query).bind(connection);
+const query = util.promisify(dbmysql.query).bind(dbmysql);
 
 exports.getAllRecord = function(callback){
-    connection.query("SELECT * FROM " + TableName + " WHERE 1=1", function(error, rows, fields){
+    dbmysql.query("SELECT * FROM " + TableName + " WHERE 1=1", function(error, rows, fields){
         if(error){
             // console.log(error);
             callback(error, null);

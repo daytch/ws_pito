@@ -1,8 +1,8 @@
-const connection = require('../config/db.config');
+const { dbmysql } = require('../middlewares');
 const TableName = "category";
 
 exports.getAllRecord = function(callback){
-    connection.query("SELECT * FROM " + TableName + " WHERE 1=1", function(error, rows, fields){
+    dbmysql.query("SELECT * FROM " + TableName + " WHERE 1=1", function(error, rows, fields){
         if(error){
             // console.log(error);
             callback(error, null);
@@ -17,7 +17,7 @@ exports.getAllRecord = function(callback){
 exports.getCategory = async(id_cat, callback) => {
     var que = "SELECT * FROM " + TableName + " WHERE 1=1 AND id = " + id_cat;
     
-    connection.query(que, function(error, rows, fields){
+    dbmysql.query(que, function(error, rows, fields){
         if(error){
             callback(error, null);
         }
