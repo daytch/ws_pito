@@ -2,6 +2,7 @@ const { dbmysql } = require('../middlewares');
 const TableUsers = "users";
 const TableUsersRole = "users_roles";
 const TableRoles = "roles";
+const TableUserDetails = "user_details";
 
 const util = require("util");
 const query = util.promisify(dbmysql.query).bind(dbmysql);
@@ -63,4 +64,23 @@ exports.registerUsersRole = function(param, callback){
             callback(null, rows);
         }
     });
+}
+
+exports.getUserDetails = async(user_id) => {
+    var que = "SELECT * FROM " + TableUserDetails + " WHERE 1=1 ";
+    if(user_id != null && user_id != ""){
+        que += "AND userId = " + user_id;
+    }
+
+    var rows = await query(que);
+    return rows;
+}
+
+exports.insertUsertDetails = async(param) => {
+    var que = "REPLACE INTO " + TableUserDetails + " VALUES (" + param.userId + ", '" + param.first_name + "',";
+        que += "'" + param.last_name + "','" + param.about_me + "','" + param.fb_url + "','" + param.ig_url + "',";
+        que += "'" + param.tiktok_url + "','" + param.img_avatar + "')";
+
+    var rows = await query(que);
+    return rows;
 }

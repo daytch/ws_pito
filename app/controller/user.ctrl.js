@@ -86,6 +86,50 @@ exports.registerUser = async(param, res) => {
     });
 };
 
+exports.getUserDetails = async(param, res) => {
+    var req = param.body;
+    var dt = await users.getUserDetails(req.userId);
+
+    var rtn = {};
+    var status = 500; // Default if failed.
+    if(dt.length > 0){
+        status = 200;
+        rtn = dt[dt.length - 1];
+    }
+    else {
+        rtn = {
+            message : "User details not found"
+        };
+    }
+
+    res.status(status).json(rtn);
+}
+
+exports.insertUserDetails = async(param, res) => {
+    var req = param.body;
+    var ins = 0;
+    if(req.userId != undefined){
+        ins = await users.insertUsertDetails(req);
+    }
+    
+    var rtn = {
+        isSuccess : '',
+        message : ''
+    }
+    var status = 500; // Default if failed.
+    if(ins.affectedRows > 0){
+        status = 200;
+        rtn.isSuccess = true;
+        rtn.message = "Insert User details success";
+    }
+    else {
+        rtn.isSuccess = false;
+        rtn.message = "Insert User details failed";
+    }
+
+    res.status(status).json(rtn);
+}
+
 function processLogin(err,rtn,res){
     var dt = {};
     var status = 0;

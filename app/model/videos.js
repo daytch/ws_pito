@@ -1,8 +1,15 @@
 const { dbmysql } = require('../middlewares');
 const TableVideos = "videos";
 
-exports.getAllRecord = function(callback){
-    dbmysql.query("SELECT * FROM " + TableVideos + " WHERE 1=1", function(error, rows, fields){
+exports.getAllRecord = function(param, callback){
+    var que = "SELECT * FROM " + TableVideos + " WHERE 1=1 ";
+    if(param != null){
+        if(param.userId != ""){
+            que += "userId = '" + param.userId + "' ";
+        }
+    }
+    
+    dbmysql.query(que, function(error, rows, fields){
         if(error){
             // console.log(error);
             callback(error, null);
@@ -23,6 +30,26 @@ exports.getVideosHome = function(callback){
             callback(error, null);
         }
         else {
+            callback(null, rows);
+        }
+    });
+};
+
+exports.getVideosByCategory = function(param, callback){
+    var que = "SELECT * FROM " + TableVideos + " WHERE 1=1 ";
+    if(param != null){
+        if(param.userId != ""){
+            que += "userId = '" + param.userId + "' ";
+        }
+    }
+    
+    dbmysql.query(que, function(error, rows, fields){
+        if(error){
+            // console.log(error);
+            callback(error, null);
+        }
+        else {
+            // console.log(rows);
             callback(null, rows);
         }
     });

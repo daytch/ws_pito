@@ -38,9 +38,15 @@
 			"name": "/user/videos",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "x-access-tokern",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwicm9sZSI6IlVzZXIsTWVyY2hhbnQiLCJpYXQiOjE2MDM1OTg0ODIsImV4cCI6MTYwMzY4NDg4Mn0.iv-o1TEkJikE3s5k3A_SNqKLMmuKtsegPz2aPTekG9k",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "http://localhost:8080/user/videos",
+					"raw": "http://localhost:8080/user/category",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -48,7 +54,7 @@
 					"port": "8080",
 					"path": [
 						"user",
-						"videos"
+						"category"
 					]
 				}
 			},
@@ -61,6 +67,84 @@
 				"header": [],
 				"url": {
 					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/category",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/user/category",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"category"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/getUserDetails",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"userId\" : 1}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/getUserDetails",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"getUserDetails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/insertUserDetails",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\" : 1,\r\n    \"first_name\" : \"ahmad\",\r\n    \"last_name\" : \"fauzi\",\r\n    \"about_me\" : \"lorem ipsum\",\r\n    \"fb_url\" : \"https://facebook.com\",\r\n    \"ig_url\" : \"https://instagram.com\",\r\n    \"tiktok_url\" : \"https://tiktok.com\",\r\n    \"img_avatar\" : \"fauzi.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/insertUserDetails",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"insertUserDetails"
+					]
 				}
 			},
 			"response": []

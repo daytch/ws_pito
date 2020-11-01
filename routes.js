@@ -1,6 +1,7 @@
 'use strict';
 const user = require('./app/controller/user.ctrl');
 const videos = require('./app/controller/videos.ctrl');
+const category = require('./app/controller/category.ctrl');
 const { authJwt } = require("./app/middlewares");
 
 module.exports = function(app) {
@@ -22,6 +23,9 @@ module.exports = function(app) {
     app.post('/user/login', user.loginUser);
     app.post('/user/register', user.registerUser);
     app.get('/user/videos', [authJwt.isUser], videos.getVideos);
+    app.get('/user/category', [authJwt.isUser], category.getAllRecord);
+    app.post('/user/getUserDetails', [authJwt.isUser], user.getUserDetails);
+    app.post('/user/insertUserDetails', [authJwt.isUser], user.insertUserDetails);
 
     // Function for Web
     app.post('/merchant/login', user.loginMerchant);

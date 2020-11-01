@@ -49,3 +49,7 @@ exports.getVideos = async(param, res) => {
         res.status(status).json(hsl);
     });
 };
+
+exports.videosByCategory = async(param, res) => {
+    
+}

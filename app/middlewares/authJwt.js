@@ -28,7 +28,7 @@ function verifyToken (req, res, next) {
 
 isUser = (req,res,next) => {
     var err = verifyToken(req,res,next);
-    if(err != null){
+    if(err != null && err == true){
         if(!req.roleName.includes("User")){
             return res.status(401).send({
                 message: "Unauthorized Token"// "Unauthorized!"
@@ -43,7 +43,7 @@ isUser = (req,res,next) => {
 
 isMerchant = (req,res,next) => {
     var err = verifyToken(req,res,next);
-    if(err != null){
+    if(err != null && err == true){
         if(!req.roleName.includes("Merchant")){
             return res.status(401).send({
                 message: "Unauthorized Token"// "Unauthorized!"
@@ -58,7 +58,7 @@ isMerchant = (req,res,next) => {
 
 isAdmin = (req,res,next) => {
     var err = verifyToken(req,res,next);
-    if(err != null){
+    if(err != null && err == true){
         if(!req.roleName.includes("Admin")){
             return res.status(401).send({
                 message: "Unauthorized Token"// "Unauthorized!"
