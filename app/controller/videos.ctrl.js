@@ -51,5 +51,44 @@ exports.getVideos = async(param, res) => {
 };
 
 exports.videosByCategory = async(param, res) => {
-    
-}
+    var req = param.body;
+    var id_cat = req.id_cat;
+
+    var recommend = [];
+    var status = 500;
+    var isSuccess = false;
+    var msg = "Failed";
+    if(id_cat !== undefined && id_cat !== ""){
+        var vid = await videos.getVideosByCategory(id_cat);
+        
+        var obj = {};
+        for(var v of vid){
+            var cat = await videos_category.getCategoryByVideos(v.category);
+            var ct = [];
+            for(var c of cat){
+                ct.push(c.name);
+            }
+
+            obj = {
+                url : '<iframe width="560" height="315" src="' + v.url + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+                startdate : v.startDate,
+                views : "",
+                category : ct,
+                merchant : v.name
+            };
+
+            recommend.push(obj);
+        }
+
+        status = 200;
+        isSuccess = true;
+        msg = "Success";
+    }
+
+    res.status(status).json({
+        data : recommend,
+        isSuccess : isSuccess,
+        message : msg,
+        total : recommend.length
+    });
+};

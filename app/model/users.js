@@ -66,6 +66,14 @@ exports.registerUsersRole = function(param, callback){
     });
 }
 
+exports.registerUsersRoleAwait = async(param) => {
+    var que = "INSERT INTO " + TableUsersRole + " (userId, roleId) ";
+        que += "VALUES ('" + param.userId + "','" + param.roleId + "')";
+
+    var rows = await query(que);
+    return rows;
+}
+
 exports.getUserDetails = async(user_id) => {
     var que = "SELECT * FROM " + TableUserDetails + " WHERE 1=1 ";
     if(user_id != null && user_id != ""){
@@ -80,6 +88,28 @@ exports.insertUsertDetails = async(param) => {
     var que = "REPLACE INTO " + TableUserDetails + " VALUES (" + param.userId + ", '" + param.first_name + "',";
         que += "'" + param.last_name + "','" + param.about_me + "','" + param.fb_url + "','" + param.ig_url + "',";
         que += "'" + param.tiktok_url + "','" + param.img_avatar + "')";
+
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getRolesByName = async(name) => {
+    var que = "SELECT * FROM " + TableRoles + " name = '" + name + "'";
+
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getListMerchant = async(role_id, id_merchant) => {
+    var que = "SELECT c.userId,c.first_name FROM " + TableUsers + " as a ";
+        que += "INNER JOIN " + TableUsersRole + " as b ";
+        que += "ON a.id = b.userId ";
+        que += "INNER JOIN " + TableUserDetails + " as c ";
+        que += "ON a.id = c.userId ";
+        que += "WHERE b.roleId = '" + role_id + "' ";
+    if(id_merchant != undefined && id_merchant > 0){
+        que += "AND a.id = '" + id_merchant + "' ";
+    }
 
     var rows = await query(que);
     return rows;

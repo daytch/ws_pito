@@ -26,6 +26,9 @@ module.exports = function(app) {
     app.get('/user/category', [authJwt.isUser], category.getAllRecord);
     app.post('/user/getUserDetails', [authJwt.isUser], user.getUserDetails);
     app.post('/user/insertUserDetails', [authJwt.isUser], user.insertUserDetails);
+    app.post('/user/registerMerchant', [authJwt.isUser], user.registerMerchant);
+    app.get('/user/listmerchant', [authJwt.isUser], user.listMerchant);
+    app.get('/user/getVideosByCategory', [authJwt.isUser], videos.videosByCategory);
 
     // Function for Web
     app.post('/merchant/login', user.loginMerchant);

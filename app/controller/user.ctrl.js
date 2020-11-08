@@ -1,7 +1,9 @@
 const config = require("../config/auth.config");
 const users = require("../model/users");
+const merchant = require("../model/merchant");
 
 const jwt = require("jsonwebtoken");
+const { user } = require("../config/db.config");
 
 exports.loginUser = async(param, res) => {
     // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
@@ -107,7 +109,9 @@ exports.getUserDetails = async(param, res) => {
 
 exports.insertUserDetails = async(param, res) => {
     var req = param.body;
-    var ins = 0;
+    var ins = {
+        affectedRows : 0
+    };
     if(req.userId != undefined){
         ins = await users.insertUsertDetails(req);
     }
@@ -128,6 +132,82 @@ exports.insertUserDetails = async(param, res) => {
     }
 
     res.status(status).json(rtn);
+}
+
+exports.registerMerchant = async(param, res) => {
+    var req = param.body;
+    var ins = {
+        affectedRows : 0
+    };
+    var msg = "";
+
+    if(req.userId != undefined){
+        ins = await merchant.insertMerchantDetails(req);
+        if(ins.affectedRows > 0){
+            var id_role = 0;
+            var role = await users.getRolesByName("Merchant");
+            for(var r of role){
+                id_role = r.id;
+            }
+            var prm = {
+                userId : req.userId,
+                roleId : id_role
+            };
+            ins = await users.registerUsersRoleAwait(prm);
+            if(ins.affectedRows > 0){
+                msg = "Success Register Merchant";
+            }
+        }
+    }
+
+    var status = 500;
+    var isSuccess = false;
+    if(msg == ""){
+        msg = "Failed Register Merchant";
+    }
+    else {
+        status = 200;
+        isSuccess = true;
+    }
+
+    res.status(status).json({
+        isSuccess : isSuccess,
+        message : msg
+    });
+}
+
+exports.listMerchant = async(param,res) => {
+    var req = param.body;
+    var id_merchant = 0;
+    if(req.id_merchant != undefined && req.id_merchant != ""){
+        id_merchant = req.id_merchant;
+    }
+    
+    var id_role = 0;
+    var role = await users.getRolesByName("Merchant");
+    for(var r of role){
+        id_role = r.id;
+    }
+
+    var usr = await users.getListMerchant(id_role, id_merchant);
+    var status = 500;
+    var isSuccess = false;
+    var data = [];
+    var dt = {};
+    for(var u of usr){
+        dt = {
+            id : u.userId,
+            name : u.first_name
+        };
+        data.push(dt);
+    }
+
+    if(data.length > 0){
+        status = 200;
+        isSuccess = true;
+    }
+
+    res.status(status).json(data);
 }
 
 function processLogin(err,rtn,res){
