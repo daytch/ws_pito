@@ -63,10 +63,28 @@
 		{
 			"name": "/user/register",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\" : \"fauzi1\",\r\n    \"email\" : \"fauzi1@yopmail.com\",\r\n    \"password\" : \"fauzi1\",\r\n    \"name\" : \"Ahmad Fauzi 1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": ""
+					"raw": "http://localhost:8080/user/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"register"
+					]
 				}
 			},
 			"response": []
