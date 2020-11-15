@@ -8,23 +8,50 @@ const { user } = require("../config/db.config");
 exports.loginUser = async(param, res) => {
     // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
     var req = param.body;
-    await users.loginUser(req.username, req.password, "", res, processLogin);
+    if(req.email == ""){
+        // Gagal
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Login Failed"
+        });
+    }
+    await users.loginUser(req.email, req.password, "User", res, processLogin);
+};
+
+exports.loginUserSSO = async(param, res) => {
+    // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
+    var req = param.body;
+    if(req.email == ""){
+        // Gagal
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Login Failed"
+        });
+    }
+    await users.loginUserSSO(req.email, "User", res, processLogin);
 };
 
 exports.loginMerchant = async(param, res) => {
     // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
     var req = param.body;
-    await users.loginUser(req.username, req.password, "Merchant", res, processLogin);
+    await users.loginUser(req.email, req.password, "Merchant", res, processLogin);
 };
 
 exports.loginAdmin = async(param, res) => {
     // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
     var req = param.body;
-    await users.loginUser(req.username, req.password, "Admin", res, processLogin);
+    await users.loginUser(req.email, req.password, "Admin", res, processLogin);
 };
 
 exports.registerUser = async(param, res) => {
     var req = param.body;
+    if(req.email == ""){
+        // Gagal
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Register User gagal"
+        });
+    }
     await users.registerUser(req, async(err, rtn) => {
         if(rtn != null){
             if(rtn.affectedRows > 0){
@@ -104,7 +131,7 @@ exports.getUserDetails = async(param, res) => {
         };
     }
 
-    res.status(status).json(rtn);
+    return res.status(status).json(rtn);
 }
 
 exports.insertUserDetails = async(param, res) => {
@@ -131,7 +158,7 @@ exports.insertUserDetails = async(param, res) => {
         rtn.message = "Insert User details failed";
     }
 
-    res.status(status).json(rtn);
+    return res.status(status).json(rtn);
 }
 
 exports.registerMerchant = async(param, res) => {
@@ -170,7 +197,7 @@ exports.registerMerchant = async(param, res) => {
         isSuccess = true;
     }
 
-    res.status(status).json({
+    return res.status(status).json({
         isSuccess : isSuccess,
         message : msg
     });
@@ -207,7 +234,7 @@ exports.listMerchant = async(param,res) => {
         isSuccess = true;
     }
 
-    res.status(status).json(data);
+    return res.status(status).json(data);
 }
 
 function processLogin(err,rtn,res){
@@ -221,16 +248,24 @@ function processLogin(err,rtn,res){
             var roleName = "";  // Untuk Token
             var roleArr = [];
             var userEmail = "";
-            var userName = "";
+            var name = "";
             for(var p of rtn){
                 userId = p.id;
                 userEmail = p.email;
-                userName = p.username;
+                name = p.name;
                 if(roleName != ""){
                     roleName += ",";
                 }
                 roleName += p.role_name;  // Untuk Token
                 roleArr.push(p.role_name);
+            }
+
+            var image = "";
+            if(userId != ""){
+                var dtls = await users.getUserDetails(userId);
+                for(var d of dtls){
+                    image = d.img_avatar;
+                }
             }
 
             status = 200;
@@ -242,8 +277,9 @@ function processLogin(err,rtn,res){
                 isSuccess : true,
                 message : 'Success',
                 id : userId,
-                username : userName,
+                name : name,
                 email : userEmail,
+                image : image,
                 roles : roleArr,
                 token : token
             }

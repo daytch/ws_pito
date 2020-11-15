@@ -31,5 +31,5 @@ exports.getAllRecord = async(param, res) => {
         rtn.total = listcat.length;
     }
 
-    res.status(status).json(rtn);
+    return res.status(status).json(rtn);
 };

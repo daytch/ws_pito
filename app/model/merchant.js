@@ -1,6 +1,7 @@
 const { dbmysql } = require('../middlewares');
 const util = require("util");
 const TableDetails = "merchant_details";
+const TableSubs = "merchant_subs";
 
 const query = util.promisify(dbmysql.query).bind(dbmysql);
 
@@ -21,3 +22,13 @@ exports.insertMerchantDetails = async(param) => {
     var rows = await query(que);
     return rows;
 }
+
+exports.getCountSubs = async (merchant_id) => {
+    var que = "SELECT count(*) as cnt FROM " + TableDetails + " WHERE 1=1 ";
+    if(merchant_id != undefined && merchant_id != ""){
+        que += "AND merchantid = " + merchant_id;
+    }
+
+    var rows = await query(que);
+    return rows;
+};

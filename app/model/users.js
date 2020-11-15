@@ -17,12 +17,32 @@ exports.getAllRecord = async(param) => {
     return rows;
 };
 
-exports.loginUser = function(username, password, role, res, callback){
+exports.loginUser = function(email, password, role, res, callback){
     var que = "SELECT a.*,b.roleId,c.name as role_name FROM " + TableUsers + " as a "
             + " INNER JOIN " + TableUsersRole + " as b on a.id = b.userId "
             + " INNER JOIN " + TableRoles + " as c on b.roleId = c.id "
-            + " WHERE a.username = '" + username + "' AND a.password = '" + password + "' "
-            + " AND a.isactive = true ";
+            + " WHERE a.email = '" + email + "' AND a.password = '" + password + "' "
+            + " AND a.isactive = 1 ";
+    if(role != ""){
+        que += " AND c.name = '" + role + "'";
+    }
+
+    dbmysql.query(que, function(error, rows, fields){
+        if(error){
+            callback(error, null, res);
+        }
+        else {
+            callback(null, rows, res);
+        }
+    });
+};
+
+exports.loginUserSSO = function(email, role, res, callback){
+    var que = "SELECT a.*,b.roleId,c.name as role_name FROM " + TableUsers + " as a "
+            + " INNER JOIN " + TableUsersRole + " as b on a.id = b.userId "
+            + " INNER JOIN " + TableRoles + " as c on b.roleId = c.id "
+            + " WHERE a.email = '" + email + "' ";
+            + " AND a.isactive = 1 ";
     if(role != ""){
         que += " AND c.name = '" + role + "'";
     }
@@ -38,9 +58,9 @@ exports.loginUser = function(username, password, role, res, callback){
 };
 
 exports.registerUser = function(param, callback){
-    var que = "INSERT INTO " + TableUsers + " (username,email,password,name) ";
-        que += "VALUES ('" + param.username + "','" + param.email + "','" + param.password + "',";
-        que += "'" + param.name + "')";
+    var que = "INSERT INTO " + TableUsers + " (email,password,name,isActive) ";
+        que += "VALUES ('" + param.email + "','" + param.password + "',";
+        que += "'" + param.name + "',1)";
     
     dbmysql.query(que, function(error,rows,fields){
         if(error){

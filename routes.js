@@ -21,6 +21,7 @@ module.exports = function(app) {
     
     // Function for Mobile
     app.post('/user/login', user.loginUser);
+    app.post('/user/loginSSO', user.loginUserSSO);
     app.post('/user/register', user.registerUser);
     app.get('/user/videos', [authJwt.isUser], videos.getVideos);
     app.get('/user/category', [authJwt.isUser], category.getAllRecord);
@@ -29,6 +30,9 @@ module.exports = function(app) {
     app.post('/user/registerMerchant', [authJwt.isUser], user.registerMerchant);
     app.get('/user/listmerchant', [authJwt.isUser], user.listMerchant);
     app.get('/user/getVideosByCategory', [authJwt.isUser], videos.videosByCategory);
+    app.post('/user/videosPage', [authJwt.isUser], videos.videosPage);
+    app.post('/user/actionVidLikes', [authJwt.isUser], videos.actionVidLikes);
+    app.post('/user/actionVidComments', [authJwt.isUser], videos.actionVidComments);
 
     // Function for Web
     app.post('/merchant/login', user.loginMerchant);
