@@ -2,7 +2,7 @@ const { dbmysql } = require('../middlewares');
 const TableUsers = "users";
 const TableUsersRole = "users_roles";
 const TableRoles = "roles";
-const TableUserDetails = "user_details";
+const TableUserDetails = "users_details";
 
 const util = require("util");
 const query = util.promisify(dbmysql.query).bind(dbmysql);

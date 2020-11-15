@@ -15,7 +15,7 @@ exports.loginUser = async(param, res) => {
             message : "Login Failed"
         });
     }
-    await users.loginUser(req.email, req.password, "User", res, processLogin);
+    await users.loginUser(req.email, req.password, "User", res, this.processLogin);
 };
 
 exports.loginUserSSO = async(param, res) => {
@@ -28,7 +28,7 @@ exports.loginUserSSO = async(param, res) => {
             message : "Login Failed"
         });
     }
-    await users.loginUserSSO(req.email, "User", res, processLogin);
+    await users.loginUserSSO(req.email, "User", res, this.processLogin);
 };
 
 exports.loginMerchant = async(param, res) => {
@@ -237,7 +237,7 @@ exports.listMerchant = async(param,res) => {
     return res.status(status).json(data);
 }
 
-function processLogin(err,rtn,res){
+exports.processLogin = async(err,rtn,res) => {
     var dt = {};
     var status = 0;
 
