@@ -34,13 +34,13 @@ exports.loginUserSSO = async(param, res) => {
 exports.loginMerchant = async(param, res) => {
     // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
     var req = param.body;
-    await users.loginUser(req.email, req.password, "Merchant", res, processLogin);
+    await users.loginUser(req.email, req.password, "Merchant", res, this.processLogin);
 };
 
 exports.loginAdmin = async(param, res) => {
     // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
     var req = param.body;
-    await users.loginUser(req.email, req.password, "Admin", res, processLogin);
+    await users.loginUser(req.email, req.password, "Admin", res, this.processLogin);
 };
 
 exports.registerUser = async(param, res) => {
