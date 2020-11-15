@@ -221,7 +221,7 @@ function processLogin(err,rtn,res){
             var roleName = "";  // Untuk Token
             var roleArr = [];
             var userEmail = "";
-            var userName = "";
+            var userName = "";            
             for(var p of rtn){
                 userId = p.id;
                 userEmail = p.email;
