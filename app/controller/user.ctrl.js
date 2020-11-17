@@ -1,6 +1,7 @@
 const config = require("../config/auth.config");
 const users = require("../model/users");
 const merchant = require("../model/merchant");
+const videos_ctrl = require("../controller/videos.ctrl");
 
 const jwt = require("jsonwebtoken");
 const { user } = require("../config/db.config");
@@ -235,6 +236,76 @@ exports.listMerchant = async(param,res) => {
     }
 
     return res.status(status).json(data);
+}
+
+exports.merchantPage = async(param,res) => {
+    var req = param.body;
+    var merchant_id = req.merchantId;
+    var user_id = req.userId;
+    var rtn = {};
+
+    if(merchant_id == undefined || merchant_id == ""){
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Failed to get merchant details"
+        });
+    }
+
+    var subs = 0;
+    var count_subs = await merchant.getCountSubs(merchant_id);
+    for(var c of count_subs){
+        subs = c.cnt;
+    }
+
+    var isSubs = false;
+    var checksubs = await merchant.getCountSubsById(merchant_id, user_id);
+    if(checksubs.length > 0){
+        isSubs = true;
+    }
+
+    var data_merchant = await users.getUserDetailsWithName(merchant_id);
+    for(var m of data_merchant){
+        rtn = {
+            name : m.name,
+            profile_image_url : m.img_avatar,
+            totalSubscriber : subs,
+            info : '',
+            description : m.about_me,
+            categories : [],
+            isSubscriber : isSubs,
+            facebook_url : m.fb_url,
+            instagram_url : m.ig_url,
+            tiktok_url : m.tiktok_url,
+            share_url : '',
+            detail : {}
+        };
+
+        var dtls = {};  // Object merchant details
+
+        // var merchant_dtls = await merchant.getRecord(merchant_id);
+        // var merch_fb = "";
+        // var merch_ig = "";
+        // var merch_tiktok = "";
+        // for(var dtls of merchant_dtls){
+        //     merch_fb = dtls.fb_url;
+        //     merch_ig = dtls.ig_url;
+        //     merch_tiktok = dtls.tiktok_url;
+        // }
+
+        dtls = {
+            live_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "live_videos"),
+            upcoming_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "upcoming_videos"),
+            previous_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "previous_videos")
+        };
+
+        rtn.detail = dtls;
+    }
+
+    return res.status(200).json({
+        isSuccess : true,
+        message : "Success to get merchant details",
+        data : [rtn]
+    });
 }
 
 exports.processLogin = async(err,rtn,res) => {

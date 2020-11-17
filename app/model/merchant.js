@@ -24,9 +24,22 @@ exports.insertMerchantDetails = async(param) => {
 }
 
 exports.getCountSubs = async (merchant_id) => {
-    var que = "SELECT count(*) as cnt FROM " + TableDetails + " WHERE 1=1 ";
+    var que = "SELECT count(*) as cnt FROM " + TableSubs + " WHERE 1=1 ";
     if(merchant_id != undefined && merchant_id != ""){
         que += "AND merchantid = " + merchant_id;
+    }
+
+    var rows = await query(que);
+    return rows;
+};
+
+exports.getCountSubsById = async (merchant_id, user_id) => {
+    var que = "SELECT * FROM " + TableSubs + " WHERE 1=1 ";
+    if(merchant_id != undefined && merchant_id != ""){
+        que += "AND merchantid = '" + merchant_id + "' ";
+    }
+    if(user_id != undefined && user_id != ""){
+        que += "AND userid = '" + user_id + "' ";
     }
 
     var rows = await query(que);

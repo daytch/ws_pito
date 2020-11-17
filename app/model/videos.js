@@ -102,3 +102,20 @@ exports.insertComments = async(video_id, user_id, text) => {
     var rows = await query(que);
     return rows;
 };
+
+exports.getVideosMerchantByMoment = async(merchant_id, mmt) => {
+    var que = "SELECT * FROM " + TableVideos + " ";
+        que += "WHERE userId = '" + merchant_id + "' ";
+    if(mmt == "live_videos"){
+        que += "AND date(startDate) = date(now()) ";
+    }
+    else if(mmt == "upcoming_videos"){
+        que += "AND date(startDate) > date(now()) ";
+    }
+    else if(mmt == "previous_videos"){
+        que += "AND date(startDate) < date(now()) ";
+    }
+    
+    var rows = await query(que);
+    return rows;
+};

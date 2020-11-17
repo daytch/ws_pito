@@ -9,8 +9,8 @@ const query = util.promisify(dbmysql.query).bind(dbmysql);
 
 exports.getAllRecord = async(param) => {
     var que = "SELECT * FROM " + TableUsers + " WHERE 1=1 ";
-    if(param.username != ""){
-        que += "AND username = '" + param.username + "' ";
+    if(param.email != ""){
+        que += "AND email = '" + param.email + "' ";
     }
 
     var rows = await query(que);
@@ -98,6 +98,17 @@ exports.getUserDetails = async(user_id) => {
     var que = "SELECT * FROM " + TableUserDetails + " WHERE 1=1 ";
     if(user_id != null && user_id != ""){
         que += "AND userId = " + user_id;
+    }
+
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getUserDetailsWithName = async(user_id) => {
+    var que = "SELECT a.*,b.name FROM " + TableUserDetails + " as a ";
+        que += "INNER JOIN " + TableUsers + " as b on a.userId = b.id WHERE 1=1 ";
+    if(user_id != null && user_id != ""){
+        que += "AND a.userId = " + user_id;
     }
 
     var rows = await query(que);

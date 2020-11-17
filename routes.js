@@ -33,6 +33,7 @@ module.exports = function(app) {
     app.post('/user/videosPage', [authJwt.isUser], videos.videosPage);
     app.post('/user/actionVidLikes', [authJwt.isUser], videos.actionVidLikes);
     app.post('/user/actionVidComments', [authJwt.isUser], videos.actionVidComments);
+    app.post('/user/merchantPage', [authJwt.isUser], user.merchantPage);
 
     // Function for Web
     app.post('/merchant/login', user.loginMerchant);

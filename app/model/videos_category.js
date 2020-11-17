@@ -19,7 +19,7 @@ exports.getAllRecord = function(callback){
 
 exports.getCategoryByVideos = async(id_video/*, callback*/) => {
     var que = "SELECT b.name FROM " + TableName + " as a INNER JOIN category as b on a.categoryId = b.id";
-        que +=" WHERE 1=1 AND a.videoId = " + id_video;
+        que +=" WHERE 1=1 AND a.videoId = '" + id_video + "' ";
     
     // connection.query(que, function(error, rows, fields){
     //     if(error){

@@ -97,17 +97,31 @@ exports.videosByCategory = async(param, res) => {
 exports.videosPage = async(param, res) => {
     var req = param.body;
     var id = req.videoId;
+    var user_id = req.userId;
+
+    if(id == undefined || id == ""){
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Failed to get videos"
+        });
+    }
 
     var vid = await videos.getVideosById(id);
     if(vid.length > 0){
-        var param = {
+        var prm = {
             userId : vid[vid.length-1].userid
         }
-        var merchant_details = await merchant.getRecord(param);
+        var merchant_details = await merchant.getRecord(prm);
         var subs = 0;
-        var count_subs = await merchant.getCountSubs(param.userId);
+        var count_subs = await merchant.getCountSubs(prm.userId);
         for(var c of count_subs){
             subs = c.cnt;
+        }
+
+        var isSubs = false;
+        var checksubs = await merchant.getCountSubsById(prm.userId, user_id);
+        if(checksubs.length > 0){
+            isSubs = true;
         }
 
         var likes = 0;
@@ -124,7 +138,8 @@ exports.videosPage = async(param, res) => {
             merchant : merchant_details,
             count_subs : subs,
             count_likes : likes,
-            category : vid_cat
+            category : vid_cat,
+            isSubscriber : isSubs
         };
 
         return res.status(200).json({
@@ -196,4 +211,29 @@ exports.actionVidComments = async(param, res) => {
         isSuccess : false,
         message : "Insert comment failed"
     });
+};
+
+exports.videosMerchantByMoment = async(merchant_id, mmt) => {
+    var vids = await videos.getVideosMerchantByMoment(merchant_id, mmt);
+    var rtn = [];
+    for(var v of vids){
+        var obj = {};
+        var cat = await videos_category.getCategoryByVideos(v.id);
+        var arr_cat = [];
+        for(var c of cat){
+            arr_cat.push(c.name);
+        }
+
+        obj = {
+            iframe : '<iframe width="560" height="315" src="' + v.url + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+            title : v.title,
+            description : v.desc,
+            categories : arr_cat,
+            start_time : v.startDate
+        };
+
+        rtn.push(obj);
+    }
+
+    return rtn;
 };
