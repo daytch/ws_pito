@@ -54,7 +54,7 @@ exports.registerUser = async(param, res) => {
         });
     }
     var check_user = await users.getAllRecord(req);
-    if(check_user > 0){
+    if(check_user.length > 0){
         // Gagal
         return res.status(500).json({
             isSuccess : false,
