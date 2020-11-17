@@ -50,7 +50,15 @@ exports.registerUser = async(param, res) => {
         // Gagal
         return res.status(500).json({
             isSuccess : false,
-            message : "Register User gagal"
+            message : "Register User failed"
+        });
+    }
+    var check_user = await users.getAllRecord(req);
+    if(check_user > 0){
+        // Gagal
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Email has been registered"
         });
     }
     await users.registerUser(req, async(err, rtn) => {
@@ -58,7 +66,7 @@ exports.registerUser = async(param, res) => {
             if(rtn.affectedRows > 0){
                 // Sukses
                 var prm = {
-                    username : req.username
+                    email : req.email
                 };
                 var usr = await users.getAllRecord(prm);
                 var id_user = "";
