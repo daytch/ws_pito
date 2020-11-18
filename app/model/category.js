@@ -14,7 +14,7 @@ exports.getAllRecord = async () => {
 exports.getCategory = async(id_cat) => {
     var que = "SELECT * FROM " + TableName + " WHERE 1=1 ";
     if(id_cat != ""){
-        que += "id_cat = '" + id_cat + "' ";
+        que += "AND id_cat = '" + id_cat + "' ";
     }
 
     var rows = await query(que);

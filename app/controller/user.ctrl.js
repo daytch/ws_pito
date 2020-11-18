@@ -4,7 +4,8 @@ const merchant = require("../model/merchant");
 const videos_ctrl = require("../controller/videos.ctrl");
 
 const jwt = require("jsonwebtoken");
-const { user } = require("../config/db.config");
+const { mailer } = require("../middlewares");
+const moment = require("moment");
 
 exports.loginUser = async(param, res) => {
     // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
@@ -238,12 +239,18 @@ exports.listMerchant = async(param,res) => {
         data.push(dt);
     }
 
+    var rtn = {};
     if(data.length > 0){
         status = 200;
-        isSuccess = true;
+        rtn = {
+            isSuccess : true,
+            popular : data,
+            recom : [],
+            new_comers : []
+        };
     }
 
-    return res.status(status).json(data);
+    return res.status(status).json(rtn);
 }
 
 exports.merchantPage = async(param,res) => {
@@ -255,7 +262,7 @@ exports.merchantPage = async(param,res) => {
     if(merchant_id == undefined || merchant_id == ""){
         return res.status(500).json({
             isSuccess : false,
-            message : "Failed to get merchant details"
+            message : "Failed to get merchant details, Merchant id is null"
         });
     }
 
@@ -314,6 +321,144 @@ exports.merchantPage = async(param,res) => {
         message : "Success to get merchant details",
         data : [rtn]
     });
+}
+
+exports.forgotPasswordReq = async(param,res) => {
+    var req = param.body;
+    if(req.email == undefined || req.email == ""){
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Failed to forgot password, email has null"
+        });
+    }
+    var interval_time = 86400; // 24 hours
+
+    var name = "";
+    var token = "";
+    var usr = await users.getAllRecord(req);
+    for(var u of usr){
+        name = u.name;
+        token = jwt.sign({ email : u.email, desc : "Forgot Password" }, config.secret, {
+            expiresIn: interval_time
+        });
+    }
+
+    if(usr.length > 0){
+        var exp_time  = moment().add(interval_time, "s");
+        var exp_str = exp_time.format("YYYY-MM-DD HH:mm:ss");
+        var ins = await users.insertForgotPass(req.email, 0, exp_str, token);
+
+        if(ins.affectedRows > 0){
+            var url = "https://pito-api.herokuapp.com/user/resetPassword?token=" + token;
+            var subject = "Pito User Forgot Password";
+            var text = "Hi " + name + ",<br/><br/>";
+                text += "Please reset your password on this link :<br/>";
+                text += url + " <br/>";
+                text += "Expired on " + exp_str + " <br/><br/>";
+                text += "Regards,<br/>Pito Team";
+
+            var mail = await mailer.sendMail(req.email, subject, text);
+
+            if(mail){
+                return res.status(200).json({
+                    isSuccess : true,
+                    message : "Success send email forgot password"
+                });
+            }
+            else {
+                return res.status(500).json({
+                    isSuccess : false,
+                    message : "Failed send email forgot password"
+                });
+            }
+        }
+        else {
+            return res.status(500).json({
+                isSuccess : false,
+                message : "Failed send email forgot password"
+            });
+        }
+    }
+    else {
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Failed to forgot password, User is not registered"
+        });
+    }
+    
+}
+
+exports.resetPassword = async(param, res) => {
+    var req = param.body;
+    if(req.email == undefined || req.email == ""){
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Failed to reset password, email has null"
+        });
+    }
+
+    var upd = await users.changePassword(req.email, req.password);
+    if(upd.affectedRows > 0){
+        return res.status(200).json({
+            isSuccess : true,
+            message : "Success to reset password"
+        });
+    }
+    else {
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Failed to reset password"
+        });
+    }
+}
+
+exports.changePassword = async(param, res) => {
+    var req = param.body;
+    if(req.email == undefined || req.email == ""){
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Failed to change password, email has null"
+        });
+    }
+    var prm = {
+        email : req.email,
+        password : req.old_password
+    }
+    var cek = await users.getAllRecord(prm);
+    if(cek.length > 0){
+        var upd = await users.changePassword(req.email, req.new_password);
+        if(upd.affectedRows > 0){
+            return res.status(200).json({
+                isSuccess : true,
+                message : "Success to change password"
+            });
+        }
+        else {
+            return res.status(500).json({
+                isSuccess : false,
+                message : "Failed to change password"
+            });
+        }
+    }
+    else {
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Failed to change password, Username or password did not match"
+        });
+    }
+}
+
+exports.listFav = async(param,res) => {
+    var req = param.body;
+    var type = req.type;
+    var user_id = req.userId;
+
+    if(user_id == undefined || user_id == ""){
+        return res.status(500).json({
+            isSuccess : true,
+            message : "Failed to get list favorite"
+        });
+    }
 }
 
 exports.processLogin = async(err,rtn,res) => {

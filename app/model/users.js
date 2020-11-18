@@ -3,14 +3,18 @@ const TableUsers = "users";
 const TableUsersRole = "users_roles";
 const TableRoles = "roles";
 const TableUserDetails = "users_details";
+const TableUserForgotPass = "user_forgotpassword";
 
 const util = require("util");
 const query = util.promisify(dbmysql.query).bind(dbmysql);
 
 exports.getAllRecord = async(param) => {
     var que = "SELECT * FROM " + TableUsers + " WHERE 1=1 ";
-    if(param.email != ""){
+    if(param.email != undefined && param.email != ""){
         que += "AND email = '" + param.email + "' ";
+    }
+    if(param.password != undefined){
+        que += "AND password = '" + param.password + "' ";
     }
 
     var rows = await query(que);
@@ -142,6 +146,32 @@ exports.getListMerchant = async(role_id, id_merchant) => {
         que += "AND a.id = '" + id_merchant + "' ";
     }
 
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getRecordForgotPass = async(token) => {
+    var que = "SELECT * FROM " + TableUserForgotPass + " WHERE 1=1 ";
+    if(token != null && token != ""){
+        que += "AND token = " + token;
+    }
+
+    var rows = await query(que);
+    return rows;
+}
+
+exports.insertForgotPass = async(email, status, expired_time, token) => {
+    var que = "INSERT INTO " + TableUserForgotPass + " (email, status, expired_time, token) ";
+        que += "VALUES ('" + email + "','" + status + "','" + expired_time + "','" + token + "')";
+
+    var rows = await query(que);
+    return rows;
+}
+
+exports.changePassword = async(email, password) => {
+    var que = "UPDATE " + TableUsers + " SET password = '" + password + "' ";
+        que += "WHERE email = '" + email + "' ";
+    
     var rows = await query(que);
     return rows;
 }

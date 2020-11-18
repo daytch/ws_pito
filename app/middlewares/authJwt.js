@@ -26,6 +26,31 @@ function verifyToken (req, res, next) {
     });
 };
 
+function verifyTokenResetPass (req, res, next) {
+    // console.log(req.headers);
+    let token = req.headers["x-access-token"];
+
+    if (!token) {
+        return res.status(403).send({
+            message: "No token provided!"
+        });
+    }
+
+    jwt.verify(token, config.secret, (err, decoded) => {
+        if (err) {
+            res.status(401).send({
+                message: err// "Unauthorized!"
+            });
+            return err;
+        }
+
+        req.email = decoded.email;
+        req.desc = decoded.desc;
+        // console.log(decoded);
+        next();
+    });
+};
+
 isUser = (req,res,next) => {
     var err = verifyToken(req,res,next);
     if(err != null && err == true){
@@ -60,6 +85,21 @@ isAdmin = (req,res,next) => {
     var err = verifyToken(req,res,next);
     if(err != null && err == true){
         if(!req.roleName.includes("Admin")){
+            return res.status(401).send({
+                message: "Unauthorized Token"// "Unauthorized!"
+            });
+        }
+        next();
+    }
+    else {
+        return false;
+    }
+};
+
+isResetPassword = (req,res,next) => {
+    var verif = verifyTokenResetPass(req,res,next);
+    if(verif != null && verif == true){
+        if(req.email == ""){
             return res.status(401).send({
                 message: "Unauthorized Token"// "Unauthorized!"
             });
@@ -137,6 +177,6 @@ const authJwt = {
     isUser : isUser,
     isAdmin: isAdmin,
     isMerchant: isMerchant,
-    // isMerchantOrAdmin: isMerchantOrAdmin
+    isResetPassword : isResetPassword
 };
 module.exports = authJwt;
