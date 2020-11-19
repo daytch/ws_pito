@@ -3,14 +3,13 @@ const category = require("../model/category");
 exports.getAllRecord = async(param, res) => {
     var cat = await category.getAllRecord();
     var listcat = [];
-    var objCat = {
-        id : '',
-        text : ''
-    };
+    
 
     for(var c of cat){
-        objCat.id = c.id;
-        objCat.text = c.name;
+        var objCat = {
+            id : c.id,
+            text : c.name
+        };
         listcat.push(objCat);
     }
 

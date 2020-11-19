@@ -35,7 +35,7 @@
 			"response": []
 		},
 		{
-			"name": "/user/videos",
+			"name": "/user/home",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -270,7 +270,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"email\" : \"tes@yopmail.com\"}",
+					"raw": "{\r\n    \"email\" : \"cobalogin@sso.com\",\r\n    \"name\" : \"Fauzi SSO\",\r\n    \"source\" : \"fb\",\r\n    \"img_avatar\" : \"http://localhost/img_tes/fauzi.jpg\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -278,7 +278,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/user/login",
+					"raw": "http://localhost:8080/user/loginSSO",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -286,7 +286,7 @@
 					"port": "8080",
 					"path": [
 						"user",
-						"login"
+						"loginSSO"
 					]
 				}
 			},
@@ -403,6 +403,64 @@
 					"path": [
 						"user",
 						"merchantPage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/forgotPasswordReq",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"njicker@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/forgotPasswordReq",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"forgotPasswordReq"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/changePassword",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"njicker@gmail.com\",  // Remove ganti dengan token\r\n    \"old_password\" : \"123\",\r\n    \"new_password\" : \"fauzi\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/changePassword",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"changePassword"
 					]
 				}
 			},
