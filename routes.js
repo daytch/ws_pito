@@ -23,7 +23,7 @@ module.exports = function(app) {
     app.post('/user/login', user.loginUser);
     app.post('/user/loginSSO', user.loginUserSSO);
     app.post('/user/register', user.registerUser);
-    app.get('/user/videos', [authJwt.isUser], videos.getVideos);
+    app.get('/user/home', [authJwt.isUser], videos.getVideos);
     app.get('/user/category', [authJwt.isUser], category.getAllRecord);
     app.post('/user/getUserDetails', [authJwt.isUser], user.getUserDetails);
     app.post('/user/insertUserDetails', [authJwt.isUser], user.insertUserDetails);

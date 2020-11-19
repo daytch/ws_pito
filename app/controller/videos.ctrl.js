@@ -3,6 +3,7 @@ const videos_category = require("../model/videos_category");
 const merchant = require("../model/merchant");
 
 exports.getVideos = async(param, res) => {
+    // Limit 10 data, tambah list merchant
     await videos.getVideosHome(async (err,rtn) => {
         var status = 0;
         if(rtn != null){

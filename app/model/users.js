@@ -21,11 +21,12 @@ exports.getAllRecord = async(param) => {
     return rows;
 };
 
-exports.loginUser = function(email, password, role, res, callback){
+exports.loginUser = function(email, role, res, callback){
     var que = "SELECT a.*,b.roleId,c.name as role_name FROM " + TableUsers + " as a "
             + " INNER JOIN " + TableUsersRole + " as b on a.id = b.userId "
             + " INNER JOIN " + TableRoles + " as c on b.roleId = c.id "
-            + " WHERE a.email = '" + email + "' AND a.password = '" + password + "' "
+            // + " WHERE a.email = '" + email + "' AND a.password = '" + password + "' "
+            + " WHERE a.email = '" + email + "' "
             + " AND a.isactive = 1 ";
     if(role != ""){
         que += " AND c.name = '" + role + "'";
@@ -41,7 +42,7 @@ exports.loginUser = function(email, password, role, res, callback){
     });
 };
 
-exports.loginUserSSO = function(email, role, res, callback){
+exports.loginUserSSO = async(email, role) => {
     var que = "SELECT a.*,b.roleId,c.name as role_name FROM " + TableUsers + " as a "
             + " INNER JOIN " + TableUsersRole + " as b on a.id = b.userId "
             + " INNER JOIN " + TableRoles + " as c on b.roleId = c.id "
@@ -51,20 +52,14 @@ exports.loginUserSSO = function(email, role, res, callback){
         que += " AND c.name = '" + role + "'";
     }
 
-    dbmysql.query(que, function(error, rows, fields){
-        if(error){
-            callback(error, null, res);
-        }
-        else {
-            callback(null, rows, res);
-        }
-    });
+    var rows = await query(que);
+    return rows;
 };
 
 exports.registerUser = function(param, callback){
-    var que = "INSERT INTO " + TableUsers + " (email,password,name,isActive) ";
+    var que = "INSERT INTO " + TableUsers + " (email,password,name,isActive,source) ";
         que += "VALUES ('" + param.email + "','" + param.password + "',";
-        que += "'" + param.name + "',1)";
+        que += "'" + param.name + "',1,'" + param.source + "' )";
     
     dbmysql.query(que, function(error,rows,fields){
         if(error){
@@ -120,9 +115,7 @@ exports.getUserDetailsWithName = async(user_id) => {
 }
 
 exports.insertUsertDetails = async(param) => {
-    var que = "REPLACE INTO " + TableUserDetails + " VALUES (" + param.userId + ", '" + param.first_name + "',";
-        que += "'" + param.last_name + "','" + param.about_me + "','" + param.fb_url + "','" + param.ig_url + "',";
-        que += "'" + param.tiktok_url + "','" + param.img_avatar + "')";
+    var que = "REPLACE INTO " + TableUserDetails + " (userId,img_avatar,isMute) VALUES (" + param.userId + ", '" + param.img_avatar + "','"+param.isMute+"')";
 
     var rows = await query(que);
     return rows;

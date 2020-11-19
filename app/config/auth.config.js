@@ -1,3 +1,4 @@
 module.exports = {
-    secret: "blablabla123"
+    secret: "blablabla123",
+    regSalt : 10
 }

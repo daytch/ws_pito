@@ -6,6 +6,7 @@ const videos_ctrl = require("../controller/videos.ctrl");
 const jwt = require("jsonwebtoken");
 const { mailer } = require("../middlewares");
 const moment = require("moment");
+const bcrypt = require("bcrypt");
 
 exports.loginUser = async(param, res) => {
     // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
@@ -14,40 +15,163 @@ exports.loginUser = async(param, res) => {
         // Gagal
         return res.status(500).json({
             isSuccess : false,
-            message : "Login Failed"
+            message : "Login Failed, email has been null"
         });
     }
-    await users.loginUser(req.email, req.password, "User", res, this.processLogin);
+    var verif = await verifyLogin(req.email, req.password);
+    if(!verif){
+        return res.status(500).json({
+            isSuccess : false,
+            message : 'Username or password did not match'
+        });
+    }
+
+    await users.loginUser(req.email, "User", res, this.processLogin);
 };
 
 exports.loginUserSSO = async(param, res) => {
     // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
     var req = param.body;
-    if(req.email == ""){
+    if(req.email == undefined || req.email == ""){
         // Gagal
         return res.status(500).json({
             isSuccess : false,
             message : "Login Failed"
         });
     }
-    await users.loginUserSSO(req.email, "User", res, this.processLogin);
+    var login = await users.loginUserSSO(req.email, "User");
+    if(login.length == 0){
+        var salt = await bcrypt.genSalt(config.regSalt);
+        var password = await bcrypt.hash("defaultpassSSO202011", salt);
+
+        var parm = {
+            email : req.email,
+            source : req.source,
+            password : password,
+            name : req.name
+        };
+        await users.registerUser(parm, async(err, rtn) => {
+            if(rtn != null){
+                if(rtn.affectedRows > 0){
+                    // Sukses
+                    var prm = {
+                        email : req.email
+                    };
+                    var usr = await users.getAllRecord(prm);
+                    var id_user = "";
+                    for(let u of usr){
+                        id_user = u.id;
+                    }
+    
+                    var prmRoles = {
+                        userId : id_user,
+                        roleId : 1 // Roles Default User
+                    };
+                    await users.registerUsersRole(prmRoles, async(errRole, rtnRole) => {
+                        if(rtnRole != null){
+                            if(rtnRole.affectedRows > 0){
+                                var prm_dtls = {
+                                    userId : id_user,
+                                    img_avatar : req.img_avatar,
+                                    isMute : 0
+                                };
+                                var ins_dtls = await users.insertUsertDetails(prm_dtls);
+                                if(ins_dtls.affectedRows > 0){
+                                    // Direct login
+                                    await users.loginUser(req.email, "User", res, this.processLogin);
+                                }
+                                else {
+                                    return res.status(500).json({
+                                        isSuccess : false,
+                                        message : "Register User failed on details"
+                                    });
+                                }
+                            }
+                            else {
+                                return res.status(500).json({
+                                    isSuccess : false,
+                                    message : "Register User failed"
+                                });
+                            }
+                        }
+                        else {
+                            console.log("registerUser-error");
+                            console.log(errRole);
+    
+                            return res.status(500).json({
+                                isSuccess : false,
+                                message : "Register User failed"
+                            });
+                        }
+                    });
+                }
+                else {
+                    // Gagal
+                    return res.status(500).json({
+                        isSuccess : false,
+                        message : "Register User gagal"
+                    });
+                }
+            }
+            else {
+                console.log("registerUser-error");
+                console.log(err);
+    
+                return res.status(500).json({
+                    isSuccess : false,
+                    message : "Register User gagal"
+                });
+            }
+        });
+    }
+    else {
+        await users.loginUser(req.email, "User", res, this.processLogin);
+    }
 };
 
 exports.loginMerchant = async(param, res) => {
     // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
     var req = param.body;
-    await users.loginUser(req.email, req.password, "Merchant", res, this.processLogin);
+    if(req.email == ""){
+        // Gagal
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Login Failed, email has been null"
+        });
+    }
+    var verif = await verifyLogin(req.email, req.password);
+    if(!verif){
+        return res.status(500).json({
+            isSuccess : false,
+            message : 'Username or password did not match'
+        });
+    }
+    await users.loginUser(req.email, "Merchant", res, this.processLogin);
 };
 
 exports.loginAdmin = async(param, res) => {
     // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
     var req = param.body;
-    await users.loginUser(req.email, req.password, "Admin", res, this.processLogin);
+    if(req.email == ""){
+        // Gagal
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Login Failed, email has been null"
+        });
+    }
+    var verif = await verifyLogin(req.email, req.password);
+    if(!verif){
+        return res.status(500).json({
+            isSuccess : false,
+            message : 'Username or password did not match'
+        });
+    }
+    await users.loginUser(req.email, "Admin", res, this.processLogin);
 };
 
 exports.registerUser = async(param, res) => {
     var req = param.body;
-    if(req.email == ""){
+    if(req.email == undefined || req.email == ""){
         // Gagal
         return res.status(500).json({
             isSuccess : false,
@@ -62,6 +186,11 @@ exports.registerUser = async(param, res) => {
             message : "Email has been registered"
         });
     }
+
+    req.source = 'App';     // Register from Application
+    var salt = await bcrypt.genSalt(config.regSalt);
+    req.password = await bcrypt.hash(req.password, salt);
+
     await users.registerUser(req, async(err, rtn) => {
         if(rtn != null){
             if(rtn.affectedRows > 0){
@@ -459,6 +588,26 @@ exports.listFav = async(param,res) => {
             message : "Failed to get list favorite"
         });
     }
+}
+
+async function verifyLogin(email, loginpass){
+    var rtn = false;
+    var prm = {
+        email : email
+    };
+    var usr = await users.getAllRecord(prm);
+    if(usr.length > 0){
+        var pass = "";
+        for(let u of usr){
+            pass = u.password;
+        }
+        var isSame = await bcrypt.compare(loginpass, pass);
+        if(isSame){
+            rtn = true;
+        }
+    }
+
+    return rtn;
 }
 
 exports.processLogin = async(err,rtn,res) => {
