@@ -8,7 +8,7 @@ const query = util.promisify(dbmysql.query).bind(dbmysql);
 exports.getRecord = async (param) => {
     var que = "SELECT * FROM " + TableDetails + " WHERE 1=1 ";
     if(param.userId != undefined && param.userId != ""){
-        que += "AND userId = " + param.userId;
+        que += "AND userId = '" + param.userId + "' ";
     }
 
     var rows = await query(que);

@@ -31,8 +31,8 @@ exports.getAllRecord = function(param, callback){
 };
 
 exports.getVideosHome = function(callback){
-    var que = "SELECT a.*,b.name FROM " + TableVideos + " as a Inner Join users as b ON a.userId = b.id";
-        que += " WHERE 1=1 ORDER BY a.startDate DESC LIMIT 10";
+    var que = "SELECT * FROM " + TableVideos + " ";
+        que += " WHERE 1=1 ORDER BY startDate DESC LIMIT 10";
     
         dbmysql.query(que, function(error, rows, fields){
         if(error){

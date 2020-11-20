@@ -1,9 +1,14 @@
 const videos = require("../model/videos");
 const videos_category = require("../model/videos_category");
 const merchant = require("../model/merchant");
+const users = require("../model/users");
+const fav = require("../model/favorites");
+const { authJwt } = require("../middlewares");
 
 exports.getVideos = async(param, res) => {
     // Limit 10 data, tambah list merchant
+    // var user_id = await authJwt.getUserId(param, res);
+    var user_id = param.userId;
     await videos.getVideosHome(async (err,rtn) => {
         var status = 0;
         if(rtn != null){
@@ -18,18 +23,52 @@ exports.getVideos = async(param, res) => {
                     ct.push(c.name);
                 }
 
+                var merch_object = {};
+                var merch = await users.getUserDetailsWithName(v.userId);
+                for(var m of merch){
+                    merch_object = {
+                        id : m.id,
+                        name : m.name,
+                        profile_image_url : m.img_avatar
+                    };
+                }
+
+                var isFav = false;
+                var fav_obj = await fav.getRecord(user_id, "Livestream", 1, v.id);
+                if(fav_obj.length > 0){
+                    isFav = true;
+                }
+
+                var iframe = "";
+                if(v.fb_url != "" && v.fb_url !== null){
+                    iframe = v.fb_url;
+                }
+                else if(v.ig_url != "" && v.ig_url !== null){
+                    iframe = v.ig_url;
+                }
+                else if(v.tiktok_url != "" && v.tiktok_url !== null){
+                    iframe = v.tiktok_url;
+                }
+
                 obj = {
-                    url : '<iframe width="560" height="315" src="' + v.url + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
-                    startdate : v.startDate,
-                    views : "",
-                    category : ct,
-                    merchant : v.name
+                    iframe : iframe,
+                    title : v.title,
+                    description : v.desc,
+                    categories : ct,
+                    start_time : v.startDate,
+                    facebook_url : v.fb_url,
+                    instagram_url : v.ig_url,
+                    tiktok_url : v.tiktok_url,
+                    is_favourite : isFav,
+                    share_url : "",
+                    img_thumbnail : v.img_thumbnail,
+                    merchant : merch_object
                 };
 
-                if(j%2 == 0){
+                if(v.ispopular){
                     popular.push(obj);
                 }
-                else {
+                else if(v.isrecom){
                     recommend.push(obj);
                 }
             }

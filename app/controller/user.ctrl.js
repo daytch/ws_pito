@@ -208,18 +208,32 @@ exports.registerUser = async(param, res) => {
                     userId : id_user,
                     roleId : 1 // Roles Default User
                 };
-                await users.registerUsersRole(prmRoles, function(errRole, rtnRole){
+                await users.registerUsersRole(prmRoles, async(errRole, rtnRole) => {
                     if(rtnRole != null){
                         if(rtnRole.affectedRows > 0){
-                            return res.status(200).json({
-                                isSuccess : true,
-                                message : "Register User berhasil"
-                            });
+                            var prm_dtls = {
+                                userId : id_user,
+                                img_avatar : '',
+                                isMute : 0
+                            };
+                            var ins_dtls = await users.insertUsertDetails(prm_dtls);
+                            if(ins_dtls.affectedRows > 0){
+                                return res.status(200).json({
+                                    isSuccess : true,
+                                    message : "Register User success"
+                                });
+                            }
+                            else {
+                                return res.status(500).json({
+                                    isSuccess : false,
+                                    message : "Register User failed"
+                                });
+                            }
                         }
                         else {
                             return res.status(500).json({
                                 isSuccess : false,
-                                message : "Register User gagal"
+                                message : "Register User failed"
                             });
                         }
                     }
@@ -229,7 +243,7 @@ exports.registerUser = async(param, res) => {
 
                         return res.status(500).json({
                             isSuccess : false,
-                            message : "Register User gagal"
+                            message : "Register User failed"
                         });
                     }
                 });
@@ -238,7 +252,7 @@ exports.registerUser = async(param, res) => {
                 // Gagal
                 return res.status(500).json({
                     isSuccess : false,
-                    message : "Register User gagal"
+                    message : "Register User failed"
                 });
             }
         }
@@ -248,7 +262,7 @@ exports.registerUser = async(param, res) => {
 
             return res.status(500).json({
                 isSuccess : false,
-                message : "Register User gagal"
+                message : "Register User failed"
             });
         }
     });

@@ -11,9 +11,9 @@ exports.getAllRecord = async () => {
     return rows;
 };
 
-exports.getRecord = async(user_id, type, status) => {
+exports.getRecord = async(user_id, type, status, pkey) => {
     var que = "SELECT * FROM " + TableName + " WHERE 1=1 ";
-    if(id_user != ""){
+    if(user_id != ""){
         que += "AND userId = '" + user_id + "' ";
     }
     if(type != ""){
@@ -22,9 +22,10 @@ exports.getRecord = async(user_id, type, status) => {
     if(status != ""){
         que += "AND status = '" + status + "' ";
     }
+    if(pkey != ""){
+        que += "AND pkey = '" + pkey + "' ";
+    }
 
     var rows = await query(que);
     return rows;
 };
-
-exports.insertRecord = async()

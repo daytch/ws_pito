@@ -111,6 +111,26 @@ isResetPassword = (req,res,next) => {
     }
 };
 
+getUserId = async(req,res) => {
+    let token = req.headers["x-access-token"];
+
+    if (!token) {
+        return res.status(403).send({
+            message: "No token provided!"
+        });
+    }
+    jwt.verify(token, config.secret, (err, decoded) => {
+        if (err) {
+            res.status(401).send({
+                message: err// "Unauthorized!"
+            });
+            return err;
+        }
+
+        return decoded.id;
+    });
+};
+
 // isAdmin = (req, res, next) => {
 //     User.where('id',req.userId)
 //     .fetch()
@@ -177,6 +197,7 @@ const authJwt = {
     isUser : isUser,
     isAdmin: isAdmin,
     isMerchant: isMerchant,
-    isResetPassword : isResetPassword
+    isResetPassword : isResetPassword,
+    getUserId : getUserId
 };
 module.exports = authJwt;

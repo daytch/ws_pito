@@ -6,13 +6,42 @@
 	},
 	"item": [
 		{
+			"name": "/user/register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"njicker@gmail.com\",\r\n    \"password\" : \"fauzi\",\r\n    \"name\" : \"Ahmad Fauzi\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/user/login",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"email\" : \"me@nurulhidayat.com\", \"password\" : \"123\"}",
+					"raw": "{\"email\" : \"njicker@gmail.com\", \"password\" : \"fauzi\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -41,12 +70,12 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwicm9sZSI6IlVzZXIsTWVyY2hhbnQiLCJpYXQiOjE2MDM1OTg0ODIsImV4cCI6MTYwMzY4NDg4Mn0.iv-o1TEkJikE3s5k3A_SNqKLMmuKtsegPz2aPTekG9k",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIiLCJpYXQiOjE2MDU4NjYwOTksImV4cCI6MTYwNTk1MjQ5OX0.BtD12Lsr0Pi3dedG6F0AwhdD8PbImTnGHDN9Tq2rUW8",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8080/user/category",
+					"raw": "http://localhost:8080/user/home",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -54,36 +83,7 @@
 					"port": "8080",
 					"path": [
 						"user",
-						"category"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/user/register",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\" : \"fauzi1@yopmail.com\",\r\n    \"password\" : \"fauzi1\",\r\n    \"name\" : \"Ahmad Fauzi 1\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/user/register",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"user",
-						"register"
+						"home"
 					]
 				}
 			},
@@ -93,7 +93,13 @@
 			"name": "/user/category",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIiLCJpYXQiOjE2MDU4NjYwOTksImV4cCI6MTYwNTk1MjQ5OX0.BtD12Lsr0Pi3dedG6F0AwhdD8PbImTnGHDN9Tq2rUW8",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://localhost:8080/user/category",
 					"protocol": "http",
