@@ -4,6 +4,8 @@ const merchant = require("../model/merchant");
 const users = require("../model/users");
 const fav = require("../model/favorites");
 const { authJwt } = require("../middlewares");
+const moment = require("moment");
+const users_ctrl = require("../controller/user.ctrl");
 
 exports.getVideos = async(param, res) => {
     // Limit 10 data, tambah list merchant
@@ -12,9 +14,12 @@ exports.getVideos = async(param, res) => {
     await videos.getVideosHome(async (err,rtn) => {
         var status = 0;
         if(rtn != null){
-            var j = 0;
             var popular = [];
             var recommend = [];
+            var coming_up = [];
+            var merch_pop = [];
+            var merch_rec = [];
+            var merch_new = [];
             var obj = {};
             for(var v of rtn){
                 var cat = await videos_category.getCategoryByVideos(v.category);
@@ -71,12 +76,25 @@ exports.getVideos = async(param, res) => {
                 else if(v.isrecom){
                     recommend.push(obj);
                 }
+                
+                var isComingUp = moment().diff(v.startDate);
+                if(isComingUp < 0){
+                    coming_up.push(obj);
+                }
+
+                merch_pop.push(await users_ctrl.listMerchant(user_id, "popular"));
+                merch_rec.push(await users_ctrl.listMerchant(user_id, "recom"));
+                merch_new.push(await users_ctrl.listMerchant(user_id, "new_comer"));
             }
 
             status = 200;
             var hsl = {
                 popular : popular,
-                recommended : recommend
+                recommended : recommend,
+                coming_up : coming_up,
+                merchant_popular : merch_pop,
+                merchant_popular : merch_rec,
+                merchant_popular : merch_new
             };
         }
         else if(err != null){

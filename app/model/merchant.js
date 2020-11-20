@@ -2,6 +2,7 @@ const { dbmysql } = require('../middlewares');
 const util = require("util");
 const TableDetails = "merchant_details";
 const TableSubs = "merchant_subs";
+const TableMerchCat = "merchant_category";
 
 const query = util.promisify(dbmysql.query).bind(dbmysql);
 
@@ -42,6 +43,14 @@ exports.getCountSubsById = async (merchant_id, user_id) => {
         que += "AND userid = '" + user_id + "' ";
     }
 
+    var rows = await query(que);
+    return rows;
+};
+
+exports.getCategoryByUserId = async(user_id) => {
+    var que = "SELECT b.name FROM " + TableMerchCat + " as a INNER JOIN category as b on a.category_id = b.id";
+        que +=" WHERE a.userId = '" + user_id + "' ";
+    
     var rows = await query(que);
     return rows;
 };

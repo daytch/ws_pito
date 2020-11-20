@@ -4,6 +4,7 @@ const TableUsersRole = "users_roles";
 const TableRoles = "roles";
 const TableUserDetails = "users_details";
 const TableUserForgotPass = "user_forgotpassword";
+const TableMerchDetails = "merchant_details";
 
 const util = require("util");
 const query = util.promisify(dbmysql.query).bind(dbmysql);
@@ -122,21 +123,32 @@ exports.insertUsertDetails = async(param) => {
 }
 
 exports.getRolesByName = async(name) => {
-    var que = "SELECT * FROM " + TableRoles + " name = '" + name + "'";
+    var que = "SELECT * FROM " + TableRoles + " WHERE name = '" + name + "'";
 
     var rows = await query(que);
     return rows;
 }
 
-exports.getListMerchant = async(role_id, id_merchant) => {
-    var que = "SELECT c.userId,c.first_name FROM " + TableUsers + " as a ";
+exports.getListMerchant = async(role_id, id_merchant, type) => {
+    var que = "SELECT a.id,a.name,c.img_avatar,d.createdAt,d.about,d.fb_url,d.ig_url,d.tiktok_url FROM " + TableUsers + " as a ";
         que += "INNER JOIN " + TableUsersRole + " as b ";
-        que += "ON a.id = b.userId ";
+        que += "ON a.id = b.userId AND b.roleId = '" + role_id + "' ";
         que += "INNER JOIN " + TableUserDetails + " as c ";
         que += "ON a.id = c.userId ";
-        que += "WHERE b.roleId = '" + role_id + "' ";
+        que += "INNER JOIN " + TableMerchDetails + " as d ";
+        que += "ON a.id = d.userId ";
+        que += "WHERE 1=1 ";
     if(id_merchant != undefined && id_merchant > 0){
         que += "AND a.id = '" + id_merchant + "' ";
+    }
+    if(type != undefined && type == "popular"){
+        que += "AND d.ispopular = 1 ";
+    }
+    else if(type != undefined && type == "recom"){
+        que += "AND d.isrecom = 1 ";
+    }
+    else if(type != undefined && type == "new_comer"){
+        que += "AND date(d.createdAt) between date(now()) and date(now()-7) ";  // 1 Weeks join
     }
 
     var rows = await query(que);

@@ -46,7 +46,7 @@ exports.getVideosHome = function(callback){
 
 exports.getVideosByCategory = async(id_cat) => {
     var que = "SELECT a.*,b.name FROM " + TableVideos + " as a Inner Join users as b ON a.userId = b.id ";
-        que += "INNER JOIN "+TableVideosCategory+" as c on a.id = c.videoId ";
+        que += "LEFT JOIN "+TableVideosCategory+" as c on a.id = c.videoId ";
         que += "WHERE c.categoryId = '" + id_cat + "'";
     
     var rows = await query(que);
@@ -55,7 +55,15 @@ exports.getVideosByCategory = async(id_cat) => {
 
 exports.getVideosById = async(id) => {
     var que = "SELECT a.*,b.name FROM " + TableVideos + " as a Inner Join users as b ON a.userId = b.id";
-    que += " WHERE id = " + id;
+    que += " WHERE a.id = '" + id + "' ";
+    
+    var rows = await query(que);
+    return rows;
+};
+
+exports.getCountVideosByUserId = async(user_id) => {
+    var que = "SELECT * FROM " + TableVideos + " ";
+    que += " WHERE userId = '" + user_id + "' ";
     
     var rows = await query(que);
     return rows;

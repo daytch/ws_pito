@@ -1,6 +1,7 @@
 const config = require("../config/auth.config");
 const users = require("../model/users");
 const merchant = require("../model/merchant");
+const videos = require("../model/videos");
 const videos_ctrl = require("../controller/videos.ctrl");
 
 const jwt = require("jsonwebtoken");
@@ -356,44 +357,63 @@ exports.registerMerchant = async(param, res) => {
     });
 }
 
-exports.listMerchant = async(param,res) => {
-    var req = param.body;
-    var id_merchant = 0;
-    if(req.id_merchant != undefined && req.id_merchant != ""){
-        id_merchant = req.id_merchant;
-    }
-    
+exports.listMerchant = async(user_id, type) => {
+    var id_merchant = 0;    // to get All    
     var id_role = 0;
     var role = await users.getRolesByName("Merchant");
     for(var r of role){
         id_role = r.id;
     }
 
-    var usr = await users.getListMerchant(id_role, id_merchant);
-    var status = 500;
-    var isSuccess = false;
+    var usr = await users.getListMerchant(id_role, id_merchant, type);
     var data = [];
     var dt = {};
     for(var u of usr){
+        var cnt_sub = 0;
+        var countsubs = await merchant.getCountSubs(u.userId);
+        for(var c of countsubs){
+            cnt_sub = c.cnt;
+        }
+
+        var cnt_live = 0;
+        var countlive = await videos.getCountVideosByUserId(u.userId);
+        for(var l of countlive){
+            cnt_live = l.cnt;
+        }
+
+        var cat = [];
+        var merch_cat = await merchant.getCategoryByUserId(u.userId);
+        for(var mc of merch_cat){
+            cat.push(mc.name);
+        }
+
+        var isSubs = false;
+        var checksubs = await merchant.getCountSubsById(u.userId, user_id);
+        if(checksubs.length > 0){
+            isSubs = true;
+        }
+
         dt = {
             id : u.userId,
-            name : u.first_name
+            name : u.name,
+            totalSubscriber : cnt_sub,
+            profile_image_url : u.img_avatar,
+            total_livestream : cnt_live,
+            description : u.about,
+            join_date : u.createdAt,
+            categories : cat,
+            isSubscriber : isSubs,
+            facebook_url : u.fb_url,
+            instagram_url : u.ig_url,
+            tiktok_url : u.tiktok_url,
+            share_url : "",
+            detail : []
         };
+        
         data.push(dt);
     }
 
-    var rtn = {};
-    if(data.length > 0){
-        status = 200;
-        rtn = {
-            isSuccess : true,
-            popular : data,
-            recom : [],
-            new_comers : []
-        };
-    }
-
-    return res.status(status).json(rtn);
+    return data;
 }
 
 exports.merchantPage = async(param,res) => {
