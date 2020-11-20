@@ -148,8 +148,10 @@ exports.getListMerchant = async(role_id, id_merchant, type) => {
         que += "AND d.isrecom = 1 ";
     }
     else if(type != undefined && type == "new_comer"){
-        que += "AND date(d.createdAt) between date(now()) and date(now()-7) ";  // 1 Weeks join
+        que += "AND date(d.createdAt) between date(now()-7) and date(now()+1) ";  // 1 Weeks join
+        que += "ORDER BY d.createdAt desc ";
     }
+        que += "LIMIT 10 ";
 
     var rows = await query(que);
     return rows;

@@ -357,7 +357,7 @@ exports.registerMerchant = async(param, res) => {
     });
 }
 
-exports.listMerchant = async(user_id, type) => {
+exports.listMerchant =async(user_id, type) => {
     var id_merchant = 0;    // to get All    
     var id_role = 0;
     var role = await users.getRolesByName("Merchant");
@@ -370,25 +370,25 @@ exports.listMerchant = async(user_id, type) => {
     var dt = {};
     for(var u of usr){
         var cnt_sub = 0;
-        var countsubs = await merchant.getCountSubs(u.userId);
+        var countsubs = await merchant.getCountSubs(u.id);
         for(var c of countsubs){
             cnt_sub = c.cnt;
         }
 
         var cnt_live = 0;
-        var countlive = await videos.getCountVideosByUserId(u.userId);
+        var countlive = await videos.getCountVideosByUserId(u.id);
         for(var l of countlive){
             cnt_live = l.cnt;
         }
 
         var cat = [];
-        var merch_cat = await merchant.getCategoryByUserId(u.userId);
+        var merch_cat = await merchant.getCategoryByUserId(u.id);
         for(var mc of merch_cat){
             cat.push(mc.name);
         }
 
         var isSubs = false;
-        var checksubs = await merchant.getCountSubsById(u.userId, user_id);
+        var checksubs = await merchant.getCountSubsById(u.id, user_id);
         if(checksubs.length > 0){
             isSubs = true;
         }

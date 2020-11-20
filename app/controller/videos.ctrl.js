@@ -81,11 +81,11 @@ exports.getVideos = async(param, res) => {
                 if(isComingUp < 0){
                     coming_up.push(obj);
                 }
-
-                merch_pop.push(await users_ctrl.listMerchant(user_id, "popular"));
-                merch_rec.push(await users_ctrl.listMerchant(user_id, "recom"));
-                merch_new.push(await users_ctrl.listMerchant(user_id, "new_comer"));
             }
+
+            merch_pop = await users_ctrl.listMerchant(user_id, "popular");
+            merch_rec = await users_ctrl.listMerchant(user_id, "recom");
+            merch_new = await users_ctrl.listMerchant(user_id, "new_comer");
 
             status = 200;
             var hsl = {
@@ -93,8 +93,8 @@ exports.getVideos = async(param, res) => {
                 recommended : recommend,
                 coming_up : coming_up,
                 merchant_popular : merch_pop,
-                merchant_popular : merch_rec,
-                merchant_popular : merch_new
+                merchant_recommended : merch_rec,
+                merchant_new : merch_new
             };
         }
         else if(err != null){
