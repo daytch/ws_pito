@@ -169,7 +169,7 @@ exports.videosPage = async(param, res) => {
     return res.status(200).json({
         isSuccess : true,
         data : {
-            live_now : [rtn],
+            live_now : rtn,
             next_livestream : await this.videosMerchantByMoment("", "live_videos", user_id)
         }
     });
