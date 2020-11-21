@@ -25,16 +25,19 @@ module.exports = function(app) {
     app.post('/user/register', user.registerUser);
     app.get('/user/home', [authJwt.isUser], videos.getVideos);
     app.get('/user/category', [authJwt.isUser], category.getAllRecord);
+    app.post('/user/registerMerchant', [authJwt.isUser], user.registerMerchant);
+    app.post('/user/merchantPage', [authJwt.isUser], user.merchantPage);
+    app.post('/user/videosPage', [authJwt.isUser], videos.videosPage);
+
     app.post('/user/getUserDetails', [authJwt.isUser], user.getUserDetails);
     app.post('/user/insertUserDetails', [authJwt.isUser], user.insertUserDetails);
-    app.post('/user/registerMerchant', [authJwt.isUser], user.registerMerchant);
     app.get('/user/listmerchant', [authJwt.isUser], user.listMerchant);
     app.get('/user/getVideosByCategory', [authJwt.isUser], videos.videosByCategory);
-    app.post('/user/videosPage', [authJwt.isUser], videos.videosPage);
+    
     app.post('/user/actionVidLikes', [authJwt.isUser], videos.actionVidLikes);
     app.post('/user/actionVidComments', [authJwt.isUser], videos.actionVidComments);
-    app.post('/user/merchantPage', [authJwt.isUser], user.merchantPage);
-    app.post('/user/forgotPasswordReq', user.forgotPasswordReq);
+    
+    app.post('/user/forgotPassword', user.forgotPasswordReq);
     app.post('/user/resetPassword', [authJwt.isResetPassword], user.resetPassword);
     app.post('/user/changePassword', [authJwt.isUser], user.changePassword);
 

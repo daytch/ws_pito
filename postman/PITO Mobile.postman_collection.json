@@ -20,12 +20,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/user/register",
-					"protocol": "http",
+					"raw": "{{url_local}}/user/register",
 					"host": [
-						"localhost"
+						"{{url_local}}"
 					],
-					"port": "8080",
 					"path": [
 						"user",
 						"register"
@@ -49,12 +47,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/user/login",
-					"protocol": "http",
+					"raw": "{{url_local}}/user/login",
 					"host": [
-						"localhost"
+						"{{url_local}}"
 					],
-					"port": "8080",
 					"path": [
 						"user",
 						"login"
@@ -75,12 +71,10 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8080/user/home",
-					"protocol": "http",
+					"raw": "{{url_local}}/user/home",
 					"host": [
-						"localhost"
+						"{{url_local}}"
 					],
-					"port": "8080",
 					"path": [
 						"user",
 						"home"
@@ -101,15 +95,112 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8080/user/category",
-					"protocol": "http",
+					"raw": "{{url_local}}/user/category",
 					"host": [
-						"localhost"
+						"{{url_local}}"
 					],
-					"port": "8080",
 					"path": [
 						"user",
 						"category"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/registerMerchant",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIiLCJpYXQiOjE2MDU4NjYwOTksImV4cCI6MTYwNTk1MjQ5OX0.BtD12Lsr0Pi3dedG6F0AwhdD8PbImTnGHDN9Tq2rUW8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fb_url\" : \"https://facebook.com\",\r\n    \"ig_url\" : \"https://instagram.com\",\r\n    \"tiktok_url\" : \"https://tiktok.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_local}}/user/registerMerchant",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"user",
+						"registerMerchant"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/merchantPage",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIiLCJpYXQiOjE2MDU4NjYwOTksImV4cCI6MTYwNTk1MjQ5OX0.BtD12Lsr0Pi3dedG6F0AwhdD8PbImTnGHDN9Tq2rUW8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"merchantId\" : 1}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_local}}/user/merchantPage",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"user",
+						"merchantPage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/videosPage",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIiLCJpYXQiOjE2MDU4NjYwOTksImV4cCI6MTYwNTk1MjQ5OX0.BtD12Lsr0Pi3dedG6F0AwhdD8PbImTnGHDN9Tq2rUW8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"videoId\" : \"1\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_local}}/user/videosPage",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"user",
+						"videosPage"
 					]
 				}
 			},
@@ -206,38 +297,6 @@
 			"response": []
 		},
 		{
-			"name": "/user/registerMerchant",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"userId\" : 1,\r\n    \"fb_url\" : \"https://facebook.com\",\r\n    \"ig_url\" : \"https://instagram.com\",\r\n    \"tiktok_url\" : \"https://tiktok.com\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/user/registerMerchant",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"user",
-						"registerMerchant"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "/user/listmerchant",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -299,35 +358,6 @@
 			"response": []
 		},
 		{
-			"name": "/user/videosPage",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"videoId\" : \"1\", \"userId\" : 1}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/user/videosPage",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"user",
-						"videosPage"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "/user/actionVidLikes",
 			"request": {
 				"method": "POST",
@@ -380,35 +410,6 @@
 					"path": [
 						"user",
 						"actionVidComments"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/user/merchantPage",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"merchantId\" : 1, \"userId\" : 1}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/user/merchantPage",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"user",
-						"merchantPage"
 					]
 				}
 			},

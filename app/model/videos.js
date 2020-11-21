@@ -113,7 +113,10 @@ exports.insertComments = async(video_id, user_id, text) => {
 
 exports.getVideosMerchantByMoment = async(merchant_id, mmt) => {
     var que = "SELECT * FROM " + TableVideos + " ";
-        que += "WHERE userId = '" + merchant_id + "' ";
+        que += "WHERE 1=1 ";
+    if(merchant_id != ""){
+        que += "AND userId = '" + merchant_id + "'";
+    }
     if(mmt == "live_videos"){
         que += "AND date(startDate) = date(now()) ";
     }

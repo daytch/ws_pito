@@ -20,56 +20,56 @@ exports.getVideos = async(param, res) => {
             var merch_pop = [];
             var merch_rec = [];
             var merch_new = [];
-            var obj = {};
+            // var obj = {};
             for(var v of rtn){
-                var cat = await videos_category.getCategoryByVideos(v.category);
-                var ct = [];
-                for(var c of cat){
-                    ct.push(c.name);
-                }
+                // var cat = await videos_category.getCategoryByVideos(v.category);
+                // var ct = [];
+                // for(var c of cat){
+                //     ct.push(c.name);
+                // }
 
-                var merch_object = {};
-                var merch = await users.getUserDetailsWithName(v.userId);
-                for(var m of merch){
-                    merch_object = {
-                        id : m.id,
-                        name : m.name,
-                        profile_image_url : m.img_avatar
-                    };
-                }
+                // var merch_object = {};
+                // var merch = await users.getUserDetailsWithName(v.userId);
+                // for(var m of merch){
+                //     merch_object = {
+                //         id : m.id,
+                //         name : m.name,
+                //         profile_image_url : m.img_avatar
+                //     };
+                // }
 
-                var isFav = false;
-                var fav_obj = await fav.getRecord(user_id, "Livestream", 1, v.id);
-                if(fav_obj.length > 0){
-                    isFav = true;
-                }
+                // var isFav = false;
+                // var fav_obj = await fav.getRecord(user_id, "Livestream", 1, v.id);
+                // if(fav_obj.length > 0){
+                //     isFav = true;
+                // }
 
-                var iframe = "";
-                if(v.fb_url != "" && v.fb_url !== null){
-                    iframe = v.fb_url;
-                }
-                else if(v.ig_url != "" && v.ig_url !== null){
-                    iframe = v.ig_url;
-                }
-                else if(v.tiktok_url != "" && v.tiktok_url !== null){
-                    iframe = v.tiktok_url;
-                }
+                // var iframe = "";
+                // if(v.fb_url != "" && v.fb_url !== null){
+                //     iframe = v.fb_url;
+                // }
+                // else if(v.ig_url != "" && v.ig_url !== null){
+                //     iframe = v.ig_url;
+                // }
+                // else if(v.tiktok_url != "" && v.tiktok_url !== null){
+                //     iframe = v.tiktok_url;
+                // }
 
-                obj = {
-                    iframe : iframe,
-                    title : v.title,
-                    description : v.desc,
-                    categories : ct,
-                    start_time : v.startDate,
-                    facebook_url : v.fb_url,
-                    instagram_url : v.ig_url,
-                    tiktok_url : v.tiktok_url,
-                    is_favourite : isFav,
-                    share_url : "",
-                    img_thumbnail : v.img_thumbnail,
-                    merchant : merch_object
-                };
-
+                // obj = {
+                //     iframe : iframe,
+                //     title : v.title,
+                //     description : v.desc,
+                //     categories : ct,
+                //     start_time : v.startDate,
+                //     facebook_url : v.fb_url,
+                //     instagram_url : v.ig_url,
+                //     tiktok_url : v.tiktok_url,
+                //     is_favourite : isFav,
+                //     share_url : "",
+                //     img_thumbnail : v.img_thumbnail,
+                //     merchant : merch_object
+                // };
+                var obj = await createObjVideos([v], user_id);
                 if(v.ispopular){
                     popular.push(obj);
                 }
@@ -155,7 +155,7 @@ exports.videosByCategory = async(param, res) => {
 exports.videosPage = async(param, res) => {
     var req = param.body;
     var id = req.videoId;
-    var user_id = req.userId;
+    var user_id = param.userId;
 
     if(id == undefined || id == ""){
         return res.status(500).json({
@@ -164,53 +164,63 @@ exports.videosPage = async(param, res) => {
         });
     }
 
-    var vid = await videos.getVideosById(id);
-    if(vid.length > 0){
-        var prm = {
-            userId : vid[vid.length-1].userid
+    var vids = await videos.getVideosById(id);
+    var rtn = await createObjVideos(vids, user_id);
+    return res.status(200).json({
+        isSuccess : true,
+        data : {
+            live_now : [rtn],
+            next_livestream : await this.videosMerchantByMoment("", "live_videos", user_id)
         }
-        var merchant_details = await merchant.getRecord(prm);
-        var subs = 0;
-        var count_subs = await merchant.getCountSubs(prm.userId);
-        for(var c of count_subs){
-            subs = c.cnt;
-        }
+    });
 
-        var isSubs = false;
-        var checksubs = await merchant.getCountSubsById(prm.userId, user_id);
-        if(checksubs.length > 0){
-            isSubs = true;
-        }
+    // var vid = await videos.getVideosById(id);
+    // if(vid.length > 0){
+    //     var prm = {
+    //         userId : vid[vid.length-1].userid
+    //     }
+    //     var merchant_details = await merchant.getRecord(prm);
+    //     var subs = 0;
+    //     var count_subs = await merchant.getCountSubs(prm.userId);
+    //     for(var c of count_subs){
+    //         subs = c.cnt;
+    //     }
 
-        var likes = 0;
-        var count_likes = await videos.getCountLikes(id);
-        for(var c of count_likes){
-            likes = c.cnt;
-        }
+    //     var isSubs = false;
+    //     var checksubs = await merchant.getCountSubsById(prm.userId, user_id);
+    //     if(checksubs.length > 0){
+    //         isSubs = true;
+    //     }
 
-        var vid_comment = await videos.getVideosComment(id);
-        var vid_cat = await videos_category.getCategoryByVideos(id);
-        var rtn = {
-            videos : vid,
-            comments : vid_comment,
-            merchant : merchant_details,
-            count_subs : subs,
-            count_likes : likes,
-            category : vid_cat,
-            isSubscriber : isSubs
-        };
+    //     var likes = 0;
+    //     var count_likes = await videos.getCountLikes(id);
+    //     for(var c of count_likes){
+    //         likes = c.cnt;
+    //     }
 
-        return res.status(200).json({
-            isSuccess : true,
-            data : rtn
-        });
-    }
-    else {
-        return res.status(500).json({
-            isSuccess : false,
-            message : "Failed to get videos"
-        });
-    }
+    //     var vid_comment = await videos.getVideosComment(id);
+    //     var vid_cat = await videos_category.getCategoryByVideos(id);
+    //     var rtn = {
+    //         videos : vid,
+    //         comments : vid_comment,
+    //         merchant : merchant_details,
+    //         count_subs : subs,
+    //         count_likes : likes,
+    //         category : vid_cat,
+    //         isSubscriber : isSubs
+    //     };
+
+    //     return res.status(200).json({
+    //         isSuccess : true,
+    //         data : rtn
+    //     });
+    // }
+    // else {
+    //     return res.status(500).json({
+    //         isSuccess : false,
+    //         message : "Failed to get videos"
+    //     });
+    // }
 };
 
 exports.actionVidLikes = async(param, res) => {
@@ -271,27 +281,80 @@ exports.actionVidComments = async(param, res) => {
     });
 };
 
-exports.videosMerchantByMoment = async(merchant_id, mmt) => {
+exports.videosMerchantByMoment = async(merchant_id, mmt, user_id) => {
     var vids = await videos.getVideosMerchantByMoment(merchant_id, mmt);
+    var rtn = await createObjVideos(vids, user_id);
+    return rtn;
+};
+
+async function createObjVideos(vids, user_id){
     var rtn = [];
     for(var v of vids){
         var obj = {};
-        var cat = await videos_category.getCategoryByVideos(v.id);
-        var arr_cat = [];
+        var cat = await videos_category.getCategoryByVideos(v.category);
+        var ct = [];
         for(var c of cat){
-            arr_cat.push(c.name);
+            ct.push(c.name);
+        }
+
+        var merch_object = {};
+        var merch = await users.getUserDetailsWithName(v.userId);
+        for(var m of merch){
+            var subs = 0;
+            var count_subs = await merchant.getCountSubs(m.userId);
+            for(var c of count_subs){
+                subs = c.cnt;
+            }
+
+            var isSubs = false;
+            var checksubs = await merchant.getCountSubsById(m.userId, user_id);
+            if(checksubs.length > 0){
+                isSubs = true;
+            }
+
+            merch_object = {
+                id : v.userId,
+                name : m.name,
+                profile_image_url : m.img_avatar,
+                totalSubscriber : subs,
+                isSubscriber : isSubs,
+            };
+        }
+
+        var isFav = false;
+        var fav_obj = await fav.getRecord(user_id, "Livestream", 1, v.id);
+        if(fav_obj.length > 0){
+            isFav = true;
+        }
+
+        var iframe = "";
+        if(v.fb_url != "" && v.fb_url !== null){
+            iframe = v.fb_url;
+        }
+        else if(v.ig_url != "" && v.ig_url !== null){
+            iframe = v.ig_url;
+        }
+        else if(v.tiktok_url != "" && v.tiktok_url !== null){
+            iframe = v.tiktok_url;
         }
 
         obj = {
-            iframe : '<iframe width="560" height="315" src="' + v.url + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+            iframe : iframe,
             title : v.title,
             description : v.desc,
-            categories : arr_cat,
-            start_time : v.startDate
+            categories : ct,
+            start_time : v.startDate,
+            facebook_url : v.fb_url,
+            instagram_url : v.ig_url,
+            tiktok_url : v.tiktok_url,
+            is_favourite : isFav,
+            share_url : "",
+            img_thumbnail : v.img_thumbnail,
+            merchant : merch_object
         };
 
         rtn.push(obj);
     }
 
     return rtn;
-};
+}

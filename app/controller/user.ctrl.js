@@ -316,13 +316,15 @@ exports.insertUserDetails = async(param, res) => {
 }
 
 exports.registerMerchant = async(param, res) => {
+    var user_id = param.userId;
     var req = param.body;
-    var ins = {
-        affectedRows : 0
+    req.userId = user_id;
+    var prm = {
+        userId : user_id
     };
     var msg = "";
-
-    if(req.userId != undefined){
+    var isRegister = await merchant.getRecord(prm);
+    if(isRegister.length == 0){
         ins = await merchant.insertMerchantDetails(req);
         if(ins.affectedRows > 0){
             var id_role = 0;
@@ -419,7 +421,7 @@ exports.listMerchant =async(user_id, type) => {
 exports.merchantPage = async(param,res) => {
     var req = param.body;
     var merchant_id = req.merchantId;
-    var user_id = req.userId;
+    var user_id = param.userId;
     var rtn = {};
 
     if(merchant_id == undefined || merchant_id == ""){
@@ -441,15 +443,35 @@ exports.merchantPage = async(param,res) => {
         isSubs = true;
     }
 
-    var data_merchant = await users.getUserDetailsWithName(merchant_id);
+    var cnt_live = 0;
+    var countlive = await videos.getCountVideosByUserId(merchant_id);
+    for(var l of countlive){
+        cnt_live = l.cnt;
+    }
+
+    var cat = [];
+    var merch_cat = await merchant.getCategoryByUserId(merchant_id);
+    for(var mc of merch_cat){
+        cat.push(mc.name);
+    }
+
+    // var data_merchant = await users.getUserDetailsWithName(merchant_id);
+    var id_role = 0;
+    var role = await users.getRolesByName("Merchant");
+    for(var r of role){
+        id_role = r.id;
+    }
+    var data_merchant = await users.getListMerchant(id_role, merchant_id, "");
     for(var m of data_merchant){
         rtn = {
+            id : m.id,
             name : m.name,
             profile_image_url : m.img_avatar,
             totalSubscriber : subs,
-            info : '',
-            description : m.about_me,
-            categories : [],
+            total_livestream : cnt_live,
+            description : m.about,
+            join_date : m.createdAt,
+            categories : cat,
             isSubscriber : isSubs,
             facebook_url : m.fb_url,
             instagram_url : m.ig_url,
@@ -458,22 +480,10 @@ exports.merchantPage = async(param,res) => {
             detail : {}
         };
 
-        var dtls = {};  // Object merchant details
-
-        // var merchant_dtls = await merchant.getRecord(merchant_id);
-        // var merch_fb = "";
-        // var merch_ig = "";
-        // var merch_tiktok = "";
-        // for(var dtls of merchant_dtls){
-        //     merch_fb = dtls.fb_url;
-        //     merch_ig = dtls.ig_url;
-        //     merch_tiktok = dtls.tiktok_url;
-        // }
-
-        dtls = {
-            live_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "live_videos"),
-            upcoming_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "upcoming_videos"),
-            previous_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "previous_videos")
+        var dtls = {
+            live_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "live_videos",user_id),
+            upcoming_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "upcoming_videos", user_id),
+            previous_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "previous_videos",user_id)
         };
 
         rtn.detail = dtls;

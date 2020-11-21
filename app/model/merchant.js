@@ -17,8 +17,8 @@ exports.getRecord = async (param) => {
 };
 
 exports.insertMerchantDetails = async(param) => {
-    var que = "REPLACE INTO " + TableDetails + " VALUES (" + param.userId + ", '" + param.fb_url + "',";
-        que += "'" + param.ig_url + "','" + param.tiktok_url + "')";
+    var que = "REPLACE INTO " + TableDetails + " (userId,fb_url,ig_url,tiktok_url,ispopular,isrecom) VALUES (" + param.userId + ", '" + param.fb_url + "',";
+        que += "'" + param.ig_url + "','" + param.tiktok_url + "',1,0)";
 
     var rows = await query(que);
     return rows;
