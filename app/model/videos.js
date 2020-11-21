@@ -32,7 +32,7 @@ exports.getAllRecord = function(param, callback){
 
 exports.getVideosHome = function(callback){
     var que = "SELECT * FROM " + TableVideos + " ";
-        que += " WHERE 1=1 ORDER BY startDate DESC LIMIT 10";
+        que += " WHERE 1=1 ORDER BY startDate DESC, ispopular DESC LIMIT 10";
     
         dbmysql.query(que, function(error, rows, fields){
         if(error){
@@ -42,6 +42,21 @@ exports.getVideosHome = function(callback){
             callback(null, rows);
         }
     });
+};
+
+exports.getVideosByType = async(type) => {
+    var que = "SELECT * FROM " + TableVideos + " ";
+        que += "WHERE date(startDate) = date(now()) ";
+    if(type == "popular"){
+        que += "AND ispopular = 1 ";
+    }
+    if(type == "recom"){
+        que += "AND isrecom = 1 ";
+    }
+        que += "ORDER BY startDate DESC LIMIT 10";
+
+    var rows = await query(que);
+    return rows;
 };
 
 exports.getVideosByCategory = async(id_cat) => {

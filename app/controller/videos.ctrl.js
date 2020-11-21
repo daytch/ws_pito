@@ -11,102 +11,27 @@ exports.getVideos = async(param, res) => {
     // Limit 10 data, tambah list merchant
     // var user_id = await authJwt.getUserId(param, res);
     var user_id = param.userId;
-    await videos.getVideosHome(async (err,rtn) => {
-        var status = 0;
-        if(rtn != null){
-            var popular = [];
-            var recommend = [];
-            var coming_up = [];
-            var merch_pop = [];
-            var merch_rec = [];
-            var merch_new = [];
-            // var obj = {};
-            for(var v of rtn){
-                // var cat = await videos_category.getCategoryByVideos(v.category);
-                // var ct = [];
-                // for(var c of cat){
-                //     ct.push(c.name);
-                // }
+    var vids = await videos.getVideosByType("popular");
+    var popular = await createObjVideos(vids, user_id);
+    vids = await videos.getVideosByType("recom");
+    var recommend = await createObjVideos(vids, user_id);
 
-                // var merch_object = {};
-                // var merch = await users.getUserDetailsWithName(v.userId);
-                // for(var m of merch){
-                //     merch_object = {
-                //         id : m.id,
-                //         name : m.name,
-                //         profile_image_url : m.img_avatar
-                //     };
-                // }
+    merch_pop = await users_ctrl.listMerchant(user_id, "popular");
+    merch_rec = await users_ctrl.listMerchant(user_id, "recom");
+    merch_new = await users_ctrl.listMerchant(user_id, "new_comer");
 
-                // var isFav = false;
-                // var fav_obj = await fav.getRecord(user_id, "Livestream", 1, v.id);
-                // if(fav_obj.length > 0){
-                //     isFav = true;
-                // }
+    status = 200;
+    var hsl = {
+        popular : popular,
+        recommended : recommend,
+        upcoming_videos : await this.videosMerchantByMoment("", "upcoming_videos", user_id),
+        previous_videos : await this.videosMerchantByMoment("", "previous_videos",user_id),
+        merchant_popular : merch_pop,
+        merchant_recommended : merch_rec,
+        merchant_new : merch_new
+    }; 
 
-                // var iframe = "";
-                // if(v.fb_url != "" && v.fb_url !== null){
-                //     iframe = v.fb_url;
-                // }
-                // else if(v.ig_url != "" && v.ig_url !== null){
-                //     iframe = v.ig_url;
-                // }
-                // else if(v.tiktok_url != "" && v.tiktok_url !== null){
-                //     iframe = v.tiktok_url;
-                // }
-
-                // obj = {
-                //     iframe : iframe,
-                //     title : v.title,
-                //     description : v.desc,
-                //     categories : ct,
-                //     start_time : v.startDate,
-                //     facebook_url : v.fb_url,
-                //     instagram_url : v.ig_url,
-                //     tiktok_url : v.tiktok_url,
-                //     is_favourite : isFav,
-                //     share_url : "",
-                //     img_thumbnail : v.img_thumbnail,
-                //     merchant : merch_object
-                // };
-                var obj = await createObjVideos([v], user_id);
-                if(v.ispopular){
-                    popular.push(obj);
-                }
-                else if(v.isrecom){
-                    recommend.push(obj);
-                }
-                
-                var isComingUp = moment().diff(v.startDate);
-                if(isComingUp < 0){
-                    coming_up.push(obj);
-                }
-            }
-
-            merch_pop = await users_ctrl.listMerchant(user_id, "popular");
-            merch_rec = await users_ctrl.listMerchant(user_id, "recom");
-            merch_new = await users_ctrl.listMerchant(user_id, "new_comer");
-
-            status = 200;
-            var hsl = {
-                popular : popular,
-                recommended : recommend,
-                coming_up : coming_up,
-                merchant_popular : merch_pop,
-                merchant_recommended : merch_rec,
-                merchant_new : merch_new
-            };
-        }
-        else if(err != null){
-            console.log(err);
-            status = 500;
-            var hsl = {
-                message : "Error on program"
-            };
-        }
-
-        return res.status(status).json(hsl);
-    });
+    return res.status(status).json(hsl);
 };
 
 exports.videosByCategory = async(param, res) => {
