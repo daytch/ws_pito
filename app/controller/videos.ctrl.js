@@ -3,8 +3,8 @@ const videos_category = require("../model/videos_category");
 const merchant = require("../model/merchant");
 const users = require("../model/users");
 const fav = require("../model/favorites");
-const { authJwt } = require("../middlewares");
-const moment = require("moment");
+// const { authJwt } = require("../middlewares");
+// const moment = require("moment");
 const users_ctrl = require("../controller/user.ctrl");
 
 exports.getVideos = async(param, res) => {
@@ -98,54 +98,6 @@ exports.videosPage = async(param, res) => {
             next_livestream : await this.videosMerchantByMoment("", "live_videos", user_id)
         }
     });
-
-    // var vid = await videos.getVideosById(id);
-    // if(vid.length > 0){
-    //     var prm = {
-    //         userId : vid[vid.length-1].userid
-    //     }
-    //     var merchant_details = await merchant.getRecord(prm);
-    //     var subs = 0;
-    //     var count_subs = await merchant.getCountSubs(prm.userId);
-    //     for(var c of count_subs){
-    //         subs = c.cnt;
-    //     }
-
-    //     var isSubs = false;
-    //     var checksubs = await merchant.getCountSubsById(prm.userId, user_id);
-    //     if(checksubs.length > 0){
-    //         isSubs = true;
-    //     }
-
-    //     var likes = 0;
-    //     var count_likes = await videos.getCountLikes(id);
-    //     for(var c of count_likes){
-    //         likes = c.cnt;
-    //     }
-
-    //     var vid_comment = await videos.getVideosComment(id);
-    //     var vid_cat = await videos_category.getCategoryByVideos(id);
-    //     var rtn = {
-    //         videos : vid,
-    //         comments : vid_comment,
-    //         merchant : merchant_details,
-    //         count_subs : subs,
-    //         count_likes : likes,
-    //         category : vid_cat,
-    //         isSubscriber : isSubs
-    //     };
-
-    //     return res.status(200).json({
-    //         isSuccess : true,
-    //         data : rtn
-    //     });
-    // }
-    // else {
-    //     return res.status(500).json({
-    //         isSuccess : false,
-    //         message : "Failed to get videos"
-    //     });
-    // }
 };
 
 exports.actionVidLikes = async(param, res) => {
@@ -264,6 +216,7 @@ async function createObjVideos(vids, user_id){
         }
 
         obj = {
+            id : v.id,
             iframe : iframe,
             title : v.title,
             description : v.desc,

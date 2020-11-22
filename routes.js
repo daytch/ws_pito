@@ -2,7 +2,9 @@
 const user = require('./app/controller/user.ctrl');
 const videos = require('./app/controller/videos.ctrl');
 const category = require('./app/controller/category.ctrl');
+const favorites = require('./app/controller/favorites.ctrl');
 const { authJwt } = require("./app/middlewares");
+const path = require("path");
 
 module.exports = function(app) {
     app.use(function (req, res, next) {
@@ -18,6 +20,11 @@ module.exports = function(app) {
             res.json({message : 'Welcome to PITO'});
         }
     );
+
+    // View Engine Setup 
+    app.set("views",path.join(__dirname,"views"));
+    app.set("view engine","ejs");
+    app.post("/tesupload", user.uploadFile);
     
     // Function for Mobile
     app.post('/user/login', user.loginUser);
@@ -28,6 +35,7 @@ module.exports = function(app) {
     app.post('/user/registerMerchant', [authJwt.isUser], user.registerMerchant);
     app.post('/user/merchantPage', [authJwt.isUser], user.merchantPage);
     app.post('/user/videosPage', [authJwt.isUser], videos.videosPage);
+    app.post('/user/actionFav', [authJwt.isUser], favorites.actionFav);
 
     app.post('/user/getUserDetails', [authJwt.isUser], user.getUserDetails);
     app.post('/user/insertUserDetails', [authJwt.isUser], user.insertUserDetails);

@@ -29,3 +29,18 @@ exports.getRecord = async(user_id, type, status, pkey) => {
     var rows = await query(que);
     return rows;
 };
+
+exports.submitRecord = async(user_id, type, status, pkey, isCreate) => {
+    var que = "REPLACE INTO " + TableName + " ";
+        que += "(userId, type_fav, status, pkey";
+        if(isCreate){
+            que += ",createdAt) "
+        }
+        else {
+            que += ",modifiedAt) "
+        }
+        que += "VALUES ('" + user_id + "','" + type + "','" + status + "','" + pkey + "',now())";
+
+    var rows = await query(que);
+    return rows;
+}

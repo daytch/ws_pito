@@ -33,7 +33,7 @@ exports.loginUser = function(email, role, res, callback){
         que += " AND c.name = '" + role + "'";
     }
 
-    dbmysql.query(que, function(error, rows, fields){
+    dbmysql.query(que, function(error, rows, fields, role){
         if(error){
             callback(error, null, res);
         }

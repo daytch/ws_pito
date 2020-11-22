@@ -5,7 +5,7 @@ const videos = require("../model/videos");
 const videos_ctrl = require("../controller/videos.ctrl");
 
 const jwt = require("jsonwebtoken");
-const { mailer } = require("../middlewares");
+const { mailer,uploadfile } = require("../middlewares");
 const moment = require("moment");
 const bcrypt = require("bcrypt");
 
@@ -27,7 +27,7 @@ exports.loginUser = async(param, res) => {
         });
     }
 
-    await users.loginUser(req.email, "User", res, this.processLogin);
+    await users.loginUser(req.email, "", res, this.processLogin);
 };
 
 exports.loginUserSSO = async(param, res) => {
@@ -79,7 +79,7 @@ exports.loginUserSSO = async(param, res) => {
                                 var ins_dtls = await users.insertUsertDetails(prm_dtls);
                                 if(ins_dtls.affectedRows > 0){
                                     // Direct login
-                                    await users.loginUser(req.email, "User", res, this.processLogin);
+                                    await users.loginUser(req.email, "", res, this.processLogin);
                                 }
                                 else {
                                     return res.status(500).json({
@@ -126,7 +126,7 @@ exports.loginUserSSO = async(param, res) => {
         });
     }
     else {
-        await users.loginUser(req.email, "User", res, this.processLogin);
+        await users.loginUser(req.email, "", res, this.processLogin);
     }
 };
 
@@ -396,7 +396,7 @@ exports.listMerchant =async(user_id, type) => {
         }
 
         dt = {
-            id : u.userId,
+            id : u.id,
             name : u.name,
             totalSubscriber : cnt_sub,
             profile_image_url : u.img_avatar,
@@ -654,7 +654,7 @@ async function verifyLogin(email, loginpass){
     return rtn;
 }
 
-exports.processLogin = async(err,rtn,res) => {
+exports.processLogin = async(err,rtn,res,role) => {
     var dt = {};
     var status = 0;
 
@@ -675,6 +675,18 @@ exports.processLogin = async(err,rtn,res) => {
                 }
                 roleName += p.role_name;  // Untuk Token
                 roleArr.push(p.role_name);
+            }
+
+            // Login User
+            if(role == ""){
+                if(!roleName.includes("User")){
+                    status = 500;
+                    dt = {
+                        isSuccess : false,
+                        message : 'Username or password did not match'
+                    }
+                    return res.status(status).json(dt);
+                }
             }
 
             var image = "";
@@ -718,4 +730,24 @@ exports.processLogin = async(err,rtn,res) => {
     }
 
     return res.status(status).json(dt);
+}
+
+exports.uploadFile = async(param, res) => {
+    var req = param.body;
+    var upload = uploadfile();
+    upload(param,res,function(err) { 
+  
+        if(err) { 
+  
+            // ERROR occured (here it can be occured due 
+            // to uploading image of size greater than 
+            // 1MB or uploading different file type) 
+            res.json(err) 
+        } 
+        else { 
+  
+            // SUCCESS, image successfully uploaded 
+            res.json({msg : "Success, Image uploaded!"}) 
+        } 
+    });
 }
