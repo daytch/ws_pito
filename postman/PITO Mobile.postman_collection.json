@@ -60,13 +60,42 @@
 			"response": []
 		},
 		{
+			"name": "/user/loginSSO",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"cobalogin@sso.com\",\r\n    \"name\" : \"Fauzi SSO\",\r\n    \"source\" : \"fb\",\r\n    \"img_avatar\" : \"http://localhost/img_tes/fauzi.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/loginSSO",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"loginSSO"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/user/home",
 			"request": {
 				"method": "GET",
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIiLCJpYXQiOjE2MDU4NjYwOTksImV4cCI6MTYwNTk1MjQ5OX0.BtD12Lsr0Pi3dedG6F0AwhdD8PbImTnGHDN9Tq2rUW8",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIsTWVyY2hhbnQiLCJpYXQiOjE2MDYwNDA0NTMsImV4cCI6MTYwNjEyNjg1M30.xX73RdZ8haETXaeKfSX1J4_sARpNyY4Qv3-L7cqTObk",
 						"type": "text"
 					}
 				],
@@ -147,7 +176,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIiLCJpYXQiOjE2MDU4NjYwOTksImV4cCI6MTYwNTk1MjQ5OX0.BtD12Lsr0Pi3dedG6F0AwhdD8PbImTnGHDN9Tq2rUW8",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIsTWVyY2hhbnQiLCJpYXQiOjE2MDYwNDA0NTMsImV4cCI6MTYwNjEyNjg1M30.xX73RdZ8haETXaeKfSX1J4_sARpNyY4Qv3-L7cqTObk",
 						"type": "text"
 					}
 				],
@@ -180,7 +209,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIiLCJpYXQiOjE2MDU4NjYwOTksImV4cCI6MTYwNTk1MjQ5OX0.BtD12Lsr0Pi3dedG6F0AwhdD8PbImTnGHDN9Tq2rUW8",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIsTWVyY2hhbnQiLCJpYXQiOjE2MDYwNDA0NTMsImV4cCI6MTYwNjEyNjg1M30.xX73RdZ8haETXaeKfSX1J4_sARpNyY4Qv3-L7cqTObk",
 						"type": "text"
 					}
 				],
@@ -201,6 +230,39 @@
 					"path": [
 						"user",
 						"videosPage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/actionFav",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIsTWVyY2hhbnQiLCJpYXQiOjE2MDYwNDA0NTMsImV4cCI6MTYwNjEyNjg1M30.xX73RdZ8haETXaeKfSX1J4_sARpNyY4Qv3-L7cqTObk",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"type\" : \"{{fav_merchant}}\",\r\n    \"pkey\" : 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_local}}/user/actionFav",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"user",
+						"actionFav"
 					]
 				}
 			},
@@ -323,35 +385,6 @@
 					"path": [
 						"user",
 						"listmerchant"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/user/loginSSO",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\" : \"cobalogin@sso.com\",\r\n    \"name\" : \"Fauzi SSO\",\r\n    \"source\" : \"fb\",\r\n    \"img_avatar\" : \"http://localhost/img_tes/fauzi.jpg\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/user/loginSSO",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"user",
-						"loginSSO"
 					]
 				}
 			},

@@ -492,7 +492,7 @@ exports.merchantPage = async(param,res) => {
     return res.status(200).json({
         isSuccess : true,
         message : "Success to get merchant details",
-        data : [rtn]
+        data : rtn
     });
 }
 
