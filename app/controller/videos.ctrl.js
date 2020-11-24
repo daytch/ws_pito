@@ -6,6 +6,10 @@ const fav = require("../model/favorites");
 // const { authJwt } = require("../middlewares");
 // const moment = require("moment");
 const users_ctrl = require("../controller/user.ctrl");
+const conf_paging = require("../config/paging.config");
+const config_upload = require("../config/upload.config");
+const formidable = require("formidable");
+const {uploadfile} = require("../middlewares");
 
 exports.getVideos = async(param, res) => {
     // Limit 10 data, tambah list merchant
@@ -164,11 +168,106 @@ exports.videosMerchantByMoment = async(merchant_id, mmt, user_id) => {
     return rtn;
 };
 
+exports.listVideos = async(param, res) => {
+    var req = param.body;
+    var user_id = param.userId;
+    var type = req.type;
+    var page = req.page;
+    var item_per_page = conf_paging.item_per_page;
+    var offset = (page - 1) * item_per_page;
+
+    var cntVid = await videos.getCountVideosByType("", type);
+    var cnt = 0;
+    for(var c of cntVid){
+        cnt = c.cnt;
+    }
+    var isNext = false;
+    if(cnt > (page * item_per_page)){
+        isNext = true;
+    }
+    var vids = await videos.getListVideosPaging("", type, offset, item_per_page);
+    var data = await createObjVideos(vids, user_id);
+    
+    return res.status(200).json({
+        isSuccess : true,
+        message : "Success get videos page " + page,
+        isNext : isNext,
+        total_video : cnt,
+        data : data
+    });
+}
+
+exports.submitLivestream = async(param, res) => {
+    var user_id = param.userId;
+    var form = new formidable.IncomingForm();
+    form.parse(param, async(err, fields, files) => {
+        if (err) {
+            console.error('Error', err)
+            return res.status(500).json({
+                isSuccess : false,
+                message : "Failed Submit Livestream"
+            });
+        }
+        if(files.mypic !== undefined){
+            var check = await uploadfile.processUpload(files, user_id);
+            if(!check.error){
+                var img_name = config_upload.base_url + "/" + config_upload.folder + "/" + check.filename;
+                var tmp = "user" + user_id + "_" + Math.floor(Math.random() * 10000) + 1;
+                var prm = {
+                    userId : user_id,
+                    startDate : fields.startDate,
+                    endDate : fields.endDate,
+                    title : fields.title,
+                    desc : fields.desc,
+                    fb_url : fields.fb_url,
+                    tiktok_url : fields.tiktok_url,
+                    ig_url : fields.ig_url,
+                    img_thumbnail : img_name,
+                    isActive : 1,
+                    ispopular : 1,  // Default
+                    isrecom : 0,
+                    tmp : tmp
+                };
+                var ins = await videos.insertVideos(prm);
+                if(ins.affectedRows > 0){
+                    var dt = await videos.getVideosbyTmp(tmp);
+                    var videoId = 0;
+                    for(var d of dt){
+                        videoId = d.id;
+                    }
+                    var cat = fields.category.split(",");
+                    var insCat = {};
+                    for(var c of cat){
+                        insCat = await videos_category.insertCategory(videoId, c);
+                    }
+                    if(insCat.affectedRows > 0){
+                        return res.status(200).json({
+                            isSuccess : true,
+                            message : "Success to submit livestream"
+                        });
+                    }
+                }
+            }
+            else {
+                return res.status(500).json({
+                    isSuccess : false,
+                    message : check.message
+                });
+            }
+        }
+
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Failed to submit livestream"
+        });
+    });
+}
+
 async function createObjVideos(vids, user_id){
     var rtn = [];
     for(var v of vids){
         var obj = {};
-        var cat = await videos_category.getCategoryByVideos(v.category);
+        var cat = await videos_category.getCategoryByVideos(v.id);
         var ct = [];
         for(var c of cat){
             ct.push(c.name);

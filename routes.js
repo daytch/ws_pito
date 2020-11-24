@@ -20,11 +20,6 @@ module.exports = function(app) {
             res.json({message : 'Welcome to PITO'});
         }
     );
-
-    // View Engine Setup 
-    app.set("views",path.join(__dirname,"views"));
-    app.set("view engine","ejs");
-    app.post("/tesupload", user.uploadFile);
     
     // Function for Mobile
     app.post('/user/login', user.loginUser);
@@ -36,9 +31,11 @@ module.exports = function(app) {
     app.post('/user/merchantPage', [authJwt.isUser], user.merchantPage);
     app.post('/user/videosPage', [authJwt.isUser], videos.videosPage);
     app.post('/user/actionFav', [authJwt.isUser], favorites.actionFav);
-
-    app.post('/user/getUserDetails', [authJwt.isUser], user.getUserDetails);
-    app.post('/user/insertUserDetails', [authJwt.isUser], user.insertUserDetails);
+    app.post('/user/submitProfile', [authJwt.isUser], user.submitProfile);
+    app.get('/user/getProfile', [authJwt.isUser], user.getProfile);
+    app.post('/user/changePassword', [authJwt.isUser], user.changePassword);
+    app.post('/user/listVideos', [authJwt.isUser], videos.listVideos);
+    
     app.get('/user/listmerchant', [authJwt.isUser], user.listMerchant);
     app.get('/user/getVideosByCategory', [authJwt.isUser], videos.videosByCategory);
     
@@ -47,10 +44,10 @@ module.exports = function(app) {
     
     app.post('/user/forgotPassword', user.forgotPasswordReq);
     app.post('/user/resetPassword', [authJwt.isResetPassword], user.resetPassword);
-    app.post('/user/changePassword', [authJwt.isUser], user.changePassword);
 
     // Function for Web
     app.post('/merchant/login', user.loginMerchant);
+    app.post('/merchant/submitLivestream', [authJwt.isMerchant], videos.submitLivestream);
     app.post('/admin/login', user.loginAdmin);
 
     app.get('/tes_jwt', [authJwt.isUser], function(req,res){

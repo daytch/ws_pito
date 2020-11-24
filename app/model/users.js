@@ -17,6 +17,9 @@ exports.getAllRecord = async(param) => {
     if(param.password != undefined){
         que += "AND password = '" + param.password + "' ";
     }
+    if(param.id != undefined && param.id != ""){
+        que += "AND id = '" + param.id + "' ";
+    }
 
     var rows = await query(que);
     return rows;
@@ -97,7 +100,7 @@ exports.registerUsersRoleAwait = async(param) => {
 exports.getUserDetails = async(user_id) => {
     var que = "SELECT * FROM " + TableUserDetails + " WHERE 1=1 ";
     if(user_id != null && user_id != ""){
-        que += "AND userId = " + user_id;
+        que += "AND userId = '" + user_id + "'";
     }
 
     var rows = await query(que);
@@ -116,7 +119,16 @@ exports.getUserDetailsWithName = async(user_id) => {
 }
 
 exports.insertUsertDetails = async(param) => {
-    var que = "REPLACE INTO " + TableUserDetails + " (userId,img_avatar,isMute) VALUES (" + param.userId + ", '" + param.img_avatar + "','"+param.isMute+"')";
+    var que = "REPLACE INTO " + TableUserDetails + " (userId,img_avatar";
+    if(param.isMute !== undefined && param.isMute != ""){
+        que += ",isMute";
+    }
+    que += ") VALUES (" + param.userId + ", '" + param.img_avatar + "'";
+    if(param.isMute !== undefined && param.isMute != ""){
+        que += ",'"+param.isMute+"'";
+    }
+    que += ")";
+    
 
     var rows = await query(que);
     return rows;
@@ -175,9 +187,17 @@ exports.insertForgotPass = async(email, status, expired_time, token) => {
     return rows;
 }
 
-exports.changePassword = async(email, password) => {
+exports.changePassword = async(userId, password) => {
     var que = "UPDATE " + TableUsers + " SET password = '" + password + "' ";
-        que += "WHERE email = '" + email + "' ";
+        que += "WHERE id = '" + userId + "' ";
+    
+    var rows = await query(que);
+    return rows;
+}
+
+exports.updateName = async(name, user_id) => {
+    var que = "UPDATE " + TableUsers + " SET name = '" + name + "' ";
+        que += "WHERE id = '" + user_id + "' ";
     
     var rows = await query(que);
     return rows;

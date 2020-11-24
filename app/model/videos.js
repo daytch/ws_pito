@@ -46,7 +46,7 @@ exports.getVideosHome = function(callback){
 
 exports.getVideosByType = async(type) => {
     var que = "SELECT * FROM " + TableVideos + " ";
-        que += "WHERE date(startDate) = date(now()) ";
+        que += "WHERE startDate < now() AND endDate > now() ";
     if(type == "popular"){
         que += "AND ispopular = 1 ";
     }
@@ -133,15 +133,88 @@ exports.getVideosMerchantByMoment = async(merchant_id, mmt) => {
         que += "AND userId = '" + merchant_id + "'";
     }
     if(mmt == "live_videos"){
-        que += "AND date(startDate) = date(now()) ";
+        que += "AND startDate < now() AND endDate > now() ";
     }
     else if(mmt == "upcoming_videos"){
-        que += "AND date(startDate) > date(now()) ";
+        que += "AND startDate > now() ";
     }
     else if(mmt == "previous_videos"){
-        que += "AND date(startDate) < date(now()) ";
+        que += "AND endDate < now() ";
+    }
+    que += "ORDER by startDate desc LIMIT 10";
+    
+    var rows = await query(que);
+    return rows;
+};
+
+exports.getCountVideosByType = async(user_id, type) => {
+    var que = "SELECT count(*) as cnt FROM " + TableVideos + " ";
+        que += "WHERE 1=1 ";
+    if(user_id != ""){
+        que += "AND userId = '" + user_id + "'";
+    }
+    if(type == "live_videos"){
+        que += "AND startDate < now() AND endDate > now() ";
+    }
+    else if(type == "upcoming_videos"){
+        que += "AND startDate > now() ";
+    }
+    else if(type == "previous_videos"){
+        que += "AND endDate < now() ";
+    }
+    else if(type == "popular"){
+        que += "AND startDate < now() AND endDate > now() ";
+        que += "AND ispopular = 1 ";
+    }
+    else if(type == "recom"){
+        que += "AND startDate < now() AND endDate > now() ";
+        que += "AND isrecom = 1 ";
     }
     
     var rows = await query(que);
     return rows;
+};
+
+exports.getListVideosPaging = async (user_id, type, offset, limitpage) => {
+    var que = "SELECT * FROM " + TableVideos + " ";
+        que += "WHERE 1=1 ";
+        if(user_id != ""){
+            que += "AND userId = '" + user_id + "'";
+        }
+        if(type == "live_videos"){
+            que += "AND startDate < now() AND endDate > now() ";
+        }
+        else if(type == "upcoming_videos"){
+            que += "AND startDate > now() ";
+        }
+        else if(type == "previous_videos"){
+            que += "AND endDate < now() ";
+        }
+        else if(type == "popular"){
+            que += "AND startDate < now() AND endDate > now() ";
+            que += "AND ispopular = 1 ";
+        }
+        else if(type == "recom"){
+            que += "AND startDate < now() AND endDate > now() ";
+            que += "AND isrecom = 1 ";
+        }
+    que += "ORDER BY startDate desc ";
+    que += "LIMIT " + offset + "," + limitpage;
+    
+    var rows = await query(que);
+    return rows;
+}
+
+exports.insertVideos = async(param) => {
+    var que = "INSERT INTO " + TableVideos + " ";
+        que += "(userId,startDate,endDate,title,ig_url,fb_url,tiktok_url,isactive,ispopular,isrecom,desc,img_thumbnail,tmp) ";
+        que += " VALUES ";
+        que += "('"+param.userId+"','"+param.startDate+"','"+param.endDate+"','"+param.title+"','"+param.ig_url+"','"+param.fb_url+"',";
+        que += "'"+param.tiktok_url+"','"+param.isActive+"','"+param.ispopular+"','"+param.isrecom+"','"+param.desc+"','"+param.img_thumbnail+"','"+param.tmp+"')";
+    var rows = await query(que);
+    return rows;
+};
+
+exports.getVideosbyTmp = function(tmp){
+    var que = "SELECT * FROM " + TableVideos + " WHERE tmp = '" + tmp +"'";
 };

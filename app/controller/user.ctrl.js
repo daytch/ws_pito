@@ -8,6 +8,8 @@ const jwt = require("jsonwebtoken");
 const { mailer,uploadfile } = require("../middlewares");
 const moment = require("moment");
 const bcrypt = require("bcrypt");
+const config_upload = require("../config/upload.config");
+const formidable = require("formidable");
 
 exports.loginUser = async(param, res) => {
     // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
@@ -269,19 +271,24 @@ exports.registerUser = async(param, res) => {
     });
 };
 
-exports.getUserDetails = async(param, res) => {
-    var req = param.body;
-    var dt = await users.getUserDetails(req.userId);
+exports.getProfile = async(param, res) => {
+    var user_id = param.userId;
+    var dt = await users.getUserDetails(user_id);
 
     var rtn = {};
     var status = 500; // Default if failed.
     if(dt.length > 0){
         status = 200;
-        rtn = dt[dt.length - 1];
+        rtn = {
+            isSuccess : true,
+            message : "Success get profile",
+            data : dt[dt.length - 1]
+        }
     }
     else {
         rtn = {
-            message : "User details not found"
+            isSuccess : false,
+            message : "profile not found"
         };
     }
 
@@ -476,23 +483,19 @@ exports.merchantPage = async(param,res) => {
             facebook_url : m.fb_url,
             instagram_url : m.ig_url,
             tiktok_url : m.tiktok_url,
-            share_url : '',
-            detail : {}
+            share_url : ''
         };
-
-        var dtls = {
-            live_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "live_videos",user_id),
-            upcoming_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "upcoming_videos", user_id),
-            previous_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "previous_videos",user_id)
-        };
-
-        rtn.detail = dtls;
     }
 
     return res.status(200).json({
         isSuccess : true,
         message : "Success to get merchant details",
-        data : rtn
+        data : {
+            merchant : rtn,
+            live_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "live_videos",user_id),
+            upcoming_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "upcoming_videos", user_id),
+            previous_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "previous_videos",user_id)
+        }
     });
 }
 
@@ -587,19 +590,27 @@ exports.resetPassword = async(param, res) => {
 
 exports.changePassword = async(param, res) => {
     var req = param.body;
-    if(req.email == undefined || req.email == ""){
+    var user_id = param.userId;
+    if(req.new_password == undefined || req.new_password == ""){
         return res.status(500).json({
             isSuccess : false,
-            message : "Failed to change password, email has null"
+            message : "Failed to change password, New password has null"
         });
     }
+
+    var email = "";
     var prm = {
-        email : req.email,
-        password : req.old_password
-    }
+        id : user_id
+    };
     var cek = await users.getAllRecord(prm);
-    if(cek.length > 0){
-        var upd = await users.changePassword(req.email, req.new_password);
+    for(var c of cek){
+        email = c.email;
+    }
+    var verif = await verifyLogin(email, req.old_password);
+    if(verif){
+        var salt = await bcrypt.genSalt(config.regSalt);
+        var new_password = await bcrypt.hash(req.new_password, salt);
+        var upd = await users.changePassword(user_id, new_password);
         if(upd.affectedRows > 0){
             return res.status(200).json({
                 isSuccess : true,
@@ -732,22 +743,55 @@ exports.processLogin = async(err,rtn,res,role) => {
     return res.status(status).json(dt);
 }
 
-exports.uploadFile = async(param, res) => {
-    var req = param.body;
-    var upload = uploadfile();
-    upload(param,res,function(err) { 
-  
-        if(err) { 
-  
-            // ERROR occured (here it can be occured due 
-            // to uploading image of size greater than 
-            // 1MB or uploading different file type) 
-            res.json(err) 
-        } 
-        else { 
-  
-            // SUCCESS, image successfully uploaded 
-            res.json({msg : "Success, Image uploaded!"}) 
-        } 
+exports.submitProfile = async(param, res) => {
+    // var req = param.body;
+    var user_id = param.userId;
+    var form = new formidable.IncomingForm();
+    form.parse(param, async(err, fields, files) => {
+        if (err) {
+            console.error('Error', err)
+            return res.status(500).json({
+                isSuccess : false,
+                message : "Failed Update Profile"
+            });
+        }
+        if(files.mypic !== undefined){
+            var check = await uploadfile.processUpload(files, user_id);
+            if(!check.error){
+                var prm = {
+                    userId : user_id,
+                    img_avatar : config_upload.base_url + "/" + config_upload.folder + "/" + check.filename
+                };
+                var ins = await users.insertUsertDetails(prm);
+                if(ins.affectedRows > 0){
+                    var name = fields.name;
+                    var upd = await users.updateName(name, user_id);
+                    if(upd.affectedRows > 0){
+                        return res.status(200).json({isSuccess : true, message : "Success Update Profile"});
+                    }
+                }
+                return res.status(500).json({
+                    isSuccess : false,
+                    message : "Failed Update Profile"
+                });
+            }
+            else {
+                return res.status(500).json({
+                    isSuccess : false,
+                    message : check.message
+                });
+            }
+        }
+        else {  // Only change display name
+            var name = fields.name;
+            var upd = await users.updateName(name, user_id);
+            if(upd.affectedRows > 0){
+                return res.status(200).json({isSuccess : true, message : "Success Update Profile"});
+            }
+            return res.status(500).json({
+                isSuccess : false,
+                message : "Failed Update Profile"
+            });
+        }
     });
 }

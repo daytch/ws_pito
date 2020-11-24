@@ -33,3 +33,9 @@ exports.getCategoryByVideos = async(id_video/*, callback*/) => {
     var rows = await query(que);
     return rows;
 };
+
+exports.insertCategory = async(videoId, categoryId) => {
+    var que = "INSERT INTO " + TableName + " (videoId,categoryId) VALUES ('" + videoId +"','" + categoryId +"')";
+    var rows = await query(que);
+    return rows;
+};

@@ -1,41 +1,61 @@
-const multer = require("multer");
-const path = require("path");
 const conf = require("../config/upload.config");
+const fsPromises = require("fs").promises;
 
-exports.upload = async(filename) => {
-    var storage = multer.diskStorage({ 
-        destination: function (req, file, cb) { 
-      
-            // Uploads is the Upload_folder_name 
-            cb(null, conf.folder) 
-        }, 
-        filename: function (req, file, cb) { 
-          cb(null, filename + ".jpg") 
-        } 
-    });
+exports.processUpload = async(files, user_id) => {
+    var upload_name = "";
+    var filepath = "";
+    var filesize = "";
+    var filetype = "";
+    var i = 0;
+    for(var objFile of Object.entries(files)){
+        for(var f of objFile){
+            if(i == 1){
+                upload_name = f.name;
+                filepath = f.path;
+                filesize = f.size;
+                filetype = f.type;
+            }
+            i++;
+        }
+    }
+    // Check size
+    if(filesize > conf.maxSize){
+        var rtn = {
+            error : true,
+            message : "File over max size"
+        };
+        return rtn;
+    }
+    // Check File Type
+    var arrtype = filetype.split("/");
+    var ftype = arrtype[arrtype.length - 1];
+    if(!conf.filetypes.includes(ftype)){
+        var rtn = {
+            error : true,
+            message : "File type not allowed"
+        };
+        return rtn;
+    }
 
-    var upload = multer({  
-        storage: storage, 
-        limits: { fileSize: conf.maxSize }, 
-        fileFilter: function (req, file, cb){ 
-            // Set the filetypes, it is optional 
-            var filetypes = /jpeg|jpg|png/; 
-            var mimetype = filetypes.test(file.mimetype); 
-      
-            var extname = filetypes.test(path.extname( 
-                        file.originalname).toLowerCase()); 
-            
-            if (mimetype && extname) { 
-                return cb(null, true); 
-            } 
-          
-            cb("Error: File upload only supports the "
-                    + "following filetypes - " + filetypes); 
-        }  
-      
-    // mypic is the name of file attribute 
-    }).single("mypic");
+    var arrName = upload_name.split(".");
+    var ext_file = arrName[arrName.length - 1];
+    var fileName = "user" + user_id + "_" + Date.now() + "." + ext_file;
+    var new_path = appRoot + '/'+ conf.folder +'/' + fileName;
+    var rtn = {
+        error : true,
+        message : "Failed to save file"
+    }
 
+    try{
+        await fsPromises.copyFile(filepath, new_path);
+        rtn = {
+            error : false,
+            filename : fileName
+        }
+    }
+    catch(err){
+        console.log(err);
+    }
 
-    return upload;
+    return rtn;
 }

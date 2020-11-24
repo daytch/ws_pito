@@ -9,6 +9,13 @@ exports.actionFav = async(param, res) => {
         affectedRows : 0
     };
 
+    if(user_id === undefined || type === undefined || pkey === undefined){
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Submit favourites failed, parameter undefined"
+        });
+    }
+
     var new_status = 1;
     var check = await favorites.getRecord(user_id, type, "", pkey);
     if(check.length > 0){
