@@ -207,7 +207,7 @@ exports.getListVideosPaging = async (user_id, type, offset, limitpage) => {
 
 exports.insertVideos = async(param) => {
     var que = "INSERT INTO " + TableVideos + " ";
-        que += "(userId,startDate,endDate,title,ig_url,fb_url,tiktok_url,isactive,ispopular,isrecom,desc,img_thumbnail,tmp) ";
+        que += "(userId,startDate,endDate,title,ig_url,fb_url,tiktok_url,isactive,ispopular,isrecom,`desc`,img_thumbnail,tmp) ";
         que += " VALUES ";
         que += "('"+param.userId+"','"+param.startDate+"','"+param.endDate+"','"+param.title+"','"+param.ig_url+"','"+param.fb_url+"',";
         que += "'"+param.tiktok_url+"','"+param.isActive+"','"+param.ispopular+"','"+param.isrecom+"','"+param.desc+"','"+param.img_thumbnail+"','"+param.tmp+"')";
@@ -215,6 +215,8 @@ exports.insertVideos = async(param) => {
     return rows;
 };
 
-exports.getVideosbyTmp = function(tmp){
-    var que = "SELECT * FROM " + TableVideos + " WHERE tmp = '" + tmp +"'";
+exports.getVideosbyTmp = async(tmp, user_id)=>{
+    var que = "SELECT * FROM " + TableVideos + " WHERE tmp = '" + tmp +"' AND userId = '" + user_id + "'";
+    var rows = await query(que);
+    return rows;
 };

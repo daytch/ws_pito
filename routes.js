@@ -35,6 +35,7 @@ module.exports = function(app) {
     app.get('/user/getProfile', [authJwt.isUser], user.getProfile);
     app.post('/user/changePassword', [authJwt.isUser], user.changePassword);
     app.post('/user/listVideos', [authJwt.isUser], videos.listVideos);
+    app.post('/user/forgotPassword', user.forgotPasswordReq);
     
     app.get('/user/listmerchant', [authJwt.isUser], user.listMerchant);
     app.get('/user/getVideosByCategory', [authJwt.isUser], videos.videosByCategory);
@@ -42,7 +43,6 @@ module.exports = function(app) {
     app.post('/user/actionVidLikes', [authJwt.isUser], videos.actionVidLikes);
     app.post('/user/actionVidComments', [authJwt.isUser], videos.actionVidComments);
     
-    app.post('/user/forgotPassword', user.forgotPasswordReq);
     app.post('/user/resetPassword', [authJwt.isResetPassword], user.resetPassword);
 
     // Function for Web

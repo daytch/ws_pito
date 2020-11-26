@@ -74,12 +74,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/user/loginSSO",
-					"protocol": "http",
+					"raw": "{{user_local}}/user/loginSSO",
 					"host": [
-						"localhost"
+						"{{user_local}}"
 					],
-					"port": "8080",
 					"path": [
 						"user",
 						"loginSSO"
@@ -176,7 +174,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIsTWVyY2hhbnQiLCJpYXQiOjE2MDYwNDA0NTMsImV4cCI6MTYwNjEyNjg1M30.xX73RdZ8haETXaeKfSX1J4_sARpNyY4Qv3-L7cqTObk",
+						"value": "{{token}}",
 						"type": "text"
 					}
 				],
@@ -321,7 +319,7 @@
 		{
 			"name": "/user/getProfile",
 			"request": {
-				"method": "POST",
+				"method": "GET",
 				"header": [
 					{
 						"key": "x-access-token",

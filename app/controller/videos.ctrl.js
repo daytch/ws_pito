@@ -230,12 +230,17 @@ exports.submitLivestream = async(param, res) => {
                 };
                 var ins = await videos.insertVideos(prm);
                 if(ins.affectedRows > 0){
-                    var dt = await videos.getVideosbyTmp(tmp);
+                    var dt = await videos.getVideosbyTmp(tmp, user_id);
                     var videoId = 0;
                     for(var d of dt){
                         videoId = d.id;
                     }
-                    var cat = fields.category.split(",");
+
+                    var cat = [];
+                    if(fields.category !== undefined && fields.category != ""){
+                        cat = fields.category.split(",");
+                    }
+                    
                     var insCat = {};
                     for(var c of cat){
                         insCat = await videos_category.insertCategory(videoId, c);
