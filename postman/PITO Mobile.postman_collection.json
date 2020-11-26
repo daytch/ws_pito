@@ -407,6 +407,33 @@
 			"response": []
 		},
 		{
+			"name": "/user/forgotPassword",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"njicker@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_local}}/user/forgotPassword",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"user",
+						"forgotPassword"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "user/getVideosByCategory",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -529,13 +556,13 @@
 			"response": []
 		},
 		{
-			"name": "/user/forgotPasswordReq",
+			"name": "/merchant/login",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\" : \"njicker@gmail.com\"\r\n}",
+					"raw": "{\r\n    \"email\" : \"njicker@gmail.com\",\r\n    \"password\" : \"fauzi\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -543,15 +570,92 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/user/forgotPasswordReq",
-					"protocol": "http",
+					"raw": "{{url_local}}/merchant/login",
 					"host": [
-						"localhost"
+						"{{url_local}}"
 					],
-					"port": "8080",
 					"path": [
-						"user",
-						"forgotPasswordReq"
+						"merchant",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/merchant/submitLivestream",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "mypic",
+							"type": "file",
+							"src": "/C:/Users/Kavin/Pictures/BlueStacks/Black Desert Mobile_Screenshot_2020.04.22_15.05.34.jpg"
+						},
+						{
+							"key": "startDate",
+							"value": "2020-11-26 13:00:00",
+							"type": "text"
+						},
+						{
+							"key": "endDate",
+							"value": "2020-11-26 23:00:00",
+							"type": "text"
+						},
+						{
+							"key": "title",
+							"value": "Video ke 2",
+							"type": "text"
+						},
+						{
+							"key": "desc",
+							"value": "Sebuah video ke 2 untuk testing submit live stream via web dan api merchant",
+							"type": "text"
+						},
+						{
+							"key": "fb_url",
+							"value": "https://facebook.com",
+							"type": "text"
+						},
+						{
+							"key": "tiktok_url",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "ig_url",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "category",
+							"value": "1,2",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_local}}/merchant/submitLivestream",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"merchant",
+						"submitLivestream"
 					]
 				}
 			},
