@@ -2,6 +2,10 @@ const { dbmysql } = require('../middlewares');
 const util = require("util");
 const { user } = require('../config/db.config');
 const TableName = "favorites";
+const TableUsers = "users";
+const TableUsersRole = "users_roles";
+const TableUserDetails = "users_details";
+const TableMerchDetails = "merchant_details";
 
 const query = util.promisify(dbmysql.query).bind(dbmysql);
 
@@ -67,15 +71,39 @@ exports.getCountRecord = async(user_id, type, status, pkey) => {
 
 exports.getRecordLivestream = async(user_id, status, offset, per_page, sort_by) => {
     var que = "SELECT b.* FROM " + TableName + " as a INNER JOIN videos as b ";
-        que += "ON a.pkey = b.id AND a.id = 'Livestream' ";
-        que += "userId = '" + user_id + "' AND status = '"+ status +"' ";
+        que += "ON a.pkey = b.id AND a.type_fav = 'Livestream' ";
+        que += "WHERE a.userId = '" + user_id + "' AND a.status = '"+ status +"' ";
         if(sort_by == "live_videos"){
-            que += "ORDER BY startDate < now() AND endDate > now() desc ";
+            que += "ORDER BY b.startDate < now() AND b.endDate > now() desc ";
         }
         else if(sort_by == "upcoming_videos"){
-            que += "ORDER BY startDate desc";
+            que += "ORDER BY b.startDate desc ";
         }
         que += "LIMIT "+offset+","+per_page+" ";
+
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getRecordMerchant = async(user_id, status, offset, per_page, sort_by, role_id) => {
+    var que = "SELECT a.id,a.name,c.img_avatar,d.createdAt,d.about,d.fb_url,d.ig_url,d.tiktok_url ";
+        que += "FROM " + TableName + " as e ";
+        que += "INNER JOIN " + TableUsers + " as a ";
+        que += "ON a.id = e.pkey AND e.type_fav = 'Merchant' ";
+        que += "LEFT JOIN " + TableUsersRole + " as b ";
+        que += "ON a.id = b.userId AND b.roleId = '" + role_id + "' ";
+        que += "LEFT JOIN " + TableUserDetails + " as c ";
+        que += "ON a.id = c.userId ";
+        que += "LEFT JOIN " + TableMerchDetails + " as d ";
+        que += "ON a.id = d.userId ";
+        que += "WHERE e.userId = '" + user_id + "' AND e.status = '" + status + "' ";
+    if(sort_by == "popular"){
+        que += "ORDER BY d.ispopular desc ";
+    }
+    else if(sort_by == "recent"){
+        que += "ORDER BY d.createdAt desc ";
+    }
+    que += "LIMIT "+offset+","+per_page+" ";
 
     var rows = await query(que);
     return rows;

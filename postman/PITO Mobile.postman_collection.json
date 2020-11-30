@@ -240,13 +240,13 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIsTWVyY2hhbnQiLCJpYXQiOjE2MDYwNDA0NTMsImV4cCI6MTYwNjEyNjg1M30.xX73RdZ8haETXaeKfSX1J4_sARpNyY4Qv3-L7cqTObk",
+						"value": "{{token}}",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"type\" : \"{{fav_merchant}}\",\r\n    \"pkey\" : 1\r\n}",
+					"raw": "{\r\n    \"type\" : \"{{fav_merchant}}\",\r\n    \"pkey\" : 2\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -666,6 +666,44 @@
 					"path": [
 						"merchant",
 						"submitLivestream"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/getFavourites",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_local}}/user/getFavourites?sort_by=recent&page=1&type={{fav_merchant}}",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"user",
+						"getFavourites"
+					],
+					"query": [
+						{
+							"key": "sort_by",
+							"value": "recent"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "type",
+							"value": "{{fav_merchant}}"
+						}
 					]
 				}
 			},

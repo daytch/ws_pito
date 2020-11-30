@@ -2,6 +2,8 @@ const favorites = require("../model/favorites");
 const videos = require("../model/videos");
 const videos_ctrl = require("../controller/videos.ctrl");
 const conf_paging = require("../config/paging.config");
+const merchant = require("../model/merchant");
+const users = require("../model/users");
 
 exports.actionFav = async(param, res) => {
     var req = param.body;
@@ -68,8 +70,59 @@ exports.getFav = async(param, res) => {
         isNext = true;
     }
     if(type == "Livestream"){
-        var vids = await favorites.getRecordLivestream(user_id, 1, offset, item_per_page);
+        var vids = await favorites.getRecordLivestream(user_id, 1, offset, item_per_page, sort_by);
         data = await videos_ctrl.createObjVideos(vids, user_id);
+    }
+    else if(type == "Merchant"){
+        var id_role = 0;
+        var role = await users.getRolesByName("Merchant");
+        for(var r of role){
+            id_role = r.id;
+        }
+        var list = await favorites.getRecordMerchant(user_id, 1, offset, item_per_page, sort_by, id_role);
+        for(var m of list){
+            var merchant_id = m.id;
+            var subs = 0;
+            var count_subs = await merchant.getCountSubs(merchant_id);
+            for(var c of count_subs){
+                subs = c.cnt;
+            }
+
+            var isSubs = false;
+            var checksubs = await merchant.getCountSubsById(merchant_id, user_id);
+            if(checksubs.length > 0){
+                isSubs = true;
+            }
+
+            var cnt_live = 0;
+            var countlive = await videos.getCountVideosByUserId(merchant_id);
+            for(var l of countlive){
+                cnt_live = l.cnt;
+            }
+
+            var cat = [];
+            var merch_cat = await merchant.getCategoryByUserId(merchant_id);
+            for(var mc of merch_cat){
+                cat.push(mc.name);
+            }
+
+            rtn = {
+                id : m.id,
+                name : m.name,
+                profile_image_url : m.img_avatar,
+                totalSubscriber : subs,
+                total_livestream : cnt_live,
+                description : m.about,
+                join_date : m.createdAt,
+                categories : cat,
+                isSubscriber : isSubs,
+                facebook_url : m.fb_url,
+                instagram_url : m.ig_url,
+                tiktok_url : m.tiktok_url,
+                share_url : ''
+            };
+            data.push(rtn);
+        }
     }
 
     return res.status(200).json({

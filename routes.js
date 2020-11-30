@@ -38,6 +38,7 @@ module.exports = function(app) {
     app.get('/user/listVideosByCategory', [authJwt.isUser], videos.listVideosByCategory);
     app.get('/user/listMerchant', [authJwt.isUser], user.listMerchantPaging);
     app.get('/user/listVideosByMerchant', [authJwt.isUser], videos.listVideosByMerchant);
+    app.get('/user/getFavourites', [authJwt.isUser], favorites.getFav);
     
     app.post('/user/actionVidComments', [authJwt.isUser], videos.actionVidComments);
     
