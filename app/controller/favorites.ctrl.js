@@ -21,6 +21,33 @@ exports.actionFav = async(param, res) => {
         });
     }
 
+    var check = false;
+    if(type == "Livestream"){
+        var prm = {
+            id : pkey
+        }
+        var data = await videos.getRecord(prm);
+        if(data.length > 0){
+            check = true;
+        }
+    }
+    else if(type == "Merchant"){
+        var prm = {
+            userId : pkey
+        }
+        var data = await merchant.getRecord(prm);
+        if(data.length > 0){
+            check = true;
+        }
+    }
+
+    if(!check){
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Submit favourites failed, No data found"
+        });
+    }
+
     var new_status = 1;
     var check = await favorites.getRecord(user_id, type, "", pkey);
     if(check.length > 0){

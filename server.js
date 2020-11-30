@@ -2,8 +2,10 @@ var express = require('express'),
     app = express(),
     port = process.env.PORT || 8080,
     bodyParser = require('body-parser'),
+    cors = require("cors"),
     path = require("path");
 
+app.use("*", cors());
 app.use('/pic', express.static('pic'))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
