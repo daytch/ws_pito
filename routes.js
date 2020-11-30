@@ -4,7 +4,6 @@ const videos = require('./app/controller/videos.ctrl');
 const category = require('./app/controller/category.ctrl');
 const favorites = require('./app/controller/favorites.ctrl');
 const { authJwt } = require("./app/middlewares");
-const path = require("path");
 
 module.exports = function(app) {
     app.use(function (req, res, next) {
@@ -36,11 +35,10 @@ module.exports = function(app) {
     app.post('/user/changePassword', [authJwt.isUser], user.changePassword);
     app.post('/user/listVideos', [authJwt.isUser], videos.listVideos);
     app.post('/user/forgotPassword', user.forgotPasswordReq);
+    app.get('/user/listVideosByCategory', [authJwt.isUser], videos.listVideosByCategory);
+    app.get('/user/listMerchant', [authJwt.isUser], user.listMerchantPaging);
+    app.get('/user/listVideosByMerchant', [authJwt.isUser], videos.listVideosByMerchant);
     
-    app.get('/user/listmerchant', [authJwt.isUser], user.listMerchant);
-    app.get('/user/getVideosByCategory', [authJwt.isUser], videos.videosByCategory);
-    
-    app.post('/user/actionVidLikes', [authJwt.isUser], videos.actionVidLikes);
     app.post('/user/actionVidComments', [authJwt.isUser], videos.actionVidComments);
     
     app.post('/user/resetPassword', [authJwt.isResetPassword], user.resetPassword);

@@ -30,6 +30,21 @@ exports.getAllRecord = function(param, callback){
     });
 };
 
+exports.getRecord = async(param) => {
+    var que = "SELECT * FROM " + TableVideos + " WHERE 1=1 ";
+    if(param != null){
+        if(param.userId != ""){
+            que += "userId = '" + param.userId + "' ";
+        }
+        if(param.id != ""){
+            que += "id = '" + param.id + "' ";
+        }
+    }
+    
+    var rows = await query(que);
+    return rows;
+};
+
 exports.getVideosHome = function(callback){
     var que = "SELECT * FROM " + TableVideos + " ";
         que += " WHERE 1=1 ORDER BY startDate DESC, ispopular DESC LIMIT 10";
@@ -175,11 +190,23 @@ exports.getCountVideosByType = async(user_id, type) => {
     return rows;
 };
 
+exports.getCountVideosByCat = async(user_id, category) => {
+    var que = "SELECT count(*) as cnt FROM " + TableVideos + " as a ";
+        que += "INNER JOIN " + TableVideosCategory + " as b on a.id = b.videoId AND b.categoryId = " + category + " ";
+        que += "WHERE 1=1 ";
+    if(user_id != ""){
+        que += "AND a.userId = '" + user_id + "'";
+    }
+    
+    var rows = await query(que);
+    return rows;
+};
+
 exports.getListVideosPaging = async (user_id, type, offset, limitpage) => {
     var que = "SELECT * FROM " + TableVideos + " ";
         que += "WHERE 1=1 ";
         if(user_id != ""){
-            que += "AND userId = '" + user_id + "'";
+            que += "AND userId = '" + user_id + "' ";
         }
         if(type == "live_videos"){
             que += "AND startDate < now() AND endDate > now() ";
@@ -204,6 +231,20 @@ exports.getListVideosPaging = async (user_id, type, offset, limitpage) => {
     var rows = await query(que);
     return rows;
 }
+
+exports.getListVideosPagingCat = async(user_id, category, offset, limitpage) => {
+    var que = "SELECT a.* FROM " + TableVideos + " as a ";
+        que += "INNER JOIN " + TableVideosCategory + " as b on a.id = b.videoId AND b.categoryId = " + category + " ";
+        que += "WHERE 1=1 ";
+    if(user_id != ""){
+        que += "AND a.userId = '" + user_id + "' ";
+    }
+    que += "ORDER BY startDate desc ";
+    que += "LIMIT " + offset + "," + limitpage;
+    
+    var rows = await query(que);
+    return rows;
+};
 
 exports.insertVideos = async(param) => {
     var que = "INSERT INTO " + TableVideos + " ";

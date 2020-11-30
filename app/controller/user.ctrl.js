@@ -9,6 +9,7 @@ const { mailer,uploadfile } = require("../middlewares");
 const moment = require("moment");
 const bcrypt = require("bcrypt");
 const config_upload = require("../config/upload.config");
+const conf_paging = require("../config/paging.config");
 const formidable = require("formidable");
 
 exports.loginUser = async(param, res) => {
@@ -181,7 +182,10 @@ exports.registerUser = async(param, res) => {
             message : "Register User failed"
         });
     }
-    var check_user = await users.getAllRecord(req);
+    var prm = {
+        email : req.email
+    }
+    var check_user = await users.getAllRecord(prm);
     if(check_user.length > 0){
         // Gagal
         return res.status(500).json({
@@ -366,7 +370,7 @@ exports.registerMerchant = async(param, res) => {
     });
 }
 
-exports.listMerchant =async(user_id, type) => {
+exports.listMerchant = async(user_id, type, offset, per_page) => {
     var id_merchant = 0;    // to get All    
     var id_role = 0;
     var role = await users.getRolesByName("Merchant");
@@ -374,7 +378,7 @@ exports.listMerchant =async(user_id, type) => {
         id_role = r.id;
     }
 
-    var usr = await users.getListMerchant(id_role, id_merchant, type);
+    var usr = await users.getListMerchant(id_role, id_merchant, type, offset, per_page);
     var data = [];
     var dt = {};
     for(var u of usr){
@@ -468,7 +472,7 @@ exports.merchantPage = async(param,res) => {
     for(var r of role){
         id_role = r.id;
     }
-    var data_merchant = await users.getListMerchant(id_role, merchant_id, "");
+    var data_merchant = await users.getListMerchant(id_role, merchant_id, "", 0, 10);
     for(var m of data_merchant){
         rtn = {
             id : m.id,
@@ -496,6 +500,39 @@ exports.merchantPage = async(param,res) => {
             upcoming_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "upcoming_videos", user_id),
             previous_videos : await videos_ctrl.videosMerchantByMoment(merchant_id, "previous_videos",user_id)
         }
+    });
+}
+
+exports.listMerchantPaging = async(param, res) => {
+    var req = param.query;
+    var user_id = param.userId;
+    var page = req.page;
+    var type = req.type;
+    var item_per_page = conf_paging.item_per_page;
+    var offset = (page - 1) * item_per_page;
+
+    var id_role = 0;
+    var role = await users.getRolesByName("Merchant");
+    for(var r of role){
+        id_role = r.id;
+    }
+    var cntMerch = await users.getCountListMerchant(id_role, 0, type);
+    var cnt = 0;
+    for(var c of cntMerch){
+        cnt = c.cnt;
+    }
+    var isNext = false;
+    if(cnt > (page * item_per_page)){
+        isNext = true;
+    }
+
+    var data = await this.listMerchant(user_id, type, offset, item_per_page);
+    return res.status(200).json({
+        isSuccess : true,
+        message : "Success get merchant page " + page,
+        isNext : isNext,
+        total_merchant : cnt,
+        data : data
     });
 }
 
@@ -767,7 +804,12 @@ exports.submitProfile = async(param, res) => {
                     var name = fields.name;
                     var upd = await users.updateName(name, user_id);
                     if(upd.affectedRows > 0){
-                        return res.status(200).json({isSuccess : true, message : "Success Update Profile"});
+                        var data = await users.getUserDetails(user_id);
+                        return res.status(200).json({
+                            isSuccess : true, 
+                            message : "Success Update Profile",
+                            data : data[data.length - 1]
+                        });
                     }
                 }
                 return res.status(500).json({
@@ -782,11 +824,29 @@ exports.submitProfile = async(param, res) => {
                 });
             }
         }
-        else {  // Only change display name
+        else {  // Change display name or delete avatar
+            if(fields.flagDeleteAva != ""){
+                var prm = {
+                    userId : user_id,
+                    img_avatar : ""
+                };
+                var ins = await users.insertUsertDetails(prm);
+                if(ins.affectedRows == 0){
+                    return res.status(500).json({
+                        isSuccess : false,
+                        message : "Failed Update Profile"
+                    });
+                }
+            }
             var name = fields.name;
             var upd = await users.updateName(name, user_id);
             if(upd.affectedRows > 0){
-                return res.status(200).json({isSuccess : true, message : "Success Update Profile"});
+                var data = await users.getUserDetails(user_id);
+                return res.status(200).json({
+                    isSuccess : true, 
+                    message : "Success Update Profile",
+                    data : data[data.length - 1]
+                });
             }
             return res.status(500).json({
                 isSuccess : false,

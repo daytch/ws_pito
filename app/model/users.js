@@ -28,7 +28,7 @@ exports.getAllRecord = async(param) => {
 exports.loginUser = function(email, role, res, callback){
     var que = "SELECT a.*,b.roleId,c.name as role_name FROM " + TableUsers + " as a "
             + " INNER JOIN " + TableUsersRole + " as b on a.id = b.userId "
-            + " INNER JOIN " + TableRoles + " as c on b.roleId = c.id "
+            + " LEFT JOIN " + TableRoles + " as c on b.roleId = c.id "
             // + " WHERE a.email = '" + email + "' AND a.password = '" + password + "' "
             + " WHERE a.email = '" + email + "' "
             + " AND a.isactive = 1 ";
@@ -98,9 +98,10 @@ exports.registerUsersRoleAwait = async(param) => {
 }
 
 exports.getUserDetails = async(user_id) => {
-    var que = "SELECT * FROM " + TableUserDetails + " WHERE 1=1 ";
+    var que = "SELECT a.*,b.name FROM " + TableUserDetails + " as a "
+        que += "LEFT JOIN "+ TableUsers + " as b on a.userId = b.id WHERE 1=1 ";
     if(user_id != null && user_id != ""){
-        que += "AND userId = '" + user_id + "'";
+        que += "AND a.userId = '" + user_id + "'";
     }
 
     var rows = await query(que);
@@ -141,7 +142,7 @@ exports.getRolesByName = async(name) => {
     return rows;
 }
 
-exports.getListMerchant = async(role_id, id_merchant, type) => {
+exports.getListMerchant = async(role_id, id_merchant, type, offset, per_page) => {
     var que = "SELECT a.id,a.name,c.img_avatar,d.createdAt,d.about,d.fb_url,d.ig_url,d.tiktok_url FROM " + TableUsers + " as a ";
         que += "INNER JOIN " + TableUsersRole + " as b ";
         que += "ON a.id = b.userId AND b.roleId = '" + role_id + "' ";
@@ -161,9 +162,35 @@ exports.getListMerchant = async(role_id, id_merchant, type) => {
     }
     else if(type != undefined && type == "new_comer"){
         que += "AND date(d.createdAt) between date(now()-7) and date(now()+1) ";  // 1 Weeks join
-        que += "ORDER BY d.createdAt desc ";
     }
-        que += "LIMIT 10 ";
+    que += "ORDER BY d.createdAt desc ";
+    que += "LIMIT "+offset+","+per_page+" ";
+
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getCountListMerchant = async(role_id, id_merchant, type) => {
+    var que = "SELECT count(*) as cnt FROM " + TableUsers + " as a ";
+        que += "INNER JOIN " + TableUsersRole + " as b ";
+        que += "ON a.id = b.userId AND b.roleId = '" + role_id + "' ";
+        que += "INNER JOIN " + TableUserDetails + " as c ";
+        que += "ON a.id = c.userId ";
+        que += "INNER JOIN " + TableMerchDetails + " as d ";
+        que += "ON a.id = d.userId ";
+        que += "WHERE 1=1 ";
+    if(id_merchant != undefined && id_merchant > 0){
+        que += "AND a.id = '" + id_merchant + "' ";
+    }
+    if(type != undefined && type == "popular"){
+        que += "AND d.ispopular = 1 ";
+    }
+    else if(type != undefined && type == "recom"){
+        que += "AND d.isrecom = 1 ";
+    }
+    else if(type != undefined && type == "new_comer"){
+        que += "AND date(d.createdAt) between date(now()-7) and date(now()+1) ";  // 1 Weeks join
+    }
 
     var rows = await query(que);
     return rows;

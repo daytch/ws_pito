@@ -207,7 +207,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIsTWVyY2hhbnQiLCJpYXQiOjE2MDYwNDA0NTMsImV4cCI6MTYwNjEyNjg1M30.xX73RdZ8haETXaeKfSX1J4_sARpNyY4Qv3-L7cqTObk",
+						"value": "{{token}}",
 						"type": "text"
 					}
 				],
@@ -273,7 +273,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIsTWVyY2hhbnQiLCJpYXQiOjE2MDYwNDA0NTMsImV4cCI6MTYwNjEyNjg1M30.xX73RdZ8haETXaeKfSX1J4_sARpNyY4Qv3-L7cqTObk",
+						"value": "{{token}}",
 						"type": "text"
 					}
 				],
@@ -283,18 +283,18 @@
 						{
 							"key": "mypic",
 							"type": "file",
-							"src": "/C:/Users/Kavin/Pictures/icon.jpeg"
+							"src": "/C:/Users/Kavin/Pictures/BlueStacks/Black Desert Mobile_Screenshot_2020.04.22_15.05.34.jpg",
+							"disabled": true
 						},
 						{
 							"key": "name",
-							"value": "Fauzi123",
+							"value": "Ahmad Fauzi1",
 							"type": "text"
 						},
 						{
-							"key": "title",
-							"value": "where",
-							"type": "text",
-							"disabled": true
+							"key": "flagDeleteAva",
+							"value": "",
+							"type": "text"
 						}
 					],
 					"options": {
@@ -312,7 +312,8 @@
 						"user",
 						"submitProfile"
 					]
-				}
+				},
+				"description": "Jika tidak upload image jangan dilempar parameter mypic.\r\nParameter mandatory adalah name dan flagDeleteAva, jika ingin delete avatar isi flagDeleteAva dengan char misal X,A,B atau dll."
 			},
 			"response": []
 		},
@@ -323,7 +324,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIsTWVyY2hhbnQiLCJpYXQiOjE2MDYwNDA0NTMsImV4cCI6MTYwNjEyNjg1M30.xX73RdZ8haETXaeKfSX1J4_sARpNyY4Qv3-L7cqTObk",
+						"value": "{{token}}",
 						"type": "text"
 					}
 				],
@@ -434,93 +435,102 @@
 			"response": []
 		},
 		{
-			"name": "user/getVideosByCategory",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
+			"name": "/user/listVideosByCategory",
 			"request": {
 				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id_cat\" : 1\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
 					}
-				},
+				],
 				"url": {
-					"raw": "http://localhost:8080/user/getVideosByCategory",
-					"protocol": "http",
+					"raw": "{{url_local}}/user/listVideosByCategory?id_cat=1&page=1",
 					"host": [
-						"localhost"
+						"{{url_local}}"
 					],
-					"port": "8080",
 					"path": [
 						"user",
-						"getVideosByCategory"
+						"listVideosByCategory"
+					],
+					"query": [
+						{
+							"key": "id_cat",
+							"value": "1"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "/user/listmerchant",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
+			"name": "/user/listMerchant",
 			"request": {
 				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id_merchant\" : \"\"      // All Merchant\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
 					}
-				},
+				],
 				"url": {
-					"raw": "http://localhost:8080/user/listmerchant",
-					"protocol": "http",
+					"raw": "{{url_local}}/user/listmerchant?page=1&type={{type_merchant_pop}}",
 					"host": [
-						"localhost"
+						"{{url_local}}"
 					],
-					"port": "8080",
 					"path": [
 						"user",
 						"listmerchant"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "type",
+							"value": "{{type_merchant_pop}}"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "/user/actionVidLikes",
+			"name": "/user/listVideosByMerchant",
 			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"userId\" : 1,\r\n    \"videoId\" : 1\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
 					}
-				},
+				],
 				"url": {
-					"raw": "http://localhost:8080/user/actionVidLikes",
-					"protocol": "http",
+					"raw": "{{url_local}}/user/listVideosByMerchant?id_merchant=1&page=1",
 					"host": [
-						"localhost"
+						"{{url_local}}"
 					],
-					"port": "8080",
 					"path": [
 						"user",
-						"actionVidLikes"
+						"listVideosByMerchant"
+					],
+					"query": [
+						{
+							"key": "id_merchant",
+							"value": "1"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
 					]
 				}
 			},

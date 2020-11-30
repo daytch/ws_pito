@@ -1,4 +1,7 @@
 const favorites = require("../model/favorites");
+const videos = require("../model/videos");
+const videos_ctrl = require("../controller/videos.ctrl");
+const conf_paging = require("../config/paging.config");
 
 exports.actionFav = async(param, res) => {
     var req = param.body;
@@ -42,4 +45,38 @@ exports.actionFav = async(param, res) => {
             message : "Submit favourites failed"
         });
     }
+}
+
+exports.getFav = async(param, res) => {
+    var req = param.query;
+    var user_id = param.userId;
+    var type = req.type;
+    var sort_by = req.sort_by;
+    var page = req.page;
+
+    var item_per_page = conf_paging.item_per_page;
+    var data = [];
+    var offset = (page - 1) * item_per_page;
+    var cntVid = await favorites.getCountRecord(user_id, type, 1, "");
+    var cnt = 0;
+    for(var c of cntVid){
+        cnt = c.cnt;
+    }
+
+    var isNext = false;
+    if(cnt > (page * item_per_page)){
+        isNext = true;
+    }
+    if(type == "Livestream"){
+        var vids = await favorites.getRecordLivestream(user_id, 1, offset, item_per_page);
+        data = await videos_ctrl.createObjVideos(vids, user_id);
+    }
+
+    return res.status(200).json({
+        isSuccess : true,
+        message : "Success get "+type+" page " + page,
+        isNext : isNext,
+        total : cnt,
+        data : data
+    });
 }
