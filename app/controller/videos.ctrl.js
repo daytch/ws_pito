@@ -128,10 +128,11 @@ exports.listVideosByCategory = async(param, res) => {
     var id_cat = req.id_cat;
     var user_id = param.userId;
     var page = req.page;
+    var type = req.type;
     var item_per_page = conf_paging.item_per_page;
     var offset = (page - 1) * item_per_page;
 
-    var cntVid = await videos.getCountVideosByCat("", id_cat);
+    var cntVid = await videos.getCountVideosByCat("", id_cat, type);
     var cnt = 0;
     for(var c of cntVid){
         cnt = c.cnt;
@@ -140,7 +141,7 @@ exports.listVideosByCategory = async(param, res) => {
     if(cnt > (page * item_per_page)){
         isNext = true;
     }
-    var vids = await videos.getListVideosPagingCat("", id_cat, offset, item_per_page);
+    var vids = await videos.getListVideosPagingCat("", id_cat, type, offset, item_per_page);
     var data = await this.createObjVideos(vids, user_id);
     
     return res.status(200).json({
@@ -157,10 +158,11 @@ exports.listVideosByMerchant = async(param, res) => {
     var id_merchant = req.id_merchant;
     var user_id = param.userId;
     var page = req.page;
+    var type = req.type;
     var item_per_page = conf_paging.item_per_page;
     var offset = (page - 1) * item_per_page;
 
-    var cntVid = await videos.getCountVideosByUserId(id_merchant);
+    var cntVid = await videos.getCountVideosByUserIdType(id_merchant, type);
     var cnt = 0;
     for(var c of cntVid){
         cnt = c.cnt;
@@ -169,7 +171,7 @@ exports.listVideosByMerchant = async(param, res) => {
     if(cnt > (page * item_per_page)){
         isNext = true;
     }
-    var vids = await videos.getListVideosPaging(id_merchant, "", offset, item_per_page);
+    var vids = await videos.getListVideosPaging(id_merchant, type, offset, item_per_page);
     var data = await this.createObjVideos(vids, user_id);
     
     return res.status(200).json({

@@ -92,7 +92,7 @@ exports.getVideosById = async(id) => {
 };
 
 exports.getCountVideosByUserId = async(user_id) => {
-    var que = "SELECT * FROM " + TableVideos + " ";
+    var que = "SELECT count(*) as cnt FROM " + TableVideos + " ";
     que += " WHERE userId = '" + user_id + "' ";
     
     var rows = await query(que);
@@ -190,12 +190,21 @@ exports.getCountVideosByType = async(user_id, type) => {
     return rows;
 };
 
-exports.getCountVideosByCat = async(user_id, category) => {
+exports.getCountVideosByCat = async(user_id, category, type) => {
     var que = "SELECT count(*) as cnt FROM " + TableVideos + " as a ";
         que += "INNER JOIN " + TableVideosCategory + " as b on a.id = b.videoId AND b.categoryId = " + category + " ";
         que += "WHERE 1=1 ";
     if(user_id != ""){
         que += "AND a.userId = '" + user_id + "'";
+    }
+    if(type == "live_videos"){
+        que += "AND startDate < now() AND endDate > now() ";
+    }
+    else if(type == "upcoming_videos"){
+        que += "AND startDate > now() ";
+    }
+    else if(type == "previous_videos"){
+        que += "AND endDate < now() ";
     }
     
     var rows = await query(que);
@@ -232,12 +241,21 @@ exports.getListVideosPaging = async (user_id, type, offset, limitpage) => {
     return rows;
 }
 
-exports.getListVideosPagingCat = async(user_id, category, offset, limitpage) => {
+exports.getListVideosPagingCat = async(user_id, category, type, offset, limitpage) => {
     var que = "SELECT a.* FROM " + TableVideos + " as a ";
         que += "INNER JOIN " + TableVideosCategory + " as b on a.id = b.videoId AND b.categoryId = " + category + " ";
         que += "WHERE 1=1 ";
     if(user_id != ""){
         que += "AND a.userId = '" + user_id + "' ";
+    }
+    if(type == "live_videos"){
+        que += "AND startDate < now() AND endDate > now() ";
+    }
+    else if(type == "upcoming_videos"){
+        que += "AND startDate > now() ";
+    }
+    else if(type == "previous_videos"){
+        que += "AND endDate < now() ";
     }
     que += "ORDER BY startDate desc ";
     que += "LIMIT " + offset + "," + limitpage;
@@ -258,6 +276,23 @@ exports.insertVideos = async(param) => {
 
 exports.getVideosbyTmp = async(tmp, user_id)=>{
     var que = "SELECT * FROM " + TableVideos + " WHERE tmp = '" + tmp +"' AND userId = '" + user_id + "'";
+    var rows = await query(que);
+    return rows;
+};
+
+exports.getCountVideosByUserIdType = async(user_id, type) => {
+    var que = "SELECT * FROM " + TableVideos + " ";
+    que += " WHERE userId = '" + user_id + "' ";
+    if(type == "live_videos"){
+        que += "AND startDate < now() AND endDate > now() ";
+    }
+    else if(type == "upcoming_videos"){
+        que += "AND startDate > now() ";
+    }
+    else if(type == "previous_videos"){
+        que += "AND endDate < now() ";
+    }
+    
     var rows = await query(que);
     return rows;
 };

@@ -3,6 +3,7 @@ const users = require("../model/users");
 const merchant = require("../model/merchant");
 const videos = require("../model/videos");
 const videos_ctrl = require("../controller/videos.ctrl");
+const favorites = require("../model/favorites");
 
 const jwt = require("jsonwebtoken");
 const { mailer,uploadfile } = require("../middlewares");
@@ -383,7 +384,7 @@ exports.listMerchant = async(user_id, type, offset, per_page) => {
     var dt = {};
     for(var u of usr){
         var cnt_sub = 0;
-        var countsubs = await merchant.getCountSubs(u.id);
+        var countsubs = await favorites.getCountRecord("", "Merchant", 1, u.id);
         for(var c of countsubs){
             cnt_sub = c.cnt;
         }
@@ -401,7 +402,7 @@ exports.listMerchant = async(user_id, type, offset, per_page) => {
         }
 
         var isSubs = false;
-        var checksubs = await merchant.getCountSubsById(u.id, user_id);
+        var checksubs = await favorites.getCountRecord(user_id, "Merchant", 1, u.id);
         if(checksubs.length > 0){
             isSubs = true;
         }
@@ -443,13 +444,13 @@ exports.merchantPage = async(param,res) => {
     }
 
     var subs = 0;
-    var count_subs = await merchant.getCountSubs(merchant_id);
+    var count_subs = await favorites.getCountRecord("", "Merchant", 1, merchant_id);
     for(var c of count_subs){
         subs = c.cnt;
     }
 
     var isSubs = false;
-    var checksubs = await merchant.getCountSubsById(merchant_id, user_id);
+    var checksubs = await favorites.getCountRecord(user_id, "Merchant", 1, merchant_id);
     if(checksubs.length > 0){
         isSubs = true;
     }

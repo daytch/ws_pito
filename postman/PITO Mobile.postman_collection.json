@@ -246,7 +246,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"type\" : \"{{fav_merchant}}\",\r\n    \"pkey\" : 2\r\n}",
+					"raw": "{\r\n    \"pkey\" : \"{{fav_livestream}}\",\r\n    \"type\" : 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -381,7 +381,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIsTWVyY2hhbnQiLCJpYXQiOjE2MDYwNDA0NTMsImV4cCI6MTYwNjEyNjg1M30.xX73RdZ8haETXaeKfSX1J4_sARpNyY4Qv3-L7cqTObk",
+						"value": "{{token}}",
 						"type": "text"
 					}
 				],
@@ -446,7 +446,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/user/listVideosByCategory?id_cat=1&page=1",
+					"raw": "{{url_local}}/user/listVideosByCategory?id_cat=1&page=1&type=previous_videos",
 					"host": [
 						"{{url_local}}"
 					],
@@ -462,6 +462,10 @@
 						{
 							"key": "page",
 							"value": "1"
+						},
+						{
+							"key": "type",
+							"value": "previous_videos"
 						}
 					]
 				}
@@ -498,7 +502,8 @@
 							"value": "{{type_merchant_pop}}"
 						}
 					]
-				}
+				},
+				"description": "type : (cek env)\r\npopular : {{type_merchant_pop}}\r\nrecommended : {{type_merchant_recom}}\r\nnew comer : {{type_merchant_new}}"
 			},
 			"response": []
 		},
@@ -514,7 +519,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/user/listVideosByMerchant?id_merchant=1&page=1",
+					"raw": "{{url_local}}/user/listVideosByMerchant?id_merchant=1&page=1&type=previous_videos",
 					"host": [
 						"{{url_local}}"
 					],
@@ -530,9 +535,53 @@
 						{
 							"key": "page",
 							"value": "1"
+						},
+						{
+							"key": "type",
+							"value": "previous_videos"
 						}
 					]
-				}
+				},
+				"description": "type :\r\nupcoming_videos\r\nlive_videos\r\nprevious_videos"
+			},
+			"response": []
+		},
+		{
+			"name": "/user/getFavourites",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_local}}/user/getFavourites?sort_by=recent&page=1&type={{fav_merchant}}",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"user",
+						"getFavourites"
+					],
+					"query": [
+						{
+							"key": "sort_by",
+							"value": "recent"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "type",
+							"value": "{{fav_merchant}}"
+						}
+					]
+				},
+				"description": "type :\r\n- Livestream : list favourites Livestream\r\n    sort_by :\r\n        - live_videos : sort by live now\r\n        - upcoming_videos : sort by coming up next\r\n- Merchant : list favourites Merchant\r\n    sort_by :\r\n        - popular : sort by most popular\r\n        - recent : sort by most recent"
 			},
 			"response": []
 		},
@@ -666,44 +715,6 @@
 					"path": [
 						"merchant",
 						"submitLivestream"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/user/getFavourites",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-access-token",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{url_local}}/user/getFavourites?sort_by=recent&page=1&type={{fav_merchant}}",
-					"host": [
-						"{{url_local}}"
-					],
-					"path": [
-						"user",
-						"getFavourites"
-					],
-					"query": [
-						{
-							"key": "sort_by",
-							"value": "recent"
-						},
-						{
-							"key": "page",
-							"value": "1"
-						},
-						{
-							"key": "type",
-							"value": "{{fav_merchant}}"
-						}
 					]
 				}
 			},
