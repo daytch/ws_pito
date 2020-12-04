@@ -41,7 +41,8 @@ module.exports = function(app) {
     app.get('/user/listVideosByMerchant', [authJwt.isUser], videos.listVideosByMerchant);
     app.get('/user/getFavourites', [authJwt.isUser], favorites.getFav);
     app.get('/user/getNotification', [authJwt.isUser], notification.getNotification);
-    app.get('/user/updateNotifReadAll', [authJwt.isUser], notification.notifReadAll);
+    app.post('/user/updateNotifReadAll', [authJwt.isUser], notification.notifReadAll);
+    app.post('/user/updateNotifMute', [authJwt.isUser], user.updateMute);
     
     app.post('/user/actionVidComments', [authJwt.isUser], videos.actionVidComments);
     

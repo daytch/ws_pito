@@ -11,7 +11,7 @@ exports.getNotification = async(param, res) => {
     var item_per_page = conf_paging.item_per_page;
     var data = [];
     var offset = (page - 1) * item_per_page;
-    var cntNotif = await notif.getCountRecord("", user_id, "");
+    var cntNotif = await notif.getCountRecord("", user_id, "", "");
     var cnt = 0;
     for(var c of cntNotif){
         cnt = c.cnt;
@@ -53,6 +53,8 @@ exports.getNotification = async(param, res) => {
 
     return res.status(200).json({
         isSuccess : true,
+        isNext : isNext,
+        total_notif : cnt,
         message : "Success get notification page " + page,
         data : data
     });

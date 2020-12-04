@@ -229,3 +229,9 @@ exports.updateName = async(name, user_id) => {
     var rows = await query(que);
     return rows;
 }
+
+exports.updateMute = async(user_id, isMute) => {
+    var que = "UPDATE " + TableUserDetails + " SET isMute = '" + isMute + "' WHERE userId = '" + user_id + "'";
+    var rows = await query(que);
+    return rows;
+}

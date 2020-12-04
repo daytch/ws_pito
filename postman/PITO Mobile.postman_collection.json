@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "046ef301-cd75-4308-a8a7-6f813a635d2a",
+		"_postman_id": "859d0a96-6e44-4efe-9317-5e3b3fb46d24",
 		"name": "PITO Mobile",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -553,12 +553,12 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "{{token}}",
-						"type": "text"
+						"type": "text",
+						"value": "{{token}}"
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/user/getFavourites?sort_by=recent&page=1&type={{fav_merchant}}",
+					"raw": "{{url_local}}/user/getFavourites?sort_by=most_popular&page=1&type={{fav_merchant}}",
 					"host": [
 						"{{url_local}}"
 					],
@@ -569,7 +569,7 @@
 					"query": [
 						{
 							"key": "sort_by",
-							"value": "recent"
+							"value": "most_popular"
 						},
 						{
 							"key": "page",
@@ -581,7 +581,7 @@
 						}
 					]
 				},
-				"description": "type :\r\n- Livestream : list favourites Livestream\r\n    sort_by :\r\n        - live_videos : sort by live now\r\n        - upcoming_videos : sort by coming up next\r\n- Merchant : list favourites Merchant\r\n    sort_by :\r\n        - popular : sort by most popular\r\n        - recent : sort by most recent"
+				"description": "type :\r\n- Livestream : list favourites Livestream\r\n- Merchant : list favourites Merchant\r\n    sort_by :\r\n        - most_popular : sort by most popular\r\n        - most_recent : sort by most recent\r\n        - most_livestream : sort by most recent"
 			},
 			"response": []
 		},
@@ -612,6 +612,73 @@
 						}
 					]
 				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/updateNotifReadAll",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"last_id\" : 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_local}}/user/updateNotifReadAll",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"user",
+						"updateNotifReadAll"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/updateNotifMute",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"isMute\" : 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_local}}/user/updateNotifMute",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"user",
+						"updateNotifMute"
+					]
+				},
+				"description": "0 = mute disable\r\n1 = mute enable"
 			},
 			"response": []
 		},
@@ -745,42 +812,6 @@
 					"path": [
 						"merchant",
 						"submitLivestream"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/user/updateNotifReadAll",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-access-token",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"last_id\" : 3\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url_local}}/user/updateNotifReadAll",
-					"host": [
-						"{{url_local}}"
-					],
-					"path": [
-						"user",
-						"updateNotifReadAll"
 					]
 				}
 			},

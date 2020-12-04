@@ -856,3 +856,23 @@ exports.submitProfile = async(param, res) => {
         }
     });
 }
+
+exports.updateMute = async(param, res) => {
+    var req = param.body;
+    var user_id = param.userId;
+    var isMute = req.isMute;
+
+    var upd = await users.updateMute(user_id, isMute);
+    if(upd.affectedRows > 0){
+        return res.status(200).json({
+            isSuccess : true, 
+            message : "Success Update Mute Notification"
+        });
+    }
+    else {
+        return res.status(500).json({
+            isSuccess : false, 
+            message : "Failed Update Mute Notification"
+        });
+    }
+}

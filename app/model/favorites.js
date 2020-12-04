@@ -101,6 +101,7 @@ exports.getRecordMerchant = async(user_id, status, offset, per_page, sort_by, ro
         que += "LEFT JOIN videos as f ";
         que += "ON a.id = f.userId ";
         que += "WHERE e.userId = '" + user_id + "' AND e.status = '" + status + "' ";
+        que += "GROUP BY a.id ";
     if(sort_by == "most_popular"){
         que += "ORDER BY d.ispopular desc ";
     }
