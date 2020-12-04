@@ -3,6 +3,7 @@ const user = require('./app/controller/user.ctrl');
 const videos = require('./app/controller/videos.ctrl');
 const category = require('./app/controller/category.ctrl');
 const favorites = require('./app/controller/favorites.ctrl');
+const notification = require('./app/controller/notification.ctrl');
 const { authJwt } = require("./app/middlewares");
 
 module.exports = function(app) {
@@ -39,6 +40,8 @@ module.exports = function(app) {
     app.get('/user/listMerchant', [authJwt.isUser], user.listMerchantPaging);
     app.get('/user/listVideosByMerchant', [authJwt.isUser], videos.listVideosByMerchant);
     app.get('/user/getFavourites', [authJwt.isUser], favorites.getFav);
+    app.get('/user/getNotification', [authJwt.isUser], notification.getNotification);
+    app.get('/user/updateNotifReadAll', [authJwt.isUser], notification.notifReadAll);
     
     app.post('/user/actionVidComments', [authJwt.isUser], videos.actionVidComments);
     

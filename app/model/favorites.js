@@ -1,6 +1,5 @@
 const { dbmysql } = require('../middlewares');
 const util = require("util");
-const { user } = require('../config/db.config');
 const TableName = "favorites";
 const TableUsers = "users";
 const TableUsersRole = "users_roles";
@@ -73,10 +72,13 @@ exports.getRecordLivestream = async(user_id, status, offset, per_page, sort_by) 
     var que = "SELECT b.* FROM " + TableName + " as a INNER JOIN videos as b ";
         que += "ON a.pkey = b.id AND a.type_fav = 'Livestream' ";
         que += "WHERE a.userId = '" + user_id + "' AND a.status = '"+ status +"' ";
-        if(sort_by == "live_videos"){
-            que += "ORDER BY b.startDate < now() AND b.endDate > now() desc ";
+        if(sort_by == "most_popular"){
+            que += "ORDER BY b.ispopular desc, b.startDate desc ";
         }
-        else if(sort_by == "upcoming_videos"){
+        else if(sort_by == "most_recent"){
+            que += "ORDER BY b.startDate desc ";
+        }
+        else if(sort_by == "most_livestream"){
             que += "ORDER BY b.startDate desc ";
         }
         que += "LIMIT "+offset+","+per_page+" ";
@@ -96,12 +98,17 @@ exports.getRecordMerchant = async(user_id, status, offset, per_page, sort_by, ro
         que += "ON a.id = c.userId ";
         que += "LEFT JOIN " + TableMerchDetails + " as d ";
         que += "ON a.id = d.userId ";
+        que += "LEFT JOIN videos as f ";
+        que += "ON a.id = f.userId ";
         que += "WHERE e.userId = '" + user_id + "' AND e.status = '" + status + "' ";
-    if(sort_by == "popular"){
+    if(sort_by == "most_popular"){
         que += "ORDER BY d.ispopular desc ";
     }
-    else if(sort_by == "recent"){
+    else if(sort_by == "most_recent"){
         que += "ORDER BY d.createdAt desc ";
+    }
+    else if(sort_by == "most_livestream"){
+        que += "ORDER BY f.startDate desc ";
     }
     que += "LIMIT "+offset+","+per_page+" ";
 

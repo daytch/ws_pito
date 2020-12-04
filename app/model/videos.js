@@ -11,10 +11,10 @@ exports.getAllRecord = function(param, callback){
     var que = "SELECT * FROM " + TableVideos + " WHERE 1=1 ";
     if(param != null){
         if(param.userId != ""){
-            que += "userId = '" + param.userId + "' ";
+            que += "AND userId = '" + param.userId + "' ";
         }
         if(param.id != ""){
-            que += "id = '" + param.id + "' ";
+            que += "AND id = '" + param.id + "' ";
         }
     }
     
@@ -34,10 +34,10 @@ exports.getRecord = async(param) => {
     var que = "SELECT * FROM " + TableVideos + " WHERE 1=1 ";
     if(param != null){
         if(param.userId != ""){
-            que += "userId = '" + param.userId + "' ";
+            que += "AND userId = '" + param.userId + "' ";
         }
         if(param.id != ""){
-            que += "id = '" + param.id + "' ";
+            que += "AND id = '" + param.id + "' ";
         }
     }
     

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "aae6aa81-3160-4088-8cd3-ea4877b1ad78",
+		"_postman_id": "046ef301-cd75-4308-a8a7-6f813a635d2a",
 		"name": "PITO Mobile",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -586,6 +586,36 @@
 			"response": []
 		},
 		{
+			"name": "/user/getNotification",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_local}}/user/getNotification?page=2",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"user",
+						"getNotification"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/user/actionVidComments",
 			"request": {
 				"method": "POST",
@@ -715,6 +745,42 @@
 					"path": [
 						"merchant",
 						"submitLivestream"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/updateNotifReadAll",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"last_id\" : 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_local}}/user/updateNotifReadAll",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"user",
+						"updateNotifReadAll"
 					]
 				}
 			},
