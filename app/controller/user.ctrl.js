@@ -739,10 +739,12 @@ exports.processLogin = async(err,rtn,res,role) => {
             }
 
             var image = "";
+            var isMute = "";
             if(userId != ""){
                 var dtls = await users.getUserDetails(userId);
                 for(var d of dtls){
                     image = d.img_avatar;
+                    isMute = d.isMute;
                 }
             }
 
@@ -758,6 +760,7 @@ exports.processLogin = async(err,rtn,res,role) => {
                 name : name,
                 email : userEmail,
                 image : image,
+                isMute : isMute,
                 roles : roleArr,
                 token : token
             }

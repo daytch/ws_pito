@@ -37,13 +37,17 @@ exports.getNotification = async(param, res) => {
                 img_ava = u.img_avatar;
             }
         }
+        var isRead = false;
+        if(o.isRead == 1){
+            isRead = true;
+        }
         var dt = {
             id : o.id,
             userId : o.userId,
             videoId : o.videoId,
             title : o.title,
             description : o.description,
-            isRead : o.isRead,
+            isRead : isRead,
             createdAt : o.createdAt,
             merchantId : merch_id,
             img_thumbnail : img_ava

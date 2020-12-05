@@ -468,7 +468,8 @@
 							"value": "previous_videos"
 						}
 					]
-				}
+				},
+				"description": "type :\r\nlive_videos\r\nupcoming_videos\r\nprevious_videos"
 			},
 			"response": []
 		},
@@ -558,7 +559,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/user/getFavourites?sort_by=most_popular&page=1&type={{fav_merchant}}",
+					"raw": "{{url_local}}/user/getFavourites?sort_by=most_popular&page=1&type={{fav_livestream}}",
 					"host": [
 						"{{url_local}}"
 					],
@@ -577,7 +578,7 @@
 						},
 						{
 							"key": "type",
-							"value": "{{fav_merchant}}"
+							"value": "{{fav_livestream}}"
 						}
 					]
 				},
@@ -661,7 +662,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"isMute\" : 1\r\n}",
+					"raw": "{\r\n    \"isMute\" : true\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -813,7 +814,8 @@
 						"merchant",
 						"submitLivestream"
 					]
-				}
+				},
+				"description": "startDate : startDate + startTime\r\nendDate : startDate + endTime"
 			},
 			"response": []
 		}
