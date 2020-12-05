@@ -413,9 +413,13 @@ exports.listMerchant = async(user_id, type, offset, per_page) => {
             cat.push(mc.name);
         }
 
-        var isSubs = false;
+        var cnt_is_subs = 0;
         var checksubs = await favorites.getCountRecord(user_id, "Merchant", 1, u.id);
-        if(checksubs.length > 0){
+        for(var c of checksubs){
+            cnt_is_subs = c.cnt;
+        }
+        var isSubs = false;
+        if(cnt_is_subs > 0){
             isSubs = true;
         }
 

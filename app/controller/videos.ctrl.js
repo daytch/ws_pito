@@ -269,14 +269,18 @@ exports.createObjVideos = async(vids, user_id) => {
         var merch = await users.getUserDetailsWithName(v.userId);
         for(var m of merch){
             var subs = 0;
-            var count_subs = await merchant.getCountSubs(m.userId);
-            for(var c of count_subs){
+            var countsubs = await fav.getCountRecord("", "Merchant", 1, m.userId);
+            for(var c of countsubs){
                 subs = c.cnt;
             }
 
+            var cnt_is_subs = 0;
+            var checksubs = await fav.getCountRecord(user_id, "Merchant", 1, m.userId);
+            for(var c of checksubs){
+                cnt_is_subs = c.cnt;
+            }
             var isSubs = false;
-            var checksubs = await merchant.getCountSubsById(m.userId, user_id);
-            if(checksubs.length > 0){
+            if(cnt_is_subs > 0){
                 isSubs = true;
             }
 
