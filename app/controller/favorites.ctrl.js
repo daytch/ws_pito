@@ -24,6 +24,7 @@ exports.actionFav = async(param, res) => {
     var check = false;
     if(type == "Livestream"){
         var prm = {
+            userId : "",
             id : pkey
         }
         var data = await videos.getRecord(prm);

@@ -154,6 +154,18 @@ exports.loginMerchant = async(param, res) => {
     await users.loginUser(req.email, "Merchant", res, this.processLogin);
 };
 
+exports.logiMerchantSSO = async(param, res) => {
+    var req = param.body;
+    if(req.email == ""){
+        // Gagal
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Login Failed, email has been null"
+        });
+    }
+    await users.loginUser(req.email, "Merchant", res, this.processLogin);
+}
+
 exports.loginAdmin = async(param, res) => {
     // res.json({message : 'halo ' + req.username + ', pass ' + req.password});
     var req = param.body;
