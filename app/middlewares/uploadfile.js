@@ -32,8 +32,9 @@ exports.processUpload = async(files, user_id) => {
     if(!conf.filetypes.includes(ftype)){
         var rtn = {
             error : true,
-            message : "File type not allowed"
+            message : "File type not allowed " + filetype
         };
+        console.log(arrtype);
         return rtn;
     }
 

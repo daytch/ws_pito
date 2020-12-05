@@ -50,7 +50,7 @@ module.exports = function(app) {
 
     // Function for Web
     app.post('/merchant/login', user.loginMerchant);
-    app.post('/merchant/loginSSO', user.loginUserSSO);
+    app.post('/merchant/loginSSO', user.logiMerchantSSO);
     app.post('/merchant/submitLivestream', [authJwt.isMerchant], videos.submitLivestream);
     app.post('/admin/login', user.loginAdmin);
 
