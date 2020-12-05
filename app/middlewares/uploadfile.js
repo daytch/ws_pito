@@ -27,9 +27,17 @@ exports.processUpload = async(files, user_id) => {
         return rtn;
     }
     // Check File Type
-    var arrtype = filetype.split("/");
-    var ftype = arrtype[arrtype.length - 1];
-    if(!conf.filetypes.includes(ftype)){
+    // var arrtype = filetype.split("/");
+    // var ftype = arrtype[arrtype.length - 1];
+    // if(!conf.filetypes.includes(ftype)){
+    //     var rtn = {
+    //         error : true,
+    //         message : "File type not allowed " + filetype
+    //     };
+    //     console.log(arrtype);
+    //     return rtn;
+    // }
+    if(!filetype.includes("image")){
         var rtn = {
             error : true,
             message : "File type not allowed " + filetype
