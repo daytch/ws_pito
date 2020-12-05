@@ -49,9 +49,14 @@ module.exports = function(app) {
     app.post('/user/resetPassword', [authJwt.isResetPassword], user.resetPassword);
 
     // Function for Web
+    // Merchant
     app.post('/merchant/login', user.loginMerchant);
     app.post('/merchant/loginSSO', user.logiMerchantSSO);
     app.post('/merchant/submitLivestream', [authJwt.isMerchant], videos.submitLivestream);
+    app.get('/merchant/getDashboard', [authJwt.isMerchant], videos.getDashboard);
+    app.post('/merchant/login', user.loginMerchant);
+
+    // Admin
     app.post('/admin/login', user.loginAdmin);
 
     app.get('/tes_jwt', [authJwt.isUser], function(req,res){

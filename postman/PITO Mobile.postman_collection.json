@@ -246,7 +246,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"pkey\" : \"{{fav_livestream}}\",\r\n    \"type\" : 1\r\n}",
+					"raw": "{\r\n    \"pkey\" : 5,\r\n    \"type\" : \"{{fav_livestream}}\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -446,7 +446,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/user/listVideosByCategory?id_cat=1&page=1&type=previous_videos",
+					"raw": "{{url_local}}/user/listVideosByCategory?id_cat=1&page=1&type=live_videos",
 					"host": [
 						"{{url_local}}"
 					],
@@ -465,7 +465,7 @@
 						},
 						{
 							"key": "type",
-							"value": "previous_videos"
+							"value": "live_videos"
 						}
 					]
 				},
@@ -816,6 +816,57 @@
 					]
 				},
 				"description": "startDate : startDate + startTime\r\nendDate : startDate + endTime"
+			},
+			"response": []
+		},
+		{
+			"name": "/merchant/loginSSO",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"njicker@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_local}}/merchant/loginSSO",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"merchant",
+						"loginSSO"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/merchant/getDashboard",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_local}}/merchant/getDashboard",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"merchant",
+						"getDashboard"
+					]
+				}
 			},
 			"response": []
 		}

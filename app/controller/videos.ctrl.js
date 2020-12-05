@@ -331,3 +331,15 @@ exports.createObjVideos = async(vids, user_id) => {
 
     return rtn;
 }
+
+exports.getDashboard = async(param, res) => {
+    var user_id = param.userId;
+    status = 200;
+    var hsl = {
+        live_videos : await this.videosMerchantByMoment("", "live_videos", user_id),
+        upcoming_videos : await this.videosMerchantByMoment("", "upcoming_videos", user_id),
+        previous_videos : await this.videosMerchantByMoment("", "previous_videos",user_id)
+    }; 
+
+    return res.status(status).json(hsl);
+}
