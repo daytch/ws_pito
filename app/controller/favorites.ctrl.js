@@ -111,14 +111,18 @@ exports.getFav = async(param, res) => {
         for(var m of list){
             var merchant_id = m.id;
             var subs = 0;
-            var count_subs = await merchant.getCountSubs(merchant_id);
-            for(var c of count_subs){
+            var countsubs = await favorites.getCountRecord("", "Merchant", 1, merchant_id);
+            for(var c of countsubs){
                 subs = c.cnt;
             }
 
+            var cnt_is_subs = 0;
+            var checksubs = await favorites.getCountRecord(user_id, "Merchant", 1, merchant_id);
+            for(var c of checksubs){
+                cnt_is_subs = c.cnt;
+            }
             var isSubs = false;
-            var checksubs = await merchant.getCountSubsById(merchant_id, user_id);
-            if(checksubs.length > 0){
+            if(cnt_is_subs > 0){
                 isSubs = true;
             }
 

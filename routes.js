@@ -43,11 +43,9 @@ module.exports = function(app) {
     app.get('/user/getNotification', [authJwt.isUser], notification.getNotification);
     app.post('/user/updateNotifReadAll', [authJwt.isUser], notification.notifReadAll);
     app.post('/user/updateNotifMute', [authJwt.isUser], user.updateMute);
+    app.post('/user/resetPassword', [authJwt.isResetPassword], user.resetPassword);
     
     app.post('/user/actionVidComments', [authJwt.isUser], videos.actionVidComments);
-    
-    app.post('/user/resetPassword', [authJwt.isResetPassword], user.resetPassword);
-
     // Function for Web
     // Merchant
     app.post('/merchant/login', user.loginMerchant);
