@@ -43,10 +43,10 @@ module.exports = function(app) {
     app.get('/user/getNotification', [authJwt.isUser], notification.getNotification);
     app.post('/user/updateNotifReadAll', [authJwt.isUser], notification.notifReadAll);
     app.post('/user/updateNotifMute', [authJwt.isUser], user.updateMute);
-    app.post('/user/resetPassword', [authJwt.isResetPassword], user.resetPassword);
     
     app.post('/user/actionVidComments', [authJwt.isUser], videos.actionVidComments);
     // Function for Web
+    app.post('/user/resetPassword', [authJwt.isResetPassword], user.resetPassword);
     // Merchant
     app.post('/merchant/login', user.loginMerchant);
     app.post('/merchant/loginSSO', user.logiMerchantSSO);
