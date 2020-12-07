@@ -12,6 +12,7 @@ const formidable = require("formidable");
 const {uploadfile} = require("../middlewares");
 
 exports.getVideos = async(param, res) => {
+    try{
     // Limit 10 data, tambah list merchant
     // var user_id = await authJwt.getUserId(param, res);
     var user_id = param.userId;
@@ -36,6 +37,11 @@ exports.getVideos = async(param, res) => {
     }; 
 
     return res.status(status).json(hsl);
+    }
+    catch(e){
+        console.log("home");
+        console.log(e);
+    }
 };
 
 exports.videosPage = async(param, res) => {
