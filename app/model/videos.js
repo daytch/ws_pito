@@ -33,10 +33,10 @@ exports.getAllRecord = function(param, callback){
 exports.getRecord = async(param) => {
     var que = "SELECT * FROM " + TableVideos + " WHERE 1=1 ";
     if(param != null){
-        if(param.userId != ""){
+        if(param.userId !== undefined && param.userId != ""){
             que += "AND userId = '" + param.userId + "' ";
         }
-        if(param.id != ""){
+        if(param.id !== undefined && param.id != ""){
             que += "AND id = '" + param.id + "' ";
         }
     }
@@ -270,6 +270,16 @@ exports.insertVideos = async(param) => {
         que += " VALUES ";
         que += "('"+param.userId+"','"+param.startDate+"','"+param.endDate+"','"+param.title+"','"+param.ig_url+"','"+param.fb_url+"',";
         que += "'"+param.tiktok_url+"','"+param.isActive+"','"+param.ispopular+"','"+param.isrecom+"','"+param.desc+"','"+param.img_thumbnail+"','"+param.tmp+"')";
+    var rows = await query(que);
+    return rows;
+};
+
+exports.replaceVideos = async(param) => {
+    var que = "REPLACE INTO " + TableVideos + " ";
+        que += "(id,userId,startDate,endDate,title,ig_url,fb_url,tiktok_url,isactive,ispopular,isrecom,`desc`,img_thumbnail,modifiedAt,tmp,createdAt) ";
+        que += " VALUES ";
+        que += "('"+param.videoId+"','"+param.userId+"','"+param.startDate+"','"+param.endDate+"','"+param.title+"','"+param.ig_url+"','"+param.fb_url+"',";
+        que += "'"+param.tiktok_url+"','"+param.isActive+"','"+param.ispopular+"','"+param.isrecom+"','"+param.desc+"','"+param.img_thumbnail+"',now(),'"+param.tmp+"','"+param.createdAt+"')";
     var rows = await query(que);
     return rows;
 };

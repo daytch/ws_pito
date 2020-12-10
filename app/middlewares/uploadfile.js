@@ -40,7 +40,8 @@ exports.processUpload = async(files, user_id) => {
     if(!filetype.includes("image")){
         var rtn = {
             error : true,
-            message : "File type not allowed " + filetype
+            message : "File type not allowed " + filetype,
+            filename : ""
         };
         console.log(arrtype);
         return rtn;

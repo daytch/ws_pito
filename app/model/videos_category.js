@@ -39,3 +39,15 @@ exports.insertCategory = async(videoId, categoryId) => {
     var rows = await query(que);
     return rows;
 };
+
+exports.updateCategory = async(videoId, categoryId) => {
+    var que = "UPDATE " + TableName + " SET categoryId = '" + categoryId + "' WHERE videoId = '" + videoId + "'";
+    var rows = await query(que);
+    return rows;
+};
+
+exports.deleteCategory = async(videoId) => {
+    var que = "DELETE FROM " + TableName + " WHERE videoId = '" + videoId + "'";
+    var rows = await query(que);
+    return rows;
+};
