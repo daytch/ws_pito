@@ -98,9 +98,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/user/home",
+					"raw": "{{url_dev}}/user/home",
 					"host": [
-						"{{url_local}}"
+						"{{url_dev}}"
 					],
 					"path": [
 						"user",
@@ -117,14 +117,14 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVzZXIiLCJpYXQiOjE2MDU4NjYwOTksImV4cCI6MTYwNTk1MjQ5OX0.BtD12Lsr0Pi3dedG6F0AwhdD8PbImTnGHDN9Tq2rUW8",
+						"value": "{{token}}",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/user/category",
+					"raw": "{{url_dev}}/user/category",
 					"host": [
-						"{{url_local}}"
+						"{{url_dev}}"
 					],
 					"path": [
 						"user",
@@ -446,9 +446,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/user/listVideosByCategory?id_cat=1&page=1&type=live_videos",
+					"raw": "{{url_dev}}/user/listVideosByCategory?id_cat=1&page=1&type=upcoming_videos",
 					"host": [
-						"{{url_local}}"
+						"{{url_dev}}"
 					],
 					"path": [
 						"user",
@@ -465,7 +465,7 @@
 						},
 						{
 							"key": "type",
-							"value": "live_videos"
+							"value": "upcoming_videos"
 						}
 					]
 				},
@@ -559,7 +559,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/user/getFavourites?sort_by=most_popular&page=1&type={{fav_livestream}}",
+					"raw": "{{url_local}}/user/getFavourites?sort_by=most_popular&page=1&type={{fav_merchant}}",
 					"host": [
 						"{{url_local}}"
 					],
@@ -578,7 +578,7 @@
 						},
 						{
 							"key": "type",
-							"value": "{{fav_livestream}}"
+							"value": "{{fav_merchant}}"
 						}
 					]
 				},
@@ -754,23 +754,29 @@
 					"mode": "formdata",
 					"formdata": [
 						{
+							"key": "videoId",
+							"value": "1",
+							"description": "di isi jika edit livestream",
+							"type": "text"
+						},
+						{
 							"key": "mypic",
 							"type": "file",
-							"src": "/C:/Users/Kavin/Pictures/BlueStacks/Black Desert Mobile_Screenshot_2020.04.22_15.05.34.jpg"
+							"src": "/C:/Users/Kavin/Downloads/v369-ning-21-neonsign_2.jpg"
 						},
 						{
 							"key": "startDate",
-							"value": "2020-11-26 13:00:00",
+							"value": "2020-12-15 00:00:00",
 							"type": "text"
 						},
 						{
 							"key": "endDate",
-							"value": "2020-11-26 23:00:00",
+							"value": "2020-12-15 23:00:00",
 							"type": "text"
 						},
 						{
 							"key": "title",
-							"value": "Video ke 2",
+							"value": "Tutorial Masak",
 							"type": "text"
 						},
 						{
@@ -780,7 +786,7 @@
 						},
 						{
 							"key": "fb_url",
-							"value": "https://facebook.com",
+							"value": "<iframe src=\"https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2FPrankKocag%2Fvideos%2F620632522075938%2F&show_text=0&width=560\" width=\"560\" height=\"315\" style=\"border:none;overflow:hidden\" scrolling=\"no\" frameborder=\"0\" allowfullscreen=\"true\" allow=\"autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share\" allowFullScreen=\"true\"></iframe>",
 							"type": "text"
 						},
 						{
@@ -795,7 +801,7 @@
 						},
 						{
 							"key": "category",
-							"value": "1,2",
+							"value": "3",
 							"type": "text"
 						}
 					],
@@ -858,13 +864,19 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/merchant/getDashboard",
+					"raw": "{{url_local}}/merchant/getDashboard?page=1",
 					"host": [
 						"{{url_local}}"
 					],
 					"path": [
 						"merchant",
 						"getDashboard"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
 					]
 				}
 			},
