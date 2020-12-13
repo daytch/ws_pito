@@ -34,6 +34,23 @@ exports.getCategoryByVideos = async(id_video/*, callback*/) => {
     return rows;
 };
 
+exports.getFullCategoryByVideos = async(id_video/*, callback*/) => {
+    var que = "SELECT a.categoryId,b.name FROM " + TableName + " as a INNER JOIN category as b on a.categoryId = b.id";
+        que +=" WHERE 1=1 AND a.videoId = '" + id_video + "' ";
+    
+    // connection.query(que, function(error, rows, fields){
+    //     if(error){
+    //         callback(error, null);
+    //     }
+    //     else {
+    //         callback(null, rows);
+    //     }
+    // });
+
+    var rows = await query(que);
+    return rows;
+};
+
 exports.insertCategory = async(videoId, categoryId) => {
     var que = "INSERT INTO " + TableName + " (videoId,categoryId) VALUES ('" + videoId +"','" + categoryId +"')";
     var rows = await query(que);

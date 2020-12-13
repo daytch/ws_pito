@@ -52,7 +52,9 @@ module.exports = function(app) {
     app.post('/merchant/loginSSO', user.logiMerchantSSO);
     app.post('/merchant/submitLivestream', [authJwt.isMerchant], videos.submitLivestream);
     app.get('/merchant/getDashboard', [authJwt.isMerchant], videos.getDashboard);
-    app.post('/merchant/login', user.loginMerchant);
+    app.get('/merchant/getVideosDetail', [authJwt.isMerchant], videos.getVideosDetail);
+    app.get('/merchant/getProfile', [authJwt.isMerchant], user.getMerchantProfile);
+    app.post('/merchant/submitProfile', [authJwt.isMerchant], user.submitMerchantProfile);
 
     // Admin
     app.post('/admin/login', user.loginAdmin);

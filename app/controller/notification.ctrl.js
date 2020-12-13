@@ -2,6 +2,7 @@ const notif = require("../model/notification");
 const conf_paging = require("../config/paging.config");
 const users = require("../model/users");
 const videos = require("../model/videos");
+const fav = require("../model/favorites");
 
 exports.getNotification = async(param, res) => {
     var req = param.query;
@@ -82,4 +83,28 @@ exports.notifReadAll = async(param, res) => {
             message : "Failed Read all with last id " + last_id
         });
     }
+}
+
+exports.insertNotificationLivestream = async(param) => {
+    var rtn = 0;
+    var prm = {
+        id : param.userId
+    }
+    var usr = await users.getAllRecord(prm);
+    var usr_name = "";
+    for(var u of usr){
+        usr_name = u.name;
+    }
+
+    var desc = usr_name + " has added a new livestream";
+    var title = "A new Livestream";
+    
+    var list_fav = await fav.getRecord("","Merchant", 1, param.userId);
+    var ins = {};
+    for(var l of list_fav){
+        ins = await notif.insertRecord(l.userId, param.videoId, title, desc, 0);
+    }
+    rtn = ins.affectedRows;
+
+    return rtn;
 }

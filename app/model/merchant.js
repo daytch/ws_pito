@@ -17,7 +17,7 @@ exports.getRecord = async (param) => {
 };
 
 exports.insertMerchantDetails = async(param) => {
-    var que = "REPLACE INTO " + TableDetails + " (userId,fb_url,ig_url,tiktok_url,ispopular,isrecom) VALUES (" + param.userId + ", '" + param.fb_url + "',";
+    var que = "INSERT INTO " + TableDetails + " (userId,fb_url,ig_url,tiktok_url,ispopular,isrecom) VALUES (" + param.userId + ", '" + param.fb_url + "',";
         que += "'" + param.ig_url + "','" + param.tiktok_url + "',1,0)";
 
     var rows = await query(que);
@@ -54,3 +54,56 @@ exports.getCategoryByUserId = async(user_id) => {
     var rows = await query(que);
     return rows;
 };
+
+exports.getFullCategoryByUserId = async(user_id) => {
+    var que = "SELECT a.category_id,b.name FROM " + TableMerchCat + " as a INNER JOIN category as b on a.category_id = b.id";
+        que +=" WHERE a.userId = '" + user_id + "' ";
+    
+    var rows = await query(que);
+    return rows;
+};
+
+exports.updateMerchantDetails = async(param) => {
+    var que = "UPDATE " + TableDetails + " SET ";
+        if(param.fb_url !== undefined){
+            que += "fb_url = '" + param.fb_url + "', ";
+        }
+        if(param.ig_url !== undefined){
+            que += "ig_url = '" + param.ig_url + "', ";
+        }
+        if(param.tiktok_url !== undefined){
+            que += "tiktok_url = '" + param.tiktok_url + "', ";
+        }
+        if(param.company_name !== undefined){
+            que += "company_name = '" + param.company_name + "', ";
+        }
+        if(param.about !== undefined){
+            que += "about = '" + param.about + "', ";
+        }
+        if(param.company_website !== undefined){
+            que += "company_website = '" + param.company_website + "', ";
+        }
+        if(param.ispopular !== undefined){
+            que += "ispopular = '" + param.ispopular + "', ";
+        }
+        if(param.isrecom !== undefined){
+            que += "isrecom = '" + param.isrecom + "', ";
+        }
+        que += "modifiedAt = now() ";
+        que += "WHERE userId = '" + param.userId + "'";
+
+    var rows = await query(que);
+    return rows;
+}
+
+exports.deleteCategory = async(user_id) => {
+    var que = "DELETE FROM " + TableMerchCat + " WHERE userId = '" + user_id + "'";
+    var rows = await query(que);
+    return rows;
+}
+
+exports.insertCategory = async(user_id, category_id) => {
+    var que = "INSERT INTO " + TableMerchCat + " (userId, category_id) VALUES ('" + user_id + "','" + category_id + "')";
+    var rows = await query(que);
+    return rows;
+}

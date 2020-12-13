@@ -69,3 +69,11 @@ exports.updateReadLastId = async(last_id, user_id, isRead) => {
     var rows = await query(que);
     return rows;
 }
+
+exports.insertRecord = async(user_id, video_id, title, description, isRead) => {
+    var que = "INSERT INTO " + TableName + " (userId,videoId,title,description,isRead,createdAt) ";
+        que += "VALUES ('" + user_id + "','" + video_id + "','" + title + "','" + description + "','" + isRead + "',now())";
+
+    var rows = await query(que);
+    return rows;
+}

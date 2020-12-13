@@ -899,3 +899,109 @@ exports.updateMute = async(param, res) => {
         });
     }
 }
+
+exports.getMerchantProfile = async(param,res) => {
+    var user_id = param.userId;
+    var usr = await users.getUserDetails(user_id);
+    var email = "";
+    var img_avatar = "";
+    for(var u of usr){
+        img_avatar = u.img_avatar;
+        email = u.email;
+    }
+
+    var cat = await merchant.getFullCategoryByUserId(user_id);
+    var prm = {
+        userId : user_id
+    }
+    var merch = await merchant.getRecord(prm);
+    var data = {};
+    for(var m of merch){
+        data = {
+            email : email,
+            img_avatar : img_avatar,
+            company_name : m.company_name,
+            about : m.about,
+            categories : cat,
+            company_website : m.company_website,
+            fb_url : m.fb_url,
+            ig_url : m.ig_url,
+            tiktok_url : m.tiktok_url
+        }
+    }
+
+    return res.status(200).json({
+        isSuccess : true, 
+        message : "Success Get profile merchant",
+        data : data
+    });
+}
+
+exports.submitMerchantProfile = async(param, res) => {
+    var user_id = param.userId;
+    var form = new formidable.IncomingForm();
+    form.parse(param, async(err, fields, files) => {
+        if(err) {
+            console.error('Error', err)
+            return res.status(500).json({
+                isSuccess : false,
+                message : "Failed Submit Livestream"
+            });
+        }
+
+        var check = {
+            filename : ""
+        }
+        if(files.mypic !== undefined){
+            check = await uploadfile.processUpload(files, user_id);
+            if(check.error){
+                return res.status(500).json({
+                    isSuccess : false,
+                    message : check.message
+                });
+            }
+        }
+
+        var img_name = "";
+        if(check.filename != ""){
+            img_name = config_upload.base_url + "/" + config_upload.folder + "/" + check.filename;
+            var updAva = await users.updateAvatar(user_id, img_name);
+            if(updAva.affectedRows == 0){
+                return res.status(500).json({
+                    isSuccess : false,
+                    message : "Failed to update image profile"
+                });
+            }
+        }
+
+        var prm = {
+            userId : user_id,
+            company_name : fields.company_name,
+            about : fields.about,
+            company_website : fields.company_website,
+            fb_url : fields.fb_url,
+            ig_url : fields.ig_url,
+            tiktok_url : fields.tiktok_url
+        }
+        var updDtl = await merchant.updateMerchantDetails(prm);
+        if(updDtl.affectedRows > 0){
+            var delCat = await merchant.deleteCategory(user_id);
+            var cat = fields.categories.split(",");
+            for(var c of cat){
+                var ins = await merchant.insertCategory(user_id, c);
+            }
+
+            return res.status(200).json({
+                isSuccess : true,
+                message : "Success submit Merchant profile"
+            });
+        }
+        else {
+            return res.status(500).json({
+                isSuccess : true,
+                message : "Failed submit Merchant profile"
+            });
+        }
+        
+    });
+}

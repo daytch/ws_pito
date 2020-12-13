@@ -881,6 +881,131 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "/merchant/getVideosDetail",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_local}}/merchant/getVideosDetail?videoId=5",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"merchant",
+						"getVideosDetail"
+					],
+					"query": [
+						{
+							"key": "videoId",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/merchant/getProfile",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_local}}/merchant/getProfile",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"merchant",
+						"getProfile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/merchant/submitProfile",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "mypic",
+							"description": "Jika tidak upload, maka jangan dilempar parameter ini",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						},
+						{
+							"key": "company_name",
+							"value": "Stark Corp",
+							"type": "text"
+						},
+						{
+							"key": "about",
+							"value": "This is stark corporation by Tony Stark",
+							"type": "text"
+						},
+						{
+							"key": "company_website",
+							"value": "www.tonystark.com",
+							"type": "text"
+						},
+						{
+							"key": "fb_url",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "ig_url",
+							"value": "https://instagram.com/tonystark",
+							"type": "text"
+						},
+						{
+							"key": "tiktok_url",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "categories",
+							"value": "1,2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_local}}/merchant/submitProfile",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"merchant",
+						"submitProfile"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}

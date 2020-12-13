@@ -43,7 +43,7 @@ exports.processUpload = async(files, user_id) => {
             message : "File type not allowed " + filetype,
             filename : ""
         };
-        console.log(arrtype);
+        console.log(filetype);
         return rtn;
     }
 

@@ -6,6 +6,7 @@ const fav = require("../model/favorites");
 // const { authJwt } = require("../middlewares");
 // const moment = require("moment");
 const users_ctrl = require("../controller/user.ctrl");
+const notif_ctrl = require("../controller/notification.ctrl");
 const conf_paging = require("../config/paging.config");
 const config_upload = require("../config/upload.config");
 const formidable = require("formidable");
@@ -219,7 +220,7 @@ exports.submitLivestream = async(param, res) => {
         if(check.filename != ""){
             img_name = config_upload.base_url + "/" + config_upload.folder + "/" + check.filename;
         }
-        if(fields.videoId !== undefined && fields.videoId == ""){
+        if(fields.videoId == ""){
             var tmp = "user" + user_id + "_" + Math.floor(Math.random() * 10000) + 1;
             var prm = {
                 userId : user_id,
@@ -256,6 +257,14 @@ exports.submitLivestream = async(param, res) => {
                     insCat = await videos_category.insertCategory(videoId, c);
                 }
                 if(insCat.affectedRows > 0){
+                    var prm = {
+                        userId : user_id,
+                        videoId : videoId
+                    }
+                    var insNotif = await notif_ctrl.insertNotificationLivestream(prm);
+                    if(insNotif == 0){
+                        console.error("Error submit notification livestream on videoId " + videoId);
+                    }
                     return res.status(200).json({
                         isSuccess : true,
                         message : "Success to submit livestream"
@@ -270,6 +279,13 @@ exports.submitLivestream = async(param, res) => {
             }
         }
         else {  // Update Livestream
+            var check = this.verifyModifyLivestream(user_id, fields.videoId);
+            if(!check){
+                return res.status(500).json({
+                    isSuccess : false,
+                    message : "You not authorize to edit this videos"
+                });
+            }
             var createdAt = "0000-00-00 00:00:00";
             var tmp = "";
             var img_thumbnail = "";
@@ -447,7 +463,7 @@ exports.objListVideosByType = async(user_id, type, page) => {
     var item_per_page = conf_paging.item_per_page;
     var offset = (page - 1) * item_per_page;
 
-    var cntVid = await videos.getCountVideosByType("", type);
+    var cntVid = await videos.getCountVideosByType(user_id, type);
     var cnt = 0;
     for(var c of cntVid){
         cnt = c.cnt;
@@ -456,7 +472,7 @@ exports.objListVideosByType = async(user_id, type, page) => {
     if(cnt > (page * item_per_page)){
         isNext = true;
     }
-    var vids = await videos.getListVideosPaging("", type, offset, item_per_page);
+    var vids = await videos.getListVideosPaging(user_id, type, offset, item_per_page);
     var data = await this.createObjVideos(vids, user_id);
     
     var rtn = {
@@ -465,6 +481,74 @@ exports.objListVideosByType = async(user_id, type, page) => {
         isNext : isNext,
         total_video : cnt,
         data : data
+    }
+
+    return rtn;
+}
+
+exports.getVideosDetail = async(param, res) => {
+    var req = param.query;
+    var video_id = req.videoId;
+    var user_id = param.userId;
+    var check = this.verifyModifyLivestream(user_id, video_id);
+    if(!check){
+        return res.status(500).json({
+            isSuccess : false,
+            message : "You not authorize to view this videos"
+        });
+    }
+
+    var data = {};
+    var prm = {
+        id : video_id,
+        userId : user_id
+    }
+    var vids = await videos.getRecord(prm);
+    for(var v of vids){
+        var cat = await videos_category.getFullCategoryByVideos(v.id);
+
+        var cnt = 0;
+        var favo = await fav.getCountRecord("", "Livestream", 1, v.id);
+        for(var f of favo){
+            cnt = f.cnt;
+        }
+
+        data = {
+            id : v.id,
+            userId : v.userId,
+            startDate : v.startDate,
+            endDate : v.endDate,
+            title : v.title,
+            desc : v.desc,
+            favorites : cnt,
+            views : 0,
+            shares : 0,
+            categories : cat,
+            fb_url : v.fb_url,
+            ig_url : v.ig_url,
+            tiktok_url : v.tiktok_url,
+            img_thumbnail : v.img_thumbnail,
+            ispopular : v.ispopular,
+            isrecom : v.isrecom
+        };
+    }
+
+    return res.status(200).json({
+        isSuccess : true,
+        message : "Success get videos",
+        data : data
+    });
+}
+
+exports.verifyModifyLivestream = async(user_id,video_id) => {
+    var rtn = false;
+    var prm = {
+        id : video_id,
+        userId : user_id
+    }
+    var vids = videos.getRecord(prm);
+    if(vids.length > 0){
+        rtn = true;
     }
 
     return rtn;

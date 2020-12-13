@@ -98,7 +98,7 @@ exports.registerUsersRoleAwait = async(param) => {
 }
 
 exports.getUserDetails = async(user_id) => {
-    var que = "SELECT a.*,b.name FROM " + TableUserDetails + " as a "
+    var que = "SELECT a.*,b.name,b.email FROM " + TableUserDetails + " as a "
         que += "LEFT JOIN "+ TableUsers + " as b on a.userId = b.id WHERE 1=1 ";
     if(user_id != null && user_id != ""){
         que += "AND a.userId = '" + user_id + "'";
@@ -232,6 +232,12 @@ exports.updateName = async(name, user_id) => {
 
 exports.updateMute = async(user_id, isMute) => {
     var que = "UPDATE " + TableUserDetails + " SET isMute = '" + isMute + "' WHERE userId = '" + user_id + "'";
+    var rows = await query(que);
+    return rows;
+}
+
+exports.updateAvatar = async(user_id, img_avatar) => {
+    var que = "UPDATE " + TableUserDetails + " SET img_avatar = '" + img_avatar + "' WHERE userId = '" + user_id + "'";
     var rows = await query(que);
     return rows;
 }
