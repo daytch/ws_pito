@@ -291,7 +291,7 @@ exports.getVideosbyTmp = async(tmp, user_id)=>{
 };
 
 exports.getCountVideosByUserIdType = async(user_id, type) => {
-    var que = "SELECT * FROM " + TableVideos + " ";
+    var que = "SELECT count(*) as cnt FROM " + TableVideos + " ";
     que += " WHERE userId = '" + user_id + "' ";
     if(type == "live_videos"){
         que += "AND startDate < now() AND endDate > now() ";

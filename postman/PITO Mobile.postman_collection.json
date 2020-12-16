@@ -1006,6 +1006,36 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "/merchant/listVideosHistory",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_local}}/merchant/listVideosHistory?page=1",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"merchant",
+						"listVideosHistory"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}

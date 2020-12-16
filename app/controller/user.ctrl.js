@@ -930,6 +930,24 @@ exports.getMerchantProfile = async(param,res) => {
         }
     }
 
+    var cntVid = await videos.getCountVideosByUserIdType(user_id, "");
+    var cnt = 0;
+    for(var c of cntVid){
+        cnt = c.cnt;
+    }
+
+    var isNext = false;
+    if(cnt > 10){
+        isNext = true;
+    }
+
+    var vids = await videos.getVideosMerchantByMoment(user_id, "");
+    var objvid = await videos_ctrl.createObjVideos(vids, user_id);
+
+    data.total_videos = cnt;
+    data.isNext = isNext;
+    data.history_videos = objvid;
+
     return res.status(200).json({
         isSuccess : true, 
         message : "Success Get profile merchant",

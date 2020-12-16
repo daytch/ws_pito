@@ -55,11 +55,20 @@ module.exports = function(app) {
     app.get('/merchant/getVideosDetail', [authJwt.isMerchant], videos.getVideosDetail);
     app.get('/merchant/getProfile', [authJwt.isMerchant], user.getMerchantProfile);
     app.post('/merchant/submitProfile', [authJwt.isMerchant], user.submitMerchantProfile);
+    app.get('/merchant/listVideosHistory', [authJwt.isMerchant], videos.listVideosHistoryMerchant);
 
     // Admin
     app.post('/admin/login', user.loginAdmin);
 
     app.get('/tes_jwt', [authJwt.isUser], function(req,res){
         res.json({message : 'Berhasil tes token'});
+    });
+
+    app.post("/tesf", function(req,res){
+        console.log(req.headers);
+        console.log(req.body);
+        return res.json({
+            sts : "ok"
+        });
     });
 };

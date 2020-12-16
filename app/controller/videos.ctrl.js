@@ -190,6 +190,35 @@ exports.listVideosByMerchant = async(param, res) => {
     });
 };
 
+
+exports.listVideosHistoryMerchant = async(param, res) => {
+    var req = param.query;
+    var id_merchant = param.userId;
+    var user_id = param.userId;
+    var page = req.page;
+    var item_per_page = conf_paging.item_per_page;
+    var offset = (page - 1) * item_per_page;
+
+    var cntVid = await videos.getCountVideosByUserIdType(id_merchant, "");
+    var cnt = 0;
+    for(var c of cntVid){
+        cnt = c.cnt;
+    }
+    var isNext = false;
+    if(cnt > (page * item_per_page)){
+        isNext = true;
+    }
+    var vids = await videos.getListVideosPaging(id_merchant, "", offset, item_per_page);
+    var data = await this.createObjVideos(vids, user_id);
+    
+    return res.status(200).json({
+        isSuccess : true,
+        message : "Success get videos merchant page " + page,
+        isNext : isNext,
+        total_video : cnt,
+        data : data
+    });
+};
 exports.submitLivestream = async(param, res) => {
     var user_id = param.userId;
     var form = new formidable.IncomingForm();
