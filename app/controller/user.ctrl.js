@@ -904,10 +904,12 @@ exports.getMerchantProfile = async(param,res) => {
     var user_id = param.userId;
     var usr = await users.getUserDetails(user_id);
     var email = "";
+    var name = "";
     var img_avatar = "";
     for(var u of usr){
         img_avatar = u.img_avatar;
         email = u.email;
+        name = u.name;
     }
 
     var cat = await merchant.getFullCategoryByUserId(user_id);
@@ -919,6 +921,7 @@ exports.getMerchantProfile = async(param,res) => {
     for(var m of merch){
         data = {
             email : email,
+            name : name,
             img_avatar : img_avatar,
             company_name : m.company_name,
             about : m.about,
