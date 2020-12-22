@@ -20,6 +20,9 @@ exports.getAllRecord = async(param) => {
     if(param.id != undefined && param.id != ""){
         que += "AND id = '" + param.id + "' ";
     }
+    if(param.isActive != undefined && param.isActive != ""){
+        que += "AND isactive = '" + param.isActive + "' ";
+    }
 
     var rows = await query(que);
     return rows;
@@ -143,7 +146,7 @@ exports.getRolesByName = async(name) => {
 }
 
 exports.getListMerchant = async(role_id, id_merchant, type, offset, per_page) => {
-    var que = "SELECT a.id,a.name,c.img_avatar,d.createdAt,d.about,d.fb_url,d.ig_url,d.tiktok_url FROM " + TableUsers + " as a ";
+    var que = "SELECT a.id,a.name,a.email,c.img_avatar,d.createdAt,d.about,d.fb_url,d.ig_url,d.tiktok_url FROM " + TableUsers + " as a ";
         que += "INNER JOIN " + TableUsersRole + " as b ";
         que += "ON a.id = b.userId AND b.roleId = '" + role_id + "' ";
         que += "INNER JOIN " + TableUserDetails + " as c ";

@@ -234,8 +234,8 @@ exports.submitLivestream = async(param, res) => {
         var check = {
             filename : ""
         }
-        if(files.mypic !== undefined){
-            check = await uploadfile.processUpload(files, user_id);
+        if(files.mypic !== undefined && files.mypic != ""){
+            check = await uploadfile.processUpload(files.mypic, user_id);
             if(check.error){
                 return res.status(500).json({
                     isSuccess : false,

@@ -4,6 +4,7 @@ const videos = require('./app/controller/videos.ctrl');
 const category = require('./app/controller/category.ctrl');
 const favorites = require('./app/controller/favorites.ctrl');
 const notification = require('./app/controller/notification.ctrl');
+const ticket = require("./app/controller/ticket.ctrl");
 const { authJwt } = require("./app/middlewares");
 
 module.exports = function(app) {
@@ -56,9 +57,18 @@ module.exports = function(app) {
     app.get('/merchant/getProfile', [authJwt.isMerchant], user.getMerchantProfile);
     app.post('/merchant/submitProfile', [authJwt.isMerchant], user.submitMerchantProfile);
     app.get('/merchant/listVideosHistory', [authJwt.isMerchant], videos.listVideosHistoryMerchant);
+    app.post('/merchant/createTicket', [authJwt.isMerchant], ticket.createTicket);
+    app.post('/merchant/insertMessageTicket', [authJwt.isMerchant], ticket.insertMessage);
+    app.get('/merchant/listTicket', [authJwt.isMerchant], ticket.listTicketMerchant);
+    app.get('/merchant/listMessage', [authJwt.isMerchant], ticket.listMessageByTicket);
 
     // Admin
     app.post('/admin/login', user.loginAdmin);
+    app.get('/admin/listTicket', [authJwt.isAdmin], ticket.listTicketAdmin);
+    app.post('/admin/insertMessageTicket', [authJwt.isAdmin], ticket.insertMessage);
+    app.get('/admin/listMessage', [authJwt.isAdmin], ticket.listMessageByTicket);
+    app.get('/admin/userList', [authJwt.isAdmin], user.getListUser);
+    app.get('/admin/merchantList', [authJwt.isAdmin], user.getListMerchant);
 
     app.get('/tes_jwt', [authJwt.isUser], function(req,res){
         res.json({message : 'Berhasil tes token'});

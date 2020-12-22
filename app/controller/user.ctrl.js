@@ -816,8 +816,8 @@ exports.submitProfile = async(param, res) => {
                 message : "Failed Update Profile"
             });
         }
-        if(files.mypic !== undefined){
-            var check = await uploadfile.processUpload(files, user_id);
+        if(files.mypic !== undefined && files.mypic != ""){
+            var check = await uploadfile.processUpload(files.mypic, user_id);
             if(!check.error){
                 var prm = {
                     userId : user_id,
@@ -973,8 +973,8 @@ exports.submitMerchantProfile = async(param, res) => {
         var check = {
             filename : ""
         }
-        if(files.mypic !== undefined){
-            check = await uploadfile.processUpload(files, user_id);
+        if(files.mypic !== undefined && files.mypic != ""){
+            check = await uploadfile.processUpload(files.mypic, user_id);
             if(check.error){
                 return res.status(500).json({
                     isSuccess : false,
@@ -1024,5 +1024,52 @@ exports.submitMerchantProfile = async(param, res) => {
             });
         }
         
+    });
+}
+
+exports.getListUser = async(param, res) => {
+    var dt = await users.getAllRecord({isActive : 1});
+    res.status(200).json({
+        isSuccess: true,
+        data : dt
+    });
+}
+
+exports.getListMerchant = async(param, res) => {
+    var dt = await users.getListMerchant("2","","",0,1000);
+    var rtn = [];
+    for(var d of dt){
+        var cnt = 0;
+        var getcnt = await videos.getCountVideosByUserId(d.id);
+        for(var g of getcnt){
+            cnt = g.cnt;
+        }
+
+        var cntUp = 0;
+        var getcntup = await videos.getCountVideosByType(d.id, "upcoming_videos");
+        for(var g of getcntup){
+            cntUp = g.cnt;
+        }
+
+        var fav = 0;
+        var getfav = await favorites.getCountRecord("","Merchant","1",d.id);
+        for(var g of getfav){
+            fav = g.cnt;
+        }
+        rtn.push({
+            id : d.id,
+            name : d.name,
+            email : d.email,
+            total_livestream : cnt,
+            total_upcoming : cntUp,
+            total_favorites : fav,
+            total_share : 0,
+            total_view : 0,
+            createdAt : d.createdAt
+        });
+    }
+    res.status(200).json({
+        isSuccess: true,
+        data : rtn
     });
 }

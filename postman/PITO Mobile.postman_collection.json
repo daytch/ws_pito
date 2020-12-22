@@ -1036,7 +1036,365 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "/merchant/createTicket",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "attachment1",
+							"type": "file",
+							"src": "/C:/Users/Kavin/Pictures/BlueStacks/Black Desert Mobile_Screenshot_2020.03.27_08.05.54.jpg"
+						},
+						{
+							"key": "attachment2",
+							"type": "file",
+							"src": "/C:/Users/Kavin/Pictures/BlueStacks/Black Desert Mobile_Screenshot_2020.04.03_18.05.18.jpg"
+						},
+						{
+							"key": "attachment3",
+							"type": "file",
+							"src": "/C:/Users/Kavin/Pictures/BlueStacks/Black Desert Mobile_Screenshot_2020.04.12_11.16.29.jpg"
+						},
+						{
+							"key": "subject",
+							"value": "Ini subject ticket",
+							"type": "text"
+						},
+						{
+							"key": "message",
+							"value": "Discussions allows community members to start conversations and ask questions without opening issues. Get started by toggling Discussions under Features. ",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_local}}/merchant/createTicket",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"merchant",
+						"createTicket"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/merchant/insertMessageTicket",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "attachment1",
+							"type": "file",
+							"src": "/C:/Users/Kavin/Pictures/BlueStacks/Black Desert Mobile_Screenshot_2020.04.22_15.09.40.jpg"
+						},
+						{
+							"key": "attachment2",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "attachment3",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "message",
+							"value": "Parameters Used: This method accepts a single optional parameter base. This parameter specifies the base in which the integer is represented in the string. It is an integer between 2 and 36 which is used to specify the base for representing numeric values.",
+							"type": "text"
+						},
+						{
+							"key": "ticket_id",
+							"value": "202012200001",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_local}}/merchant/insertMessageTicket",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"merchant",
+						"insertMessageTicket"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/merchant/listTicket",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_local}}/merchant/listTicket",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"merchant",
+						"listTicket"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/merchant/listMessage",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_local}}/merchant/listMessage?ticket_id=202012200001&page=1",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"merchant",
+						"listMessage"
+					],
+					"query": [
+						{
+							"key": "ticket_id",
+							"value": "202012200001"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"njicker@gmail.com\",\r\n    \"password\" : \"fauzi\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_local}}/admin/login",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"admin",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/listTicket",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{url_local}}/admin/listTicket?page=1",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"admin",
+						"listTicket"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/insertMessageTicket",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "attachment1",
+							"type": "file",
+							"src": "/C:/Users/Kavin/Pictures/BlueStacks/Black Desert Mobile_Screenshot_2020.04.22_15.09.40.jpg"
+						},
+						{
+							"key": "attachment2",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "attachment3",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "message",
+							"value": "Parameters Used: This method accepts a single optional parameter base. This parameter specifies the base in which the integer is represented in the string. It is an integer between 2 and 36 which is used to specify the base for representing numeric values.",
+							"type": "text"
+						},
+						{
+							"key": "ticket_id",
+							"value": "202012200001",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_local}}/admin/insertMessageTicket",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"admin",
+						"insertMessageTicket"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/listMessage",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{url_local}}/admin/listMessage?ticket_id=202012200001&page=1",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"admin",
+						"listMessage"
+					],
+					"query": [
+						{
+							"key": "ticket_id",
+							"value": "202012200001"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/userList",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_local}}/admin/userList",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"admin",
+						"userList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/merchantList",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{url_local}}/admin/merchantList",
+					"host": [
+						"{{url_local}}"
+					],
+					"path": [
+						"admin",
+						"merchantList"
+					]
+				}
+			},
+			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
