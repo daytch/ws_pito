@@ -221,9 +221,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{url_local}}/user/videosPage",
+					"raw": "{{url_live}}/user/videosPage",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"user",
@@ -924,9 +924,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/merchant/getProfile",
+					"raw": "{{url_live}}/merchant/getProfile",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"merchant",
@@ -1391,6 +1391,153 @@
 					"path": [
 						"admin",
 						"merchantList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/listCategory",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_live}}/admin/listCategory",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"listCategory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/insertCategory",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"Clothing\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_live}}/admin/insertCategory",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"insertCategory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/updateCategory",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"Clothing Edt\",\r\n    \"id\" : 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_live}}/admin/updateCategory",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"updateCategory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/deleteCategory",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"isActive\" : 0,\r\n    \"id\" : 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_live}}/admin/deleteCategory",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"deleteCategory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/getDashboard",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_live}}/admin/getDashboard",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"getDashboard"
 					]
 				}
 			},
