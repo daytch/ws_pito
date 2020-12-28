@@ -1204,6 +1204,39 @@
 			"response": []
 		},
 		{
+			"name": "/merchant/deleteLivestream",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\" : 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_live}}/merchant/deleteLivestream",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"merchant",
+						"deleteLivestream"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/admin/login",
 			"request": {
 				"method": "POST",
