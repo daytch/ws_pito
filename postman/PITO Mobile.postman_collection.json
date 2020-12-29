@@ -1608,6 +1608,73 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "/user/insertShareVideo",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"videoId\" : 5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_live}}/user/insertShareVideo",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"user",
+						"insertShareVideo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/user/getVideosByKeyword",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_live}}/user/getVideosByKeyword?keyword=best rampage&page=1",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"user",
+						"getVideosByKeyword"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "best rampage"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
