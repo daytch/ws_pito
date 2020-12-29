@@ -1675,6 +1675,127 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "/admin/getMerchantProfileByAdmin",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_live}}/admin/getMerchantProfileByAdmin?userId=5",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"getMerchantProfileByAdmin"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/submitLivestreamByAdmin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "videoId",
+							"value": "",
+							"description": "di isi jika edit livestream",
+							"type": "text"
+						},
+						{
+							"key": "mypic",
+							"type": "file",
+							"src": "/C:/Users/Kavin/Downloads/v369-ning-21-neonsign_2.jpg"
+						},
+						{
+							"key": "startDate",
+							"value": "2020-12-15 00:00:00",
+							"type": "text"
+						},
+						{
+							"key": "endDate",
+							"value": "2020-12-15 23:00:00",
+							"type": "text"
+						},
+						{
+							"key": "title",
+							"value": "Tutorial Masak By Admin",
+							"type": "text"
+						},
+						{
+							"key": "desc",
+							"value": "Sebuah video ke 2 untuk testing submit live stream via web dan api merchant",
+							"type": "text"
+						},
+						{
+							"key": "fb_url",
+							"value": "<iframe src=\"https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2FPrankKocag%2Fvideos%2F620632522075938%2F&show_text=0&width=560\" width=\"560\" height=\"315\" style=\"border:none;overflow:hidden\" scrolling=\"no\" frameborder=\"0\" allowfullscreen=\"true\" allow=\"autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share\" allowFullScreen=\"true\"></iframe>",
+							"type": "text"
+						},
+						{
+							"key": "tiktok_url",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "ig_url",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "category",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "userId",
+							"value": "5",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_live}}/admin/submitLivestreamByAdmin",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"submitLivestreamByAdmin"
+					]
+				},
+				"description": "startDate : startDate + startTime\r\nendDate : startDate + endTime"
+			},
+			"response": []
 		}
 	]
 }
