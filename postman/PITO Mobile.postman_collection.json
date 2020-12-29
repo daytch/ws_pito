@@ -1575,6 +1575,39 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "/merchant/closeTicket",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ticket_id\" : \"202012290005\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_live}}/merchant/closeTicket",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"merchant",
+						"closeTicket"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
