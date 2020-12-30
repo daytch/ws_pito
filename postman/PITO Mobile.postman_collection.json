@@ -1393,9 +1393,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/admin/userList",
+					"raw": "{{url_live}}/admin/userList",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"admin",
@@ -1417,9 +1417,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/admin/merchantList",
+					"raw": "{{url_live}}/admin/merchantList",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"admin",
@@ -1707,82 +1707,6 @@
 			"response": []
 		},
 		{
-			"name": "/admin/submitProfileMerchant",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-access-token",
-						"type": "text",
-						"value": "{{token}}"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "mypic",
-							"description": "Jika tidak upload, maka jangan dilempar parameter ini",
-							"type": "file",
-							"src": [],
-							"disabled": true
-						},
-						{
-							"key": "company_name",
-							"value": "Fauzi Corp",
-							"type": "text"
-						},
-						{
-							"key": "about",
-							"value": "This is stark corporation by Tony Stark",
-							"type": "text"
-						},
-						{
-							"key": "company_website",
-							"value": "www.tonystark.com",
-							"type": "text"
-						},
-						{
-							"key": "fb_url",
-							"value": "",
-							"type": "text"
-						},
-						{
-							"key": "ig_url",
-							"value": "https://instagram.com/tonystark",
-							"type": "text"
-						},
-						{
-							"key": "tiktok_url",
-							"value": "",
-							"type": "text"
-						},
-						{
-							"key": "categories",
-							"value": "1,2",
-							"type": "text"
-						},
-						{
-							"key": "userId",
-							"value": "1",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{url_live}}/admin/submitProfileMerchant",
-					"host": [
-						"{{url_live}}"
-					],
-					"path": [
-						"admin",
-						"submitProfileMerchant"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "/admin/submitLivestreamByAdmin",
 			"request": {
 				"method": "POST",
@@ -1870,6 +1794,145 @@
 					]
 				},
 				"description": "startDate : startDate + startTime\r\nendDate : startDate + endTime"
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/submitProfileMerchant",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "mypic",
+							"description": "Jika tidak upload, maka jangan dilempar parameter ini",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						},
+						{
+							"key": "company_name",
+							"value": "Fauzi Corp",
+							"type": "text"
+						},
+						{
+							"key": "about",
+							"value": "This is stark corporation by Tony Stark",
+							"type": "text"
+						},
+						{
+							"key": "company_website",
+							"value": "www.tonystark.com",
+							"type": "text"
+						},
+						{
+							"key": "fb_url",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "ig_url",
+							"value": "https://instagram.com/tonystark",
+							"type": "text"
+						},
+						{
+							"key": "tiktok_url",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "categories",
+							"value": "1,2",
+							"type": "text"
+						},
+						{
+							"key": "userId",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_live}}/admin/submitProfileMerchant",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"submitProfileMerchant"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/getProfileUser",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_live}}/admin/getProfileUser?userId=1",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"getProfileUser"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/submitProfileUser",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\" : 1,\r\n    \"name\" : \"Fauzi Stark\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_live}}/admin/submitProfileUser",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"submitProfileUser"
+					]
+				}
 			},
 			"response": []
 		}
