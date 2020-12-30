@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\" : \"njicker@gmail.com\",\r\n    \"password\" : \"fauzi\",\r\n    \"name\" : \"Ahmad Fauzi\"\r\n}",
+					"raw": "{\r\n    \"email\" : \"fauzi@pito.com.sg\",\r\n    \"password\" : \"@PitoDev123\",\r\n    \"name\" : \"fauzi PITO\",\r\n    \"token\" : \"initesktokenIOS\", \"type_device\" : \"ios\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -20,9 +20,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{url_local}}/user/register",
+					"raw": "{{url_live}}/user/register",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"user",
@@ -39,7 +39,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"email\" : \"njicker@gmail.com\", \"password\" : \"fauzi\"}",
+					"raw": "{\"email\" : \"njicker@gmail.com\", \"password\" : \"fauzi\", \"token\" : \"initesktoken\", \"type_device\" : \"ios\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -47,9 +47,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{url_local}}/user/login",
+					"raw": "{{url_live}}/user/login",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"user",
@@ -66,7 +66,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\" : \"njicker@gmail.com\",\r\n    \"name\" : \"Fauzi SSO\",\r\n    \"source\" : \"fb\",\r\n    \"img_avatar\" : \"http://localhost/img_tes/fauzi.jpg\"\r\n}",
+					"raw": "{\r\n    \"email\" : \"fauzi@gmail.com\",\r\n    \"name\" : \"Fauzi Token SSO\",\r\n    \"source\" : \"fb\",\r\n    \"img_avatar\" : \"http://localhost/img_tes/fauzi.jpg\",\r\n    \"token\" : \"initesktokenAD\", \"type_device\" : \"android\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -74,9 +74,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{user_local}}/user/loginSSO",
+					"raw": "{{url_live}}/user/loginSSO",
 					"host": [
-						"{{user_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"user",
@@ -1275,9 +1275,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/admin/listTicket?page=1",
+					"raw": "{{url_live}}/admin/listTicket?page=1",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"admin",
