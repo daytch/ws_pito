@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\" : \"fauzi@pito.com.sg\",\r\n    \"password\" : \"@PitoDev123\",\r\n    \"name\" : \"fauzi PITO\",\r\n    \"token\" : \"initesktokenIOS\", \"type_device\" : \"ios\"\r\n}",
+					"raw": "{\r\n    \"email\" : \"fauzi@pito.com.sg\",\r\n    \"password\" : \"@PitoDev123\",\r\n    \"name\" : \"fauzi PITO\",\r\n    \"token\" : \"initesktokenIOS\", \"type\" : \"ios\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -39,7 +39,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"email\" : \"njicker@gmail.com\", \"password\" : \"fauzi\", \"token\" : \"initesktoken\", \"type_device\" : \"ios\"}",
+					"raw": "{\"email\" : \"njicker@gmail.com\", \"password\" : \"fauzi\", \"token\" : \"initesktokenXX\", \"type\" : \"ios\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -66,7 +66,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\" : \"fauzi@gmail.com\",\r\n    \"name\" : \"Fauzi Token SSO\",\r\n    \"source\" : \"fb\",\r\n    \"img_avatar\" : \"http://localhost/img_tes/fauzi.jpg\",\r\n    \"token\" : \"initesktokenAD\", \"type_device\" : \"android\"\r\n}",
+					"raw": "{\r\n    \"email\" : \"fauzi@gmail.com\",\r\n    \"name\" : \"Fauzi Token SSO\",\r\n    \"source\" : \"fb\",\r\n    \"img_avatar\" : \"http://localhost/img_tes/fauzi.jpg\",\r\n    \"token\" : \"initesktokenAD\", \"type\" : \"android\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1701,6 +1701,82 @@
 							"key": "userId",
 							"value": "5"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/submitProfileMerchant",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "mypic",
+							"description": "Jika tidak upload, maka jangan dilempar parameter ini",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						},
+						{
+							"key": "company_name",
+							"value": "Fauzi Corp",
+							"type": "text"
+						},
+						{
+							"key": "about",
+							"value": "This is stark corporation by Tony Stark",
+							"type": "text"
+						},
+						{
+							"key": "company_website",
+							"value": "www.tonystark.com",
+							"type": "text"
+						},
+						{
+							"key": "fb_url",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "ig_url",
+							"value": "https://instagram.com/tonystark",
+							"type": "text"
+						},
+						{
+							"key": "tiktok_url",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "categories",
+							"value": "1,2",
+							"type": "text"
+						},
+						{
+							"key": "userId",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_live}}/admin/submitProfileMerchant",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"submitProfileMerchant"
 					]
 				}
 			},
