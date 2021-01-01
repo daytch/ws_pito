@@ -762,7 +762,7 @@
 						{
 							"key": "mypic",
 							"type": "file",
-							"src": "/C:/Users/Kavin/Downloads/v369-ning-21-neonsign_2.jpg"
+							"src": []
 						},
 						{
 							"key": "startDate",
@@ -812,9 +812,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{url_local}}/merchant/submitLivestream",
+					"raw": "{{url_live}}/merchant/submitLivestream",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"merchant",
@@ -1931,6 +1931,106 @@
 					"path": [
 						"admin",
 						"submitProfileUser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/listVideos",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"type\" : \"{{list_vid_previous}}\",\r\n    \"page\" : 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_live}}/admin/listVideos",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"listVideos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/getVideosByKeyword",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{url_live}}/admin/getVideosByKeyword?keyword=best rampage&page=1",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"getVideosByKeyword"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "best rampage"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/admin/deleteLivestreamByAdmin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\" : 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_live}}/admin/deleteLivestream",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"admin",
+						"deleteLivestream"
 					]
 				}
 			},
