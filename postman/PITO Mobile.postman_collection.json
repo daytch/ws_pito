@@ -98,9 +98,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_dev}}/user/home",
+					"raw": "{{url_live}}/user/home",
 					"host": [
-						"{{url_dev}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"user",
@@ -559,9 +559,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/user/getFavourites?sort_by=most_popular&page=1&type={{fav_merchant}}",
+					"raw": "{{url_live}}/user/getFavourites?sort_by=live_videos&page=1&type={{fav_livestream}}",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"user",
@@ -570,7 +570,7 @@
 					"query": [
 						{
 							"key": "sort_by",
-							"value": "most_popular"
+							"value": "live_videos"
 						},
 						{
 							"key": "page",
@@ -578,11 +578,11 @@
 						},
 						{
 							"key": "type",
-							"value": "{{fav_merchant}}"
+							"value": "{{fav_livestream}}"
 						}
 					]
 				},
-				"description": "type :\r\n- Livestream : list favourites Livestream\r\n- Merchant : list favourites Merchant\r\n    sort_by :\r\n        - most_popular : sort by most popular\r\n        - most_recent : sort by most recent\r\n        - most_livestream : sort by most recent"
+				"description": "type :\r\n- Livestream : list favourites Livestream\r\n    sort_by :\r\n        - live_videos : Live Now\r\n        - upcoming_videos : Coming Up Next\r\n        - most_like : Most Liked\r\n        - most_recent : Date\r\n- Merchant : list favourites Merchant\r\n    sort_by :\r\n        - most_popular : sort by most popular\r\n        - most_recent : sort by most recent\r\n        - most_livestream : sort by most recent"
 			},
 			"response": []
 		},
