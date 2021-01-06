@@ -39,7 +39,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"email\" : \"njicker@gmail.com\", \"password\" : \"fauzi\", \"token\" : \"initesktokenXX\", \"type\" : \"ios\"}",
+					"raw": "{\"email\" : \"njicker@gmail.com\", \"password\" : \"fauzi\", \"token\" : \"xxxx\", \"type\" : \"android\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -246,7 +246,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"pkey\" : 5,\r\n    \"type\" : \"{{fav_livestream}}\"\r\n}",
+					"raw": "{\r\n    \"pkey\" : 5,\r\n    \"type\" : \"{{fav_merchant}}\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -254,9 +254,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{url_local}}/user/actionFav",
+					"raw": "{{url_live}}/user/actionFav",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"user",
@@ -387,7 +387,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"type\" : \"{{list_vid_previous}}\",\r\n    \"page\" : 1\r\n}",
+					"raw": "{\r\n    \"type\" : \"{{list_vid_popular}}\",\r\n    \"page\" : 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -395,9 +395,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{url_local}}/user/listVideos",
+					"raw": "{{url_live}}/user/listVideos",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"user",
@@ -485,9 +485,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/user/listmerchant?page=1&type={{type_merchant_pop}}",
+					"raw": "{{url_live}}/user/listmerchant?page=1&type={{type_merchant_new}}",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"user",
@@ -500,7 +500,7 @@
 						},
 						{
 							"key": "type",
-							"value": "{{type_merchant_pop}}"
+							"value": "{{type_merchant_new}}"
 						}
 					]
 				},
@@ -677,6 +677,40 @@
 					"path": [
 						"user",
 						"updateNotifMute"
+					]
+				},
+				"description": "0 = mute disable\r\n1 = mute enable"
+			},
+			"response": []
+		},
+		{
+			"name": "/user/logout",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"token\" : \"xxxx\",\r\n    \"type\" : \"android\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_live}}/user/logout",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"user",
+						"logout"
 					]
 				},
 				"description": "0 = mute disable\r\n1 = mute enable"
