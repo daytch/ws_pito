@@ -39,7 +39,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"email\" : \"njicker@gmail.com\", \"password\" : \"fauzi\", \"token\" : \"xxxx\", \"type\" : \"android\"}",
+					"raw": "{\"email\" : \"njicker@gmail.com\", \"password\" : \"fauzi\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -387,7 +387,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"type\" : \"{{list_vid_popular}}\",\r\n    \"page\" : 1\r\n}",
+					"raw": "{\r\n    \"type\" : \"{{list_vid_previous}}\",\r\n    \"page\" : 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -446,9 +446,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_dev}}/user/listVideosByCategory?id_cat=1&page=1&type=upcoming_videos",
+					"raw": "{{url_live}}/user/listVideosByCategory?id_cat=1&page=1&type=upcoming_videos",
 					"host": [
-						"{{url_dev}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"user",
@@ -761,9 +761,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{url_local}}/merchant/login",
+					"raw": "{{url_live}}/merchant/login",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"merchant",
@@ -874,9 +874,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{url_local}}/merchant/loginSSO",
+					"raw": "{{url_live}}/merchant/loginSSO",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"merchant",
@@ -898,9 +898,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{url_local}}/merchant/getDashboard?page=1",
+					"raw": "{{url_live}}/merchant/getDashboard?page=1",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"merchant",
@@ -1285,9 +1285,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{url_local}}/admin/login",
+					"raw": "{{url_live}}/admin/login",
 					"host": [
-						"{{url_local}}"
+						"{{url_live}}"
 					],
 					"path": [
 						"admin",
@@ -2065,6 +2065,40 @@
 					"path": [
 						"admin",
 						"deleteLivestream"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/merchant/listVideos",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_live}}/merchant/listVideos?page=1&type={{list_vid_upcoming}}",
+					"host": [
+						"{{url_live}}"
+					],
+					"path": [
+						"merchant",
+						"listVideos"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "type",
+							"value": "{{list_vid_upcoming}}"
+						}
 					]
 				}
 			},
