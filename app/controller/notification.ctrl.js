@@ -3,6 +3,8 @@ const conf_paging = require("../config/paging.config");
 const users = require("../model/users");
 const videos = require("../model/videos");
 const fav = require("../model/favorites");
+const {sendNotif} = require("../middlewares");
+const moment = require("moment");
 
 exports.getNotification = async(param, res) => {
     var req = param.query;
@@ -22,13 +24,13 @@ exports.getNotification = async(param, res) => {
         isNext = true;
     }
 
-    var obj = await notif.getListPaging("",user_id,"","",offset,item_per_page);
+    var obj = await notif.getListPaging("",user_id,"","",offset,item_per_page,"Livestream");
     for(let o of obj){
         var merch_id = "";
         var img_ava = "";
         var prm = {
             userId : "",
-            id : o.videoId
+            id : o.pkey
         }
         var vids = await videos.getRecord(prm);
         for(let v of vids){
@@ -42,14 +44,19 @@ exports.getNotification = async(param, res) => {
         if(o.isRead == 1){
             isRead = true;
         }
+
+        // var mmt = moment(o.createdAt).subtract(8, "h").format("YYYY-MM-DDTHH:mm:ss") + "Z";
+        // console.log("createdAt", o.createdAt);
+        // console.log("moment", mmt);
+
         var dt = {
             id : o.id,
             userId : o.userId,
-            videoId : o.videoId,
+            videoId : o.pkey,
             title : o.title,
             description : o.description,
             isRead : isRead,
-            createdAt : o.createdAt,
+            createdAt : moment(o.createdAt).subtract(8, "h").format("YYYY-MM-DDTHH:mm:ss") + "Z",
             merchantId : merch_id,
             img_thumbnail : img_ava
         }
@@ -87,23 +94,34 @@ exports.notifReadAll = async(param, res) => {
 
 exports.insertNotificationLivestream = async(param) => {
     var rtn = 0;
-    var prm = {
-        id : param.userId
-    }
-    var usr = await users.getAllRecord(prm);
-    var usr_name = "";
-    for(var u of usr){
-        usr_name = u.name;
-    }
-
-    var desc = usr_name + " has added a new livestream";
-    var title = "A new Livestream";
-    
     var list_fav = await fav.getRecord("","Merchant", 1, param.userId);
     var ins = {};
     for(var l of list_fav){
-        ins = await notif.insertRecord(l.userId, param.videoId, title, desc, 0);
+        ins = await notif.insertRecord(l.userId, param.videoId, "Livestream", param.title, param.desc, 0);
+
+        var deeplink = "pito://video?video_id=" + param.videoId;
+        sendNotif.process(l.userId,param.title,param.desc,deeplink);
     }
+    rtn = ins.affectedRows;
+
+    return rtn;
+}
+
+exports.insertNotificationRare = async(param) => {
+    var rtn = 0;
+    
+    ins = await notif.insertRecord(param.userId, param.pkey, param.type, param.title, param.desc, 0);
+
+    var deeplink = "";
+    if(param.type == "Livestream"){
+        deeplink = "pito://video?video_id=" + param.pkey;
+    }
+    else if(param.type == "Merchant"){
+        deeplink = "pito://video?merchant_id=" + param.pkey;
+    }
+    
+    sendNotif.process(param.userId,param.title,param.desc,deeplink);
+
     rtn = ins.affectedRows;
 
     return rtn;

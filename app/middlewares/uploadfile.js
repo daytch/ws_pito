@@ -3,6 +3,13 @@ const fsPromises = require("fs").promises;
 
 exports.processUpload = async(files, user_id) => {
     var upload_name = files.name;
+    if(files.name == ""){
+        var rtn = {
+            error : false,
+            filename : ""
+        }
+        return rtn;
+    }
     var filepath = files.path;
     var filesize = files.size;
     var filetype = files.type;

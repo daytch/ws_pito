@@ -1,9 +1,9 @@
 const conf = {
-    host: 'mail.tacticalfantasyfpl.com',
-    port: 26,
+    host: 'smtp.office365.com',
+    port: 587,
     auth: {
-       user: 'admin@tacticalfantasyfpl.com',
-       pass: 'fauzi2006'
+       user: 'contact@pito.com.sg',
+       pass: 'Xov79409'
     },
     tls: { 
         rejectUnauthorized: false 

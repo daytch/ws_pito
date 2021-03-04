@@ -68,3 +68,11 @@ exports.deleteCategory = async(videoId) => {
     var rows = await query(que);
     return rows;
 };
+
+exports.getDistinctCategoryByVideosIn = async(video_in) => {
+    var que = "SELECT DISTINCT categoryId FROM " + TableName + " ";
+        que += "WHERE videoId in (" + video_in + ") ";
+
+    var rows = await query(que);
+    return rows;
+};

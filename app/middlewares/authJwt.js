@@ -26,7 +26,32 @@ function verifyToken (req, res, next) {
     });
 };
 
-function verifyTokenResetPass (req, res, next) {
+function verifyTokenX (req, res, next, callback) {
+    // console.log(req.headers);
+    let token = req.headers["x-access-token"];
+
+    if (!token) {
+        return res.status(403).send({
+            message: "No token provided!"
+        });
+    }
+
+    jwt.verify(token, config.secret, (err, decoded) => {
+        if (err) {
+            res.status(401).send({
+                message: err// "Unauthorized!"
+            });
+            return err;
+        }
+
+        req.userId = decoded.id;
+        req.roleName = decoded.role;
+        // console.log(decoded);
+        callback();
+    });
+};
+
+function verifyTokenResetPass (req, res, next, callback) {
     // console.log(req.headers);
     let token = req.headers["x-access-token"];
 
@@ -47,68 +72,77 @@ function verifyTokenResetPass (req, res, next) {
         req.email = decoded.email;
         req.desc = decoded.desc;
         // console.log(decoded);
-        next();
+        callback();
     });
 };
 
 isUser = (req,res,next) => {
-    var err = verifyToken(req,res,next);
-    if(err != null && err == true){
+    // var err = verifyToken(req,res,next);
+    // if(err != null && err == true){
+    //     if(!req.roleName.includes("User")){
+    //         return res.status(401).send({
+    //             message: "Unauthorized Token"// "Unauthorized!"
+    //         });
+    //     }
+    //     next();
+    // }
+    // else {
+    //     return false;
+    // }
+    verifyTokenX(req,res,next, () => {
         if(!req.roleName.includes("User")){
             return res.status(401).send({
                 message: "Unauthorized Token"// "Unauthorized!"
             });
         }
         next();
-    }
-    else {
-        return false;
-    }
+    });
 };
 
 isMerchant = (req,res,next) => {
-    var err = verifyToken(req,res,next);
-    if(err != null && err == true){
+    // var err = verifyToken(req,res,next);
+    // // if(err != null && err == true){
+    //     console.log(req.roleName);
+    //     if(!req.roleName.includes("Merchant")){
+    //         return res.status(401).send({
+    //             message: "Unauthorized Token"// "Unauthorized!"
+    //         });
+    //     }
+    //     next();
+    // // }
+    // // else {
+    // //     return false;
+    // // }
+    verifyTokenX(req,res,next, () => {
         if(!req.roleName.includes("Merchant")){
             return res.status(401).send({
                 message: "Unauthorized Token"// "Unauthorized!"
             });
         }
         next();
-    }
-    else {
-        return false;
-    }
+    });
 };
 
 isAdmin = (req,res,next) => {
-    var err = verifyToken(req,res,next);
-    if(err != null && err == true){
+    verifyTokenX(req,res,next, () => {
         if(!req.roleName.includes("Admin")){
             return res.status(401).send({
                 message: "Unauthorized Token"// "Unauthorized!"
             });
         }
         next();
-    }
-    else {
-        return false;
-    }
+    });
 };
 
 isResetPassword = (req,res,next) => {
-    var verif = verifyTokenResetPass(req,res,next);
-    if(verif != null && verif == true){
+    verifyTokenResetPass(req,res,next, () => {
         if(req.email == ""){
             return res.status(401).send({
                 message: "Unauthorized Token"// "Unauthorized!"
             });
         }
         next();
-    }
-    else {
-        return false;
-    }
+    });
 };
 
 getUserId = async(req,res) => {

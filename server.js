@@ -16,3 +16,12 @@ routes(app);
 global.appRoot = path.resolve(__dirname);
 app.listen(port);
 console.log('RESTful API server started on: ' + port);
+
+var { sendNotif } = require("./app/middlewares");
+sendNotif.init();
+
+// Job Notification
+var videos = require("./app/controller/videos.ctrl");
+setInterval(() => {
+    videos.jobVideo();
+}, 300000);

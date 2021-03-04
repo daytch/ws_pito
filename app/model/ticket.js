@@ -69,8 +69,8 @@ exports.getCountRecordByYear = async(year) => {
 }
 
 exports.insertRecord = async(param) => {
-    var que = "INSERT INTO " + TableName + " (id,userId,subject,status,createdAt) VALUES ";
-        que += "('" + param.id + "','" + param.userId + "','"+param.subject+"','" + param.status + "',now())";
+    var que = "INSERT INTO " + TableName + " (id,userId,subject,status,createdAt,closedAt) VALUES ";
+        que += "('" + param.id + "','" + param.userId + "','"+param.subject+"','" + param.status + "',now(),'0000-00-00 00:00:00')";
 
     var rows = await query(que);
     return rows;
@@ -210,6 +210,12 @@ exports.getMessagePaging = async(ticket_id, offset, limitpage) => {
         que += "ORDER BY createdAt desc ";
         que += "LIMIT " + offset + "," + limitpage;
 
+    var rows = await query(que);
+    return rows;
+}
+
+exports.updateCloseTicket = async(ticket_id, close_by) => {
+    var que = "UPDATE " + TableName + " SET status = 1, closedAt = now(), close_by = '"+close_by+"' WHERE id = '" + ticket_id + "'";
     var rows = await query(que);
     return rows;
 }

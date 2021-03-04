@@ -20,6 +20,20 @@ exports.createTicket = async(param, res) => {
             });
         }
 
+        if(fields.subject === undefined || fields.subject == ""){
+            return res.status(500).json({
+                isSuccess : false,
+                message : "Failed Submit Ticket, subject is null"
+            });
+        }
+
+        if(fields.message === undefined || fields.message == ""){
+            return res.status(500).json({
+                isSuccess : false,
+                message : "Failed Submit Ticket, message is null"
+            });
+        }
+
         var id = await createTicketId();
         var prm = {
             id : id,
@@ -325,6 +339,14 @@ exports.listMessageByTicket = async(param, res) => {
         });
     }
 
+    var status = 0;
+    var subject = "";
+    var a = await ticket.getRecord({id : ticket_id});
+    for(var a of a){
+        status = a.status;
+        subject = a.subject;
+    }
+
     var item_per_page = 50;
     var cnt = 0;
     var prm = {
@@ -359,7 +381,9 @@ exports.listMessageByTicket = async(param, res) => {
             userId : m.userId,
             name : name,
             createdAt : m.createdAt,
-            attachment : atch
+            attachment : atch,
+            status : status,
+            subject : subject
         };
         rtn.push(obj);
     }
@@ -403,11 +427,21 @@ exports.listTicketAdmin = async(param, res) => {
             last_message = o.createdAt;
         }
 
+        var a = await users.getUserDetails(d.userId);
+        var name = "";
+        var email = "";
+        for(var a of a){
+            name = a.name;
+            email = a.email;
+        }
+
         obj = {
             id : d.id,
             title : d.subject,
             status : d.status,
-            last_session : last_message
+            last_session : last_message,
+            name : name,
+            email : email
         };
 
         rtn.push(obj);
@@ -418,4 +452,31 @@ exports.listTicketAdmin = async(param, res) => {
         count : cnt,
         data : rtn
     });
+}
+
+exports.closeTicket = async(param, res) => {
+    var req = param.body;
+    var ticket_id = req.ticket_id;
+    var user_id = param.userId;
+
+    if(ticket_id === undefined || ticket_id == ""){
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Failed Close Ticket, ticket id null"
+        });
+    }
+
+    var upd = await ticket.updateCloseTicket(ticket_id, user_id);
+    if(upd.affectedRows > 0){
+        return res.status(200).json({
+            isSuccess : true,
+            message : "Success Close Ticket"
+        });
+    }
+    else {
+        return res.status(500).json({
+            isSuccess : false,
+            message : "Failed Close Ticket"
+        });
+    }
 }

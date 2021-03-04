@@ -4,7 +4,7 @@ const TableName = "notification";
 
 const query = util.promisify(dbmysql.query).bind(dbmysql);
 
-exports.getRecord = async(id, user_id, video_id, isRead) => {
+exports.getRecord = async(id, user_id, pkey, isRead) => {
     var que = "SELECT * FROM " + TableName + " WHERE 1=1 ";
     if(id != ""){
         que += "AND id = '" + id + "' ";
@@ -12,8 +12,8 @@ exports.getRecord = async(id, user_id, video_id, isRead) => {
     if(user_id != ""){
         que += "AND userId = '" + user_id + "' ";
     }
-    if(video_id != ""){
-        que += "AND videoId = '" + video_id + "' ";
+    if(pkey != ""){
+        que += "AND pkey = '" + pkey + "' ";
     }
     if(isRead != ""){
         que += "AND isRead = '" + isRead + "' ";
@@ -23,7 +23,7 @@ exports.getRecord = async(id, user_id, video_id, isRead) => {
     return rows;
 };
 
-exports.getCountRecord = async(id, user_id, video_id, isRead) => {
+exports.getCountRecord = async(id, user_id, pkey, isRead) => {
     var que = "SELECT COUNT(*) as cnt FROM " + TableName + " WHERE 1=1 ";
     if(id != ""){
         que += "AND id = '" + id + "' ";
@@ -31,8 +31,8 @@ exports.getCountRecord = async(id, user_id, video_id, isRead) => {
     if(user_id != ""){
         que += "AND userId = '" + user_id + "' ";
     }
-    if(video_id != ""){
-        que += "AND videoId = '" + video_id + "' ";
+    if(pkey != ""){
+        que += "AND pkey = '" + pkey + "' ";
     }
     if(isRead != ""){
         que += "AND isRead = '" + isRead + "' ";
@@ -42,7 +42,7 @@ exports.getCountRecord = async(id, user_id, video_id, isRead) => {
     return rows;
 };
 
-exports.getListPaging = async(id, user_id, video_id, isRead, offset, per_page) => {
+exports.getListPaging = async(id, user_id, pkey, isRead, offset, per_page, type) => {
     var que = "SELECT * FROM " + TableName + " WHERE 1=1 ";
     if(id != ""){
         que += "AND id = '" + id + "' ";
@@ -50,11 +50,14 @@ exports.getListPaging = async(id, user_id, video_id, isRead, offset, per_page) =
     if(user_id != ""){
         que += "AND userId = '" + user_id + "' ";
     }
-    if(video_id != ""){
-        que += "AND videoId = '" + video_id + "' ";
+    if(pkey != ""){
+        que += "AND pkey = '" + pkey + "' ";
     }
     if(isRead != ""){
         que += "AND isRead = '" + isRead + "' ";
+    }
+    if(type != ""){
+        que += "AND type = '" + type + "' ";
     }
     que += "ORDER BY createdAt desc ";
     que += "LIMIT "+offset+","+per_page+" ";
@@ -70,10 +73,22 @@ exports.updateReadLastId = async(last_id, user_id, isRead) => {
     return rows;
 }
 
-exports.insertRecord = async(user_id, video_id, title, description, isRead) => {
-    var que = "INSERT INTO " + TableName + " (userId,videoId,title,description,isRead,createdAt) ";
-        que += "VALUES ('" + user_id + "','" + video_id + "','" + title + "','" + description + "','" + isRead + "',now())";
+exports.insertRecord = async(user_id, pkey, type, title, description, isRead) => {
+    var que = "INSERT INTO " + TableName + " (userId,pkey,type,title,description,isRead,createdAt) ";
+        que += "VALUES ('" + user_id + "','" + pkey + "','"+type+"','" + title + "','" + description + "','" + isRead + "',now())";
 
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getJobNotif = async(pkey, type) => {
+    var que = "SELECT * FROM job_notification WHERE pkey = '"+pkey+"' AND type = '"+type+"'";
+    var rows = await query(que);
+    return rows;
+}
+
+exports.insertJobNotif = async(pkey, type) => {
+    var que = "INSERT INTO job_notification (pkey, type) VALUES ('"+pkey+"','"+type+"')";
     var rows = await query(que);
     return rows;
 }

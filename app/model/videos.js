@@ -3,6 +3,8 @@ const TableVideos = "videos";
 const TableVideosCategory = "videos_category";
 const TableLikes = "videos_likes";
 const TableComment = "videos_comments";
+const TableView = "videos_view";
+const TableShare = "videos_share";
 
 const util = require("util");
 const query = util.promisify(dbmysql.query).bind(dbmysql);
@@ -60,15 +62,20 @@ exports.getVideosHome = function(callback){
 };
 
 exports.getVideosByType = async(type) => {
-    var que = "SELECT * FROM " + TableVideos + " ";
-        que += "WHERE startDate < now() AND endDate > now() ";
+    var que = "SELECT a.*";
     if(type == "popular"){
-        que += "AND ispopular = 1 ";
+        que += ",(SELECT COUNT(*) FROM favorites f WHERE f.pkey = a.id AND f.type_fav = 'Livestream' AND f.status = 1) as total_like ";
+    }
+        que += " FROM " + TableVideos + " as a ";
+        que += "WHERE a.isactive = 1 ";
+    if(type == "popular"){
+        que += "AND a.ispopular = 1 ";
+        que += "ORDER BY total_like DESC ";
     }
     if(type == "recom"){
-        que += "AND isrecom = 1 ";
+        que += "AND a.isrecom = 1 ";
     }
-        que += "ORDER BY startDate DESC LIMIT 10";
+        que += "LIMIT 10";
 
     var rows = await query(que);
     return rows;
@@ -93,7 +100,7 @@ exports.getVideosById = async(id) => {
 
 exports.getCountVideosByUserId = async(user_id) => {
     var que = "SELECT count(*) as cnt FROM " + TableVideos + " ";
-    que += " WHERE userId = '" + user_id + "' ";
+    que += " WHERE userId = '" + user_id + "' AND isactive = 1 ";
     
     var rows = await query(que);
     return rows;
@@ -143,7 +150,7 @@ exports.insertComments = async(video_id, user_id, text) => {
 
 exports.getVideosMerchantByMoment = async(merchant_id, mmt) => {
     var que = "SELECT * FROM " + TableVideos + " ";
-        que += "WHERE 1=1 ";
+        que += "WHERE 1=1 and isactive = 1 ";
     if(merchant_id != ""){
         que += "AND userId = '" + merchant_id + "'";
     }
@@ -156,7 +163,7 @@ exports.getVideosMerchantByMoment = async(merchant_id, mmt) => {
     else if(mmt == "previous_videos"){
         que += "AND endDate < now() ";
     }
-    que += "ORDER by startDate desc LIMIT 10";
+    que += "ORDER by startDate asc LIMIT 10";
     
     var rows = await query(que);
     return rows;
@@ -164,7 +171,7 @@ exports.getVideosMerchantByMoment = async(merchant_id, mmt) => {
 
 exports.getCountVideosByType = async(user_id, type) => {
     var que = "SELECT count(*) as cnt FROM " + TableVideos + " ";
-        que += "WHERE 1=1 ";
+        que += "WHERE 1=1 AND isactive = 1 ";
     if(user_id != ""){
         que += "AND userId = '" + user_id + "'";
     }
@@ -177,12 +184,7 @@ exports.getCountVideosByType = async(user_id, type) => {
     else if(type == "previous_videos"){
         que += "AND endDate < now() ";
     }
-    else if(type == "popular"){
-        que += "AND startDate < now() AND endDate > now() ";
-        que += "AND ispopular = 1 ";
-    }
     else if(type == "recom"){
-        que += "AND startDate < now() AND endDate > now() ";
         que += "AND isrecom = 1 ";
     }
     
@@ -193,18 +195,18 @@ exports.getCountVideosByType = async(user_id, type) => {
 exports.getCountVideosByCat = async(user_id, category, type) => {
     var que = "SELECT count(*) as cnt FROM " + TableVideos + " as a ";
         que += "INNER JOIN " + TableVideosCategory + " as b on a.id = b.videoId AND b.categoryId = " + category + " ";
-        que += "WHERE 1=1 ";
+        que += "WHERE 1=1 and a.isactive = 1 ";
     if(user_id != ""){
         que += "AND a.userId = '" + user_id + "'";
     }
     if(type == "live_videos"){
-        que += "AND startDate < now() AND endDate > now() ";
+        que += "AND a.startDate < now() AND a.endDate > now() ";
     }
     else if(type == "upcoming_videos"){
-        que += "AND startDate > now() ";
+        que += "AND a.startDate > now() ";
     }
     else if(type == "previous_videos"){
-        que += "AND endDate < now() ";
+        que += "AND a.endDate < now() ";
     }
     
     var rows = await query(que);
@@ -212,8 +214,8 @@ exports.getCountVideosByCat = async(user_id, category, type) => {
 };
 
 exports.getListVideosPaging = async (user_id, type, offset, limitpage) => {
-    var que = "SELECT * FROM " + TableVideos + " ";
-        que += "WHERE 1=1 ";
+    var que = "SELECT *,(SELECT COUNT(*) FROM favorites f WHERE f.pkey = id AND f.type_fav = 'Livestream' AND f.status = 1) as total_like FROM " + TableVideos + " ";
+        que += "WHERE 1=1 and isactive = 1 ";
         if(user_id != ""){
             que += "AND userId = '" + user_id + "' ";
         }
@@ -226,15 +228,18 @@ exports.getListVideosPaging = async (user_id, type, offset, limitpage) => {
         else if(type == "previous_videos"){
             que += "AND endDate < now() ";
         }
-        else if(type == "popular"){
-            que += "AND startDate < now() AND endDate > now() ";
-            que += "AND ispopular = 1 ";
-        }
         else if(type == "recom"){
             que += "AND startDate < now() AND endDate > now() ";
             que += "AND isrecom = 1 ";
         }
-    que += "ORDER BY startDate desc ";
+
+        if(type == "popular"){
+            que += "ORDER BY total_like desc ";
+        }
+        else {
+            que += "ORDER BY startDate asc ";
+        }
+    
     que += "LIMIT " + offset + "," + limitpage;
     
     var rows = await query(que);
@@ -244,20 +249,20 @@ exports.getListVideosPaging = async (user_id, type, offset, limitpage) => {
 exports.getListVideosPagingCat = async(user_id, category, type, offset, limitpage) => {
     var que = "SELECT a.* FROM " + TableVideos + " as a ";
         que += "INNER JOIN " + TableVideosCategory + " as b on a.id = b.videoId AND b.categoryId = " + category + " ";
-        que += "WHERE 1=1 ";
+        que += "WHERE a.isactive = 1 ";
     if(user_id != ""){
         que += "AND a.userId = '" + user_id + "' ";
     }
     if(type == "live_videos"){
-        que += "AND startDate < now() AND endDate > now() ";
+        que += "AND a.startDate < now() AND a.endDate > now() ";
     }
     else if(type == "upcoming_videos"){
-        que += "AND startDate > now() ";
+        que += "AND a.startDate > now() ";
     }
     else if(type == "previous_videos"){
-        que += "AND endDate < now() ";
+        que += "AND a.endDate < now() ";
     }
-    que += "ORDER BY startDate desc ";
+    que += "ORDER BY a.startDate desc ";
     que += "LIMIT " + offset + "," + limitpage;
     
     var rows = await query(que);
@@ -292,7 +297,7 @@ exports.getVideosbyTmp = async(tmp, user_id)=>{
 
 exports.getCountVideosByUserIdType = async(user_id, type) => {
     var que = "SELECT count(*) as cnt FROM " + TableVideos + " ";
-    que += " WHERE userId = '" + user_id + "' ";
+    que += " WHERE userId = '" + user_id + "' and isactive = 1 ";
     if(type == "live_videos"){
         que += "AND startDate < now() AND endDate > now() ";
     }
@@ -306,3 +311,177 @@ exports.getCountVideosByUserIdType = async(user_id, type) => {
     var rows = await query(que);
     return rows;
 };
+
+exports.insertView = async(user_id, video_id) => {
+    var que = "INSERT INTO " + TableView + " (userId, videoId, createdAt) VALUES ";
+        que += "('" + user_id + "','" + video_id + "',now())";
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getCountView = async(video_id)=>{
+    var que = "SELECT COUNT(*) as cnt FROM " + TableView + " WHERE 1=1 ";
+        if(video_id !== undefined && video_id != ""){
+            que += "AND videoId = '" + video_id + "'";
+        }
+    var rows = await query(que);
+    return rows;
+};
+
+exports.getMostViewLivestream = async()=>{
+    var que = "SELECT videoId,count(*) as cnt FROM `videos_view` GROUP BY videoId ORDER BY cnt desc LIMIT 10";
+    var rows = await query(que);
+    return rows;
+};
+
+exports.getMostShareLivestream = async()=>{
+    var que = "SELECT videoId,count(*) as cnt FROM "+TableShare+" GROUP BY videoId ORDER BY cnt desc LIMIT 10";
+    var rows = await query(que);
+    return rows;
+};
+
+exports.deleteVideos = async(video_id) => {
+    var que = "UPDATE "+TableVideos+" SET isactive = 0, modifiedAt = now() WHERE id = '" + video_id + "'";
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getCountViewsByUserId = async(user_id, year, month, day) => {
+    var que = "SELECT count(*) as cnt FROM "+TableVideos+" as a INNER JOIN "+TableView+" as b ";
+        que += "ON a.id = b.videoId ";
+        que += "WHERE a.userId = '" + user_id + "' ";
+        if(year !== undefined && year != ""){
+            que += "AND year(b.createdAt) = '" + year + "' ";
+        }
+        if(month !== undefined && month != ""){
+            que += "AND month(b.createdAt) = '" + month + "' ";
+        }
+        if(day !== undefined && day != ""){
+            que += "AND day(b.createdAt) = '" + day + "' ";
+        }
+    
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getCountShareByUserId = async(user_id, year, month, day) => {
+    var que = "SELECT count(*) as cnt FROM "+TableVideos+" as a INNER JOIN "+TableShare+" as b ";
+        que += "ON a.id = b.videoId ";
+        que += "WHERE a.userId = '" + user_id + "' ";
+        if(year !== undefined && year != ""){
+            que += "AND year(b.createdAt) = '" + year + "' ";
+        }
+        if(month !== undefined && month != ""){
+            que += "AND month(b.createdAt) = '" + month + "' ";
+        }
+        if(day !== undefined && day != ""){
+            que += "AND day(b.createdAt) = '" + day + "' ";
+        }
+    
+    var rows = await query(que);
+    return rows;
+}
+
+exports.insertShare = async(user_id, video_id) => {
+    var que = "INSERT INTO " + TableShare + " (userId, videoId, createdAt) VALUES ";
+        que += "('" + user_id + "','" + video_id + "',now())";
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getCountVideosByKeyword = async(keyword) => {
+    var que = "SELECT count(*) as cnt FROM " + TableVideos + " ";
+    que += " WHERE (title like '%"+keyword+"%' OR `desc` like '%"+keyword+"%') and isactive = 1 ";
+    
+    var rows = await query(que);
+    return rows;
+};
+
+exports.getVideosByKeyword = async(keyword, offset, limitpage) => {
+    var que = "SELECT * FROM " + TableVideos + " ";
+    que += " WHERE (title like '%"+keyword+"%' OR `desc` like '%"+keyword+"%') and isactive = 1 ";
+    que += "ORDER BY startDate desc ";
+    que += "LIMIT " + offset + "," + limitpage;
+    
+    var rows = await query(que);
+    return rows;
+};
+
+exports.getCountShareByVideoId = async(videoId) => {
+    var que = "SELECT count(*) as cnt FROM " + TableShare + " WHERE videoId = '" + videoId + "'";
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getVideosByCatIn = async(cat_in, limit, per_page) => {
+    var que = "SELECT a.* FROM " + TableVideos + " as a ";
+        que += "INNER JOIN " + TableVideosCategory + " as b on a.id = b.videoId AND b.categoryId in (" + cat_in + ") ";
+        que += "GROUP BY a.id ORDER BY createdAt desc LIMIT "+limit+","+per_page;
+
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getCountVideosByCatIn = async(cat_in) => {
+    var que = "SELECT COUNT(*) as cnt FROM " + TableVideos + " as a ";
+        que += "INNER JOIN " + TableVideosCategory + " as b on a.id = b.videoId AND b.categoryId in (" + cat_in + ") ";
+        que += "GROUP BY a.id"
+
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getHistoryView = async(user_id, offset, limit) => {
+    var que = "SELECT Distinct videoId FROM " +TableView+ " WHERE 1=1 ";
+        if(user_id != ""){
+            que += "AND userId = '" + user_id + "' ";
+        }
+        que += "ORDER BY createdAt desc ";
+        if(offset != "" && limit != ""){
+            que += "LIMIT "+offset+","+limit;
+        }
+
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getCountHistoryView = async(user_id) => {
+    var que = "SELECT COUNT(Distinct videoId) as cnt FROM " +TableView+ " WHERE 1=1 ";
+        if(user_id != ""){
+            que += "AND userId = '" + user_id + "' ";
+        }
+
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getVideosByTime = async(start, end) => {
+    var que = "SELECT * FROM " + TableVideos + " WHERE 1=1 ";
+    que += "AND startDate > '" + start + "' ";
+    que += "AND startDate < '" + end + "' ";
+    
+    var rows = await query(que);
+    return rows;
+};
+
+exports.getVideosIframe = async(videoId) => {
+    var que = "SELECT * FROM videos_iframe WHERE videoId = '" + videoId + "'";
+    var rows = await query(que);
+    return rows;
+}
+
+exports.insertIframe = async(video_id, iframe, width, height) => {
+    var que = "INSERT INTO videos_iframe (videoId, iframe, width, height) VALUES ";
+        que += "(" + video_id + ",'"+iframe+"'," + width + ","+height+")";
+    var rows = await query(que);
+    return rows;
+}
+
+exports.getCountViewVideosByCat = async(cat_id) => {
+    var que = "SELECT COUNT(*) as cnt FROM " + TableVideos + " as a ";
+        que += "INNER JOIN " + TableVideosCategory + " as b on a.id = b.videoId AND b.categoryId = " + cat_id + " ";
+        que += "INNER JOIN " + TableView + " as c on a.id = c.videoId ";
+
+    var rows = await query(que);
+    return rows;
+}

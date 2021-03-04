@@ -107,3 +107,19 @@ exports.insertCategory = async(user_id, category_id) => {
     var rows = await query(que);
     return rows;
 }
+
+exports.getCountCategory = async(cat_id) => {
+    var que = "SELECT COUNT(*) as cnt FROM merchant_details as a INNER JOIN merchant_category as b on a.userId = b.userId ";
+        que +=" WHERE b.category_id = "+cat_id;
+    
+    var rows = await query(que);
+    return rows;
+};
+
+exports.getDistCategoryByUserIn = async(user_in) => {
+    var que = "SELECT DISTINCT category_id FROM " + TableMerchCat + " ";
+        que += "WHERE userId in (" + user_in + ") ";
+    
+    var rows = await query(que);
+    return rows;
+};

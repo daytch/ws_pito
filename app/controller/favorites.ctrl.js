@@ -4,6 +4,7 @@ const videos_ctrl = require("../controller/videos.ctrl");
 const conf_paging = require("../config/paging.config");
 const merchant = require("../model/merchant");
 const users = require("../model/users");
+const notif = require("../controller/notification.ctrl");
 
 exports.actionFav = async(param, res) => {
     var req = param.body;
@@ -22,12 +23,13 @@ exports.actionFav = async(param, res) => {
     }
 
     var check = false;
+    var data = [];
     if(type == "Livestream"){
         var prm = {
             userId : "",
             id : pkey
         }
-        var data = await videos.getRecord(prm);
+        data = await videos.getRecord(prm);
         if(data.length > 0){
             check = true;
         }
@@ -36,7 +38,7 @@ exports.actionFav = async(param, res) => {
         var prm = {
             userId : pkey
         }
-        var data = await merchant.getRecord(prm);
+        data = await merchant.getRecord(prm);
         if(data.length > 0){
             check = true;
         }
@@ -61,6 +63,54 @@ exports.actionFav = async(param, res) => {
     }
     else {
         ins = await favorites.submitRecord(user_id, type, new_status, pkey, true);
+    }
+
+    if(new_status == 1){
+        var usr = await users.getUserDetailsWithName(user_id);
+        var name = "";
+        for(var u of usr){
+            name = u.name;
+        }
+
+        if(type == "Livestream"){
+            var merch_id = data[0].userId;
+            var u = await users.getUserDetailsWithName(merch_id);
+            var to_name = "";
+            for(var u of u){
+                to_name = u.name;
+            }
+
+            var title = name + " like your video (" + to_name +")";
+            var desc = name + " like your video (" + to_name +")";
+            var prm = {
+                userId : merch_id,
+                pkey : pkey,
+                title : title,
+                desc : desc,
+                type : "Livestream"
+
+            }
+            var ntf = await notif.insertNotificationRare(prm);
+            if(ntf == 0){
+                console.error("Error insert notification, pkey : " + pkey);
+            }
+        }
+        else if(type == "Merchant"){
+            var title = name + " has now subscribe your channel";
+            var desc = name + " has now subscribe your channel";
+            var prm = {
+                userId : pkey,
+                pkey : pkey,
+                title : title,
+                desc : desc,
+                type : "Merchant"
+
+            }
+            var ntf = await notif.insertNotificationRare(prm);
+            if(ntf == 0){
+                console.error("Error insert notification, pkey : " + pkey);
+            }
+        }
     }
 
     if(ins.affectedRows > 0){

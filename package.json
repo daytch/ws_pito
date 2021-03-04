@@ -9,10 +9,13 @@
   "author": "amd.fauzi20@gmail.com",
   "license": "ISC",
   "dependencies": {
+    "apn": "^2.2.0",
+    "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "firebase-admin": "^9.4.2",
     "formidable": "^1.2.2",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
