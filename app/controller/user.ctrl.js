@@ -1741,10 +1741,27 @@ exports.disableUserByAdmin = async(req, res) => {
     var user_id = req.body.user_id;
     var upd = await users.updateActive(user_id, 0);
     if(upd.affectedRows > 0){
-        return res.status(200).json({
-            isSuccess : true,
-            message : "Success disable user"
-        });
+        var subject = "Your account has been disable from Pito.";
+        var text = "<br/><br/>";
+            text += "This account has been temporarily disabled.<br/>";
+            text += "Please contact administrator at contact@pito.com.sg for more information.<br/>";
+            text += "<br/><br/>";
+            text += "Regards,<br/>Pito Team";
+            
+        var mail = await mailer.sendMail(req.email, subject, text);
+        
+        if(mail){        
+            return res.status(200).json({
+                isSuccess : true,
+                message : "Success disable user"
+            });
+        }
+        else {
+            return res.status(500).json({
+                isSuccess : false,
+                message : "Failed send email disable user"
+            });
+        }
     }
     else {
         return res.status(500).json({
@@ -1758,10 +1775,26 @@ exports.enableUserByAdmin = async(req, res) => {
     var user_id = req.body.user_id;
     var upd = await users.updateActive(user_id, 1);
     if(upd.affectedRows > 0){
-        return res.status(200).json({
-            isSuccess : true,
-            message : "Success enable user"
-        });
+        var subject = "Your account has been activated back Pito.";
+        var text = "<br/><br/>";
+            text += "This account has been activated back!!!<br/>";
+            text += "<br/><br/>";
+            text += "Regards,<br/>Pito Team";
+            
+        var mail = await mailer.sendMail(req.email, subject, text);
+        
+        if(mail){     
+            return res.status(200).json({
+                isSuccess : true,
+                message : "Success enable user"
+            });
+        }
+        else {
+            return res.status(500).json({
+                isSuccess : false,
+                message : "Failed send email enable user"
+            });
+        }
     }
     else {
         return res.status(500).json({
